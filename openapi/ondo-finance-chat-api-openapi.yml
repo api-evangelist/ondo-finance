@@ -1,0 +1,160 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Chat API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Chat
+paths:
+  /ws/chat:
+    post:
+      summary: 'Subscribe: Chat'
+      operationId: subscribe_chat
+      description: Subscribe to the `chat` channel. Requires authentication (login first).
+      tags:
+      - Chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: chat
+      responses:
+        '200':
+          description: Channel update for `chat`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - chat
+                  data:
+                    $ref: '#/components/schemas/ChatMessage'
+components:
+  schemas:
+    WebSocketRequest:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          enum:
+          - ping
+          - login
+          - subscribe
+          - unsubscribe
+          - sendMessage
+          description: Operation type
+        channel:
+          type: string
+          description: Channel to subscribe/unsubscribe
+          enum:
+          - topOfBooksPerps
+          - depthBooksPerps
+          - tradesPerps
+          - ordersPerps
+          - fillsPerps
+          - cancelAllOrdersAfterPerps
+          - positionsPerps
+          - liquidationPerps
+          - liquidationAnnouncementsPerps
+          - marginTransfersPerps
+          - balancePerps
+          - ordersSummariesPerps
+          - fundingRatesPerps
+          - markPricesPerps
+          - fundingPaymentsPerps
+          - kLinePerps
+          - deposits
+          - withdrawals
+          - chat
+        markets:
+          type: array
+          items:
+            type: string
+          description: Filter by market(s). Required for kLine (exactly one). Optional for most channels.
+        args:
+          $ref: '#/components/schemas/LoginArgs'
+        numPastTrades:
+          type: integer
+          description: Number of historical trades to receive on subscribe (trades channels only)
+        resolution:
+          type: string
+          enum:
+          - '1'
+          - '5'
+          - '15'
+          - 1H
+          - 4H
+          - 1D
+          - 1W
+          description: Kline resolution (required for kLine channels)
+        timeout_seconds:
+          type: integer
+          description: Dead man's switch timeout (required for cancelAllOrdersAfter channels)
+        depthLevels:
+          type: string
+          description: Price grouping level for depth book (depthBooks channels only)
+        limit:
+          type: integer
+          description: Max depth levels to return; 0 for unlimited (depthBooks channels only)
+        message:
+          type: string
+          description: Chat message text (sendMessage only)
+        context:
+          type: object
+          description: Optional context for chat (market, page, etc.)
+          additionalProperties: true
+    ChatMessage:
+      type: object
+      properties:
+        type:
+          type: string
+          example: message
+        status:
+          type: string
+          example: complete
+        content:
+          type: string
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+        timestamp:
+          type: string
+          format: date-time
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

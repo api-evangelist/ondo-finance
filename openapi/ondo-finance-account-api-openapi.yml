@@ -1,0 +1,428 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Account
+paths:
+  /v1/account:
+    get:
+      summary: Get Account
+      description: Returns account information for the authenticated user.
+      operationId: getAccount
+      tags:
+      - Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Account info
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/AccountInfo'
+              example:
+                success: true
+                result:
+                  accountID: '10458932786832481'
+                  identifier: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18'
+                  authType: web3
+                  accountState: active
+                  withdrawalFeeUSD: '0.00'
+                  termsVersion: 2
+                  termsUnixSecs: 1704067200
+                  privacyVersion: 1
+                  privacyUnixSecs: 1704067200
+                  marketingConsent: accepted
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/account/notifications:
+    get:
+      summary: Get Notification Preference
+      description: Returns notification preferences for the authenticated account.
+      operationId: getAccountNotifications
+      tags:
+      - Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Notification preference
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/NotificationPreference'
+              example:
+                success: true
+                result:
+                  orderFills: true
+                  orderPlaced: false
+                  orderCancelled: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      summary: Set Notification Preference
+      description: Update notification preferences for the authenticated account.
+      operationId: setAccountNotifications
+      tags:
+      - Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationPreferenceRequest'
+      responses:
+        '200':
+          description: Updated preference
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/NotificationPreference'
+              example:
+                success: true
+                result:
+                  orderFills: true
+                  orderPlaced: true
+                  orderCancelled: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/counts/orders:
+    get:
+      summary: Get Open Order Counts
+      description: Returns open order counts per market/product for the authenticated account.
+      operationId: getOrderCounts
+      tags:
+      - Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Order counts
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/OpenOrderCounts'
+              example:
+                success: true
+                result:
+                  spot:
+                    open: 0
+                  perps:
+                    open: 3
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  schemas:
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    OpenOrderCounts:
+      type: object
+      properties:
+        perps:
+          type: object
+          properties:
+            open:
+              type: integer
+              description: Number of open perps orders
+    DisabledFunctionality:
+      type: object
+      properties:
+        disableTransfers:
+          type: boolean
+        disableWallet:
+          type: boolean
+        disableBalance:
+          type: boolean
+        disablePerps:
+          type: boolean
+        disableAPIKeys:
+          type: boolean
+        disableNetworkLink:
+          type: boolean
+        disableWalletLogins:
+          type: boolean
+    NotificationPreferenceRequest:
+      type: object
+      required:
+      - orderFills
+      - orderPlaced
+      - orderCancelled
+      properties:
+        orderFills:
+          type: boolean
+          description: Receive notifications for order fills
+          example: true
+        orderPlaced:
+          type: boolean
+          description: Receive notifications for orders placed
+          example: false
+        orderCancelled:
+          type: boolean
+          description: Receive notifications for order cancellations
+          example: true
+    AccountInfo:
+      type: object
+      required:
+      - accountID
+      - identifier
+      - authType
+      - accountState
+      - withdrawalFeeUSD
+      - termsVersion
+      - termsUnixSecs
+      - privacyVersion
+      - privacyUnixSecs
+      - marketingConsent
+      properties:
+        accountID:
+          type: string
+          description: Account ID
+          example: '10458932786832481'
+        identifier:
+          type: string
+          description: Account identifier (wallet address or email)
+        authType:
+          type: string
+          description: Authentication type
+          enum:
+          - web3
+          - web2:email_pass
+          - web2:google
+          - unknown
+        accountState:
+          type: string
+          description: Account state
+          enum:
+          - open
+          - disabled
+          - offboarding
+          - closed
+        withdrawalFeeUSD:
+          type: string
+          description: Withdrawal fee in USD
+        disabledFunctionality:
+          $ref: '#/components/schemas/DisabledFunctionality'
+        termsVersion:
+          type: integer
+          description: Terms of service version accepted
+        termsUnixSecs:
+          type: integer
+          description: Unix timestamp when terms were accepted
+        privacyVersion:
+          type: integer
+          description: Privacy policy version accepted
+        privacyUnixSecs:
+          type: integer
+          description: Unix timestamp when privacy policy was accepted
+        marketingConsent:
+          type: string
+          description: Marketing consent value
+    NotificationPreference:
+      type: object
+      properties:
+        orderFills:
+          type: boolean
+          description: Notify on order fills
+        orderPlaced:
+          type: boolean
+          description: Notify on order placement
+        orderCancelled:
+          type: boolean
+          description: Notify on order cancellation
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

@@ -1,0 +1,434 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Limits API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Limits
+  description: Get Trading Limits
+paths:
+  /v1/limits/trading:
+    get:
+      tags:
+      - Limits
+      summary: Get Trading Limits
+      description: 'Provides real-time trading limits based on global, user, and asset-specific exposure limits.
+
+
+        Limits:
+
+        - The "Max Notional Value" limit is based on the dollar value of outstanding attestations. That is, if a user has a limit of \$1,000,000, and has 30 non-expired, non-filled attestations at a value of \$999,000, they will not be able to request another attestation for \$1000.
+
+        - The "Remaining Attestations" limits the number of non-expired, non-executed attestations. For example if the limit is 50, and a user has 50 outstanding attestations, they must wait for one to execute or expire before requesting another.
+
+
+        If the market is closed or paused, the response will indicate that trading is not allowed and provide the reason. For more information on market hours, see [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).
+
+
+        **Trading Limits Reason Codes**
+
+
+        When trading is not allowed, the response will include a `reason` field which may include one of the following common codes:
+
+        - `MARKET_CLOSED`: Market is closed.
+
+        - `MARKET_PAUSED`: Market is temporarily paused.
+
+        - `ASSET_PAUSED`: Specific asset is paused.
+
+        - `ASSET_CLOSED_FOR_SESSION`: The asset is not tradable in this session (e.g., not available overnight; see [Get Market Data](https://docs.ondo.finance/api-reference/assets/get-market-data-for-all-supported-assets))
+
+        - `ASSET_LIMITED`: Asset can be traded, but order size is more limited than usual.
+
+        - `MAX_LIMIT_REACHED`: Maximum limit has been reached.
+
+        - `MAX_ATTESTATIONS`: Maximum attestations reached.
+
+        - `OFFHOURS_EXPOSURE_LIMIT_REACHED`: The off-hours exposure limit has been reached for the asset during the current off-hours session.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getTradingLimits
+      parameters:
+      - name: symbol
+        in: query
+        description: The GM token symbol.
+        example: AAPLon
+        required: true
+        schema:
+          type: string
+      - name: side
+        in: query
+        description: The trade side
+        example: buy
+        required: true
+        schema:
+          $ref: '#/components/schemas/SideEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TradingLimitsResponse'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: One of the request parameters is invalid.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '403':
+          description: Trading is restricted due to market or asset state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                market_closed:
+                  summary: Market Closed
+                  value:
+                    code: MARKET_CLOSED
+                    message: market is closed
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#market_closed
+                asset_paused:
+                  summary: Asset Paused
+                  value:
+                    code: ASSET_PAUSED
+                    message: asset trading is paused
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_paused
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/limits/session:
+    get:
+      tags:
+      - Limits
+      summary: Get Session Limits
+      description: 'Provides theoretical maximum asset-specific trading limits for each trading session. These limits are per-user, not global. This API reflects Ondo''s statically defined limits; for dynamic, real-time values, see [Get Trading Limits](https://docs.ondo.finance/api-reference/limits/get-trading-limits).
+
+
+        Limits are returned for each session: `premarket`, `regular`, `postmarket`, `overnight`, and `offhours`. The `offhours` block describes the limits that apply when the US equities market is closed for the day (for example, on weekends and holidays). For most assets, off-hours trading is disabled (`tradable: false`).
+
+
+        Limits:
+
+        - The "Max Attestation Count" limits the number of non-expired, non-executed attestations. For example if the limit is 50, and a user has 50 outstanding attestations, they must wait for one to execute or expire before requesting another.
+
+        - The "Max Active Notional Value" limit is based on the dollar value of outstanding attestations. That is, if a user has a limit of \$1,000,000, and has 30 non-expired, non-filled attestations at a value of \$999,000, they will not be able to request another attestation for \$1000.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getSessionLimits
+      parameters:
+      - name: symbol
+        in: query
+        description: The GM token symbol.
+        example: AAPLon
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionLimitsResponse'
+              example:
+              - limits:
+                - symbol: AAPLon
+                  premarket:
+                    tradable: true
+                    maxAttestationCount: '500'
+                    maxActiveNotionalValue: '10000'
+                  regular:
+                    tradable: true
+                    maxAttestationCount: '500'
+                    maxActiveNotionalValue: '200000'
+                  postmarket:
+                    tradable: true
+                    maxAttestationCount: '500'
+                    maxActiveNotionalValue: '200000'
+                  overnight:
+                    tradable: true
+                    maxAttestationCount: '500'
+                    maxActiveNotionalValue: '200000'
+                  offhours:
+                    tradable: false
+                    maxAttestationCount: '0'
+                    maxActiveNotionalValue: '0'
+                - '...'
+                timestamp: 1769192550134
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: One of the request parameters is invalid.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: asset not found
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+components:
+  schemas:
+    SessionLimits:
+      type: object
+      properties:
+        tradable:
+          type: boolean
+          description: A flag indicating whether trading is enabled during the session.
+          enum:
+          - true
+          - false
+          example: true
+        maxAttestationCount:
+          type: string
+          description: The maximum number of active attestations allowed during the session.
+          example: '1000'
+        maxActiveNotionalValue:
+          type: string
+          description: The maximum active notional value available to trade during the session, represented as a string-encoded integer.
+          example: '1000000'
+      required:
+      - tradable
+      - maxAttestationCount
+      - maxActiveNotionalValue
+    TradingLimitsReasonCode:
+      type: string
+      enum:
+      - MARKET_CLOSED
+      - MARKET_PAUSED
+      - ASSET_PAUSED
+      - ASSET_CLOSED_FOR_SESSION
+      - ASSET_LIMITED
+      - MAX_LIMIT_REACHED
+      - MAX_ATTESTATIONS
+      - OFFHOURS_EXPOSURE_LIMIT_REACHED
+      description: The code indicating why trading is not allowed.
+    ReasonBase:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The human-readable message describing the reason
+          example: Weekend/Holiday
+        documentation:
+          type: string
+          description: Additional documentation or reference
+          example: https://docs.ondo.finance/
+      required:
+      - message
+      - documentation
+    SessionLimitsResponse:
+      type: object
+      properties:
+        limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetLimits'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the trading limits were last updated.
+          example: 1769116067536
+      required:
+      - limits
+      - timestamp
+    SideEnum:
+      type: string
+      description: The direction of the trade.
+      enum:
+      - buy
+      - sell
+    TradingLimitsReason:
+      description: Reason why trading is restricted for the given asset and user.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/TradingLimitsReasonCode'
+        required:
+        - code
+    AssetLimits:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM token symbol.
+          example: AAPLon
+        premarket:
+          $ref: '#/components/schemas/SessionLimits'
+        regular:
+          $ref: '#/components/schemas/SessionLimits'
+        postmarket:
+          $ref: '#/components/schemas/SessionLimits'
+        overnight:
+          $ref: '#/components/schemas/SessionLimits'
+        offhours:
+          $ref: '#/components/schemas/SessionLimits'
+          description: Trading limits that apply when the US equities market is closed for the day (e.g., weekends and holidays).
+      required:
+      - symbol
+      - premarket
+      - regular
+      - postmarket
+      - overnight
+      - offhours
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    TradingLimitsResponse:
+      type: object
+      properties:
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the trading limits were last updated.
+          example: 1746655938000
+        symbol:
+          type: string
+          description: The GM token symbol.
+          example: AAPLon
+        side:
+          $ref: '#/components/schemas/SideEnum'
+        maxTokens:
+          type: string
+          description: The maximum token amount available to trade, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '100.000000000000000000'
+        maxNotionalValue:
+          type: string
+          description: The maximum notional value available to trade, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '1234.560000000000000000'
+        remainingAttestations:
+          type: string
+          description: The number of remaining attestations for this asset.
+          example: '3'
+        isAssetTradingOpen:
+          type: boolean
+          description: Indicates whether the user is currently allowed to trade the asset
+          example: false
+        reason:
+          $ref: '#/components/schemas/TradingLimitsReason'
+      required:
+      - timestamp
+      - symbol
+      - side
+      - maxTokens
+      - maxNotionalValue
+      - remainingAttestations
+      - isAssetTradingOpen
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

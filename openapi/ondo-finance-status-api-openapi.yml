@@ -1,0 +1,336 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Status API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Status
+  description: Get Market and Trading Statuses
+paths:
+  /v1/status/market:
+    get:
+      tags:
+      - Status
+      summary: Get Current Market Status
+      description: "This endpoint retrieves the current status of the market, including whether it is open or closed, and any relevant information about trading pauses or restrictions. When the market is not open, the response provides details about the closure reason and expected reopening time.\n\n**Typical Market Sessions**\n\nThe following table outlines the standard market sessions with brief transitional pauses between each session period.\n\n| **Session**      | **Start Time**  | **End Time**   |\n|:-----------------|:---------------:|:--------------:|\n| Pause            | 3:55 AM ET      | 4:01 AM ET     |\n| **Premarket**    | **4:01 AM ET**  | **9:29 AM ET** |\n| Pause            | 9:29 AM ET      | 9:31 AM ET     |\n| **Regular**      | **9:31 AM ET**  | **3:59 PM ET** |\n| Pause            | 3:59 PM ET      | 4:01 PM ET     |\n| **Postmarket**   | **4:01 PM ET**  | **7:59 PM ET** |\n| Pause            | 7:59 PM ET      | 8:05 PM ET     |\n| **Overnight**    | **8:05 PM ET**  | **3:55 AM ET** |\n\n**Typical Holidays**\n\nGM observes the same holiday schedule as the [New York Stock Exchange](https://www.nyse.com/markets/hours-calendars). This includes early closes and observed holidays.\n\n**Unscheduled Downtime**\n\nIn the case of unscheduled downtime, trading may be paused without prior notice. This includes unexpected outages or maintenance events that impact GM's functionality.\n\n**Market Status Reason Codes**\n\nWhen the market is not open, the response will include a `reason` field which may include one of the following common codes:\n- `MARKET_CLOSED`: Market is closed.\n- `MARKET_PAUSED`: Market is temporarily paused.\n\n**Off-Hours Trading**\n\nThe `offhours` object reports the off-hours trading window as a parallel track alongside the conventional sessions. `marketStatus`, `isOpen`, `nextOpenSession`, `nextOpen`, and `nextClose` only reflect the four conventional sessions (regular, premarket, postmarket, overnight); a weekend or holiday with no active conventional session reads as `closed` on these fields. Off-hours tradability is reported separately via `offhours.isOpen`, `offhours.nextOpen`, and `offhours.nextClose`. The `offhours.nextOpen` and `offhours.nextClose` schedule fields are reported regardless of the off-hours global switch, while `offhours.isOpen` is true only when the off-hours window is tradable.\n\n**Asset Tradability**\nThis endpoint only returns market-wide closures. For per-asset tradability, use the following endpoints:\n  * Individual assets may pause for dividends and other events, as indicated by `/v1/status/assets`. (See [Get Asset Statuses](https://docs.ondo.finance/api-reference/status/get-asset-statuses))\n  * Certain assets do not trade during the overnight and pre/postmarket session, as indicated by `/v1/assets/{symbol}/market`. (See [Get Market Data for an Asset](https://docs.ondo.finance/api-reference/assets/get-market-data-for-an-asset) / [Get Market Data for All Supported Assets](https://docs.ondo.finance/api-reference/assets/get-market-data-for-all-supported-assets))\n\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+      operationId: getMarketStatus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetMarketStatusResponse'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/status/assets:
+    get:
+      tags:
+      - Status
+      summary: Get Asset Statuses
+      description: "This endpoint retrieves information about individual asset trading statuses, including the reason and expected duration. Asset trading can be affected for various reasons such as earnings announcements, dividend events, and global market closures.\n\n**Important**:\n  * When the entire market is closed or paused as indicated by `/v1/status/market`, all asset trading is automatically suspended regardless of individual asset status. (See [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status))\n  * Certain assets do not trade during the overnight and pre/postmarket session, as indicated by `/v1/assets/{symbol}/market`. (See [Get Market Data for an Asset](https://docs.ondo.finance/api-reference/assets/get-market-data-for-an-asset) / [Get Market Data for All Supported Assets](https://docs.ondo.finance/api-reference/assets/get-market-data-for-all-supported-assets)) \n\n This endpoint should be used in conjunction with the [Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status) and [Market Data](https://docs.ondo.finance/api-reference/assets/get-market-data-for-an-asset) endpoints to get a complete picture of trading availability.\n\n**Market Sessions and Holidays**\n\nAsset trading follows the same schedule as outlined in [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status). During market closures, holidays, or unscheduled downtime, all assets are unavailable for trading.\n\n**Earnings and Dividends**\n\nIndividual assets may be temporarily suspended or limited during earnings announcements and dividend events according to the following schedule:\n- **Dividends**: Trading is paused from 7:50 PM to 8:10 PM ET on the day before the dividend ex-date.\n- **Earnings**: Trading is limited for certain assets around earnings announcements, with timing dependent on the announcement schedule. \"Limited\" here means that the quantity which can be minted in one request is reduced. For exact limits, see [Get Trading Limits](https://docs.ondo.finance/api-reference/limits/get-trading-limits). For pre-market announcements, trading is suspended from 5:00 AM to 9:31 AM ET. For post-market announcements, trading is suspended from 4:00 PM to 7:30 PM ET. Trading may resume earlier at the platform's discretion.\n- **Other corporate actions**: Trading is paused for an indeterminate amount of time as needed for Ondo to process the corporate action.\n\n**Asset Status Reason Codes**\n\n`reason.code` is one of:\n- `ASSET_PAUSED`: Asset is paused for trading.\n- `ASSET_LIMITED`: Asset can be traded, but order size is more limited than usual.\n\n**Asset Status Reason Messages**\n\n`reason.message` is one of:\n- `cash_dividend`\n- `stock_dividend`\n- `stock_split`\n- `merger`\n- `acquisition`\n- `spinoff`\n- `earnings`\n- `maintenance`\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+      operationId: getAssetStatus
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAssetStatusesResponse'
+              example:
+              - symbol: XOMon
+                status: upcoming
+                type: scheduled
+                reason:
+                  code: ASSET_LIMITED
+                  message: earnings
+                  documentation: https://docs.ondo.finance/api-reference/error-codes#asset_limited
+                start: '2026-01-30T10:00:00Z'
+                end: '2026-01-31T00:30:00Z'
+                eventId: 30fd9cb4-1d64-474f-822d-7f281b8f02ee
+                updateSharesMultiplier: false
+              - symbol: TIPon
+                status: upcoming
+                type: scheduled
+                reason:
+                  code: ASSET_PAUSED
+                  message: cash_dividend
+                  documentation: https://docs.ondo.finance/api-reference/error-codes#asset_paused
+                start: '2026-02-02T00:50:00Z'
+                end: '2026-02-03T01:00:00Z'
+                eventId: d7d42fbe-9161-45af-806c-c0717453099d
+                updateSharesMultiplier: true
+              - '...'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+components:
+  schemas:
+    MarketStatusReasonCode:
+      type: string
+      enum:
+      - MARKET_CLOSED
+      - MARKET_PAUSED
+      description: The code indicating the reason for the market status.
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    ReasonBase:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The human-readable message describing the reason
+          example: Weekend/Holiday
+        documentation:
+          type: string
+          description: Additional documentation or reference
+          example: https://docs.ondo.finance/
+      required:
+      - message
+      - documentation
+    MarketStatusReason:
+      description: Reason for market closure or pause.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/MarketStatusReasonCode'
+        required:
+        - code
+    AssetStatusReasonCode:
+      type: string
+      enum:
+      - ASSET_PAUSED
+      - ASSET_LIMITED
+      description: The code indicating the reason for the asset status.
+    GetMarketStatusResponse:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          description: The UTC timestamp of the market status check in ISO 8601 format.
+          example: '2025-08-20T21:03:02Z'
+        isOpen:
+          type: boolean
+          description: Indicates whether the market is currently open or closed to trading.
+          example: true
+        marketStatus:
+          type: string
+          description: The current status of the market. `offhours` indicates an off-hours session (such as weekends, the window after the Friday postmarket close, or eligible holidays) during which trading is enabled for assets that opt in to off-hours trading. Off-hours is only reported when off-hours trading is enabled; otherwise the same windows report as `closed`.
+          enum:
+          - regular
+          - premarket
+          - postmarket
+          - overnight
+          - offhours
+          - paused
+          - closed
+          example: postmarket
+        nextOpenSession:
+          type: string
+          description: The next market open session of the market. May be `offhours` when the next available trading window is an off-hours session.
+          enum:
+          - regular
+          - premarket
+          - postmarket
+          - overnight
+          - offhours
+          example: overnight
+        nextOpen:
+          type: string
+          description: The next market open time in ISO 8601 format (UTC).
+          example: '2025-08-21T00:05:00Z'
+        nextClose:
+          type: string
+          description: The next market close time in ISO 8601 format (UTC).
+          example: '2025-08-20T23:59:00Z'
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/MarketStatusReason'
+          - example: null
+        offhours:
+          $ref: '#/components/schemas/OffhoursStatus'
+      required:
+      - timestamp
+      - isOpen
+      - marketStatus
+      - nextOpenSession
+      - offhours
+    OffhoursStatus:
+      type: object
+      description: 'Status of the off-hours trading window, surfaced as a parallel track alongside the conventional session fields. The off-hours window is reported independently of the conventional sessions: `marketStatus` and `isOpen` reflect only the four conventional sessions (regular, premarket, postmarket, overnight), while this object reports off-hours tradability separately.'
+      properties:
+        isOpen:
+          type: boolean
+          description: Indicates whether off-hours trading is currently open. This is true only while the off-hours window is tradable and the off-hours global switch is on.
+          example: false
+        nextOpen:
+          type: string
+          description: The next off-hours window open time in ISO 8601 format (UTC). Reported regardless of the off-hours global switch.
+          example: '2026-06-19T00:05:00Z'
+        nextClose:
+          type: string
+          description: The next off-hours window close time in ISO 8601 format (UTC). Reported regardless of the off-hours global switch.
+          example: '2026-06-21T23:55:00Z'
+      required:
+      - isOpen
+      - nextOpen
+      - nextClose
+    AssetStatusReason:
+      description: Reason for an asset trading restriction.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/AssetStatusReasonCode'
+        required:
+        - code
+    GetAssetStatusesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AssetPause'
+    AssetPause:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM token symbol.
+          example: AAPLon
+        status:
+          type: string
+          description: The current status of the pause. ('active' indicates the pause is live, 'upcoming' indicates it is scheduled for the future)
+          enum:
+          - active
+          - upcoming
+          example: active
+        type:
+          type: string
+          description: The type of pause. ('scheduled' indicates a planned pause for events such as dividends, 'unscheduled' indicates an unplanned pause such as emergency maintenance)
+          enum:
+          - scheduled
+          - unscheduled
+          example: unscheduled
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/AssetStatusReason'
+          - example:
+              code: ASSET_PAUSED
+              message: Maintenance
+              documentation: https://docs.ondo.finance/
+        start:
+          type: string
+          description: The start time of the pause. ('unscheduled' pauses may not provide a start time.)
+          example: '2025-08-05T10:30:00Z'
+        end:
+          type: string
+          description: The end time of the pause. ('unscheduled' pauses may not provide an end time.)
+          example: '2025-08-05T10:45:00Z'
+        eventId:
+          type: string
+          description: The unique id associated with the pause. (Might be empty if the sharesMultiplier will not be updated for the asset during the pause.)
+          example: 94fe2f8f-e69c-45a5-9e48-dd8226dd8e67
+        updateSharesMultiplier:
+          type: boolean
+          description: A boolean flag that indicates whether the sharesMultiplier value will be updated for the asset during this pause or not.
+          enum:
+          - true
+          - false
+          example: true
+      required:
+      - symbol
+      - status
+      - type
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

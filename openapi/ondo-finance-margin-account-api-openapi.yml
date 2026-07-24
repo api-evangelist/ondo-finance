@@ -1,0 +1,1065 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Margin Account API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Margin Account
+paths:
+  /v1/perps/transfers:
+    post:
+      summary: Create Margin Transfer
+      description: 'Create a margin transfer. Margin transfers must be between the main and margin wallet of the same account, in either direction.
+
+        '
+      operationId: createMarginTransfer
+      tags:
+      - Margin Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferReq'
+      responses:
+        '200':
+          description: Created transfer
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/Transfer'
+              example:
+                success: true
+                result:
+                  id: '23210984785321024'
+                  from:
+                    id: '10458932786832481'
+                    wallet: main
+                  to:
+                    id: '10458932786832481'
+                    wallet: margin
+                  amount: '1000.00'
+                  symbol: USDC
+                  time: '2025-03-05T14:30:00Z'
+                  type: 0
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+                    - insufficient_funds
+                    - invalid_symbol
+                    - transfer_amount_precision_overflow
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      summary: List Margin Transfers
+      description: Returns a paginated list of margin transfers.
+      operationId: listMarginTransfers
+      tags:
+      - Margin Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 1000
+      - name: cursor
+        in: query
+        description: Pagination cursor
+        required: false
+        schema:
+          type: string
+          example: NQ5WWO3THN3Q====
+      - name: startTime
+        in: query
+        description: Start time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1684814400
+      - name: endTime
+        in: query
+        description: End time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1672549200
+      responses:
+        '200':
+          description: Paginated list of transfers
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Transfer'
+                    pageInfo:
+                      $ref: '#/components/schemas/PageInfo'
+              example:
+                success: true
+                result:
+                - id: '23210984785321024'
+                  from:
+                    id: '10458932786832481'
+                    wallet: main
+                  to:
+                    id: '10458932786832481'
+                    wallet: margin
+                  amount: '1000.00'
+                  symbol: USDC
+                  time: '2025-03-05T14:30:00Z'
+                  type: 0
+                pageInfo:
+                  nextCursor: NQ5WWO3THN3Q====
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - failed_to_parse_timestamp
+                    - invalid_cursor
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/balance:
+    get:
+      summary: Get Balance
+      description: Get a summary of the balance for a margin account.
+      operationId: getPerpsBalance
+      tags:
+      - Margin Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Margin account balance summary
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/MarginAccountBalanceSummary'
+              example:
+                success: true
+                result:
+                  walletBalance: '5000.00'
+                  realizedPnl: '250.00'
+                  unrealizedPnl: '-50.00'
+                  marginBalance: '4950.00'
+                  usedMargin: '1125.00'
+                  availableMargin: '3825.00'
+                  withdrawableMargin: '3825.00'
+                  maintenanceMarginRequirement: '112.50'
+                  totalMaintenanceMargin: '200.00'
+                  marginRatio: '0.04'
+                  leverage: '0.46'
+                  underLiquidation: false
+                  totalFundingPayments: '-5.67'
+                  totalTradingFees: '12.34'
+                  totalPnL: '232.00'
+                  netInvested: '4750.00'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/orders_summaries:
+    get:
+      summary: Get Orders Summaries
+      description: Returns a summary of resting orders, position, and market order margin requirements for each market.
+      operationId: getPerpsOrdersSummaries
+      tags:
+      - Margin Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Array of per-market order summaries
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/GetOrdersSummariesRes'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  restingOrdersSummary:
+                    bidsInitialMargin: '100.00'
+                    asksInitialMargin: '80.00'
+                    bidsOpenLoss: '5.00'
+                    asksOpenLoss: '3.00'
+                    bidsBaseSize: '10.00'
+                    asksBaseSize: '8.00'
+                    bidsMaintenanceMargin: '50.00'
+                    asksMaintenanceMargin: '40.00'
+                  positionSummary:
+                    bidsInitialMargin: '1125.00'
+                    asksInitialMargin: '0.00'
+                    bidsBaseSize: '10.00'
+                    asksBaseSize: '0.00'
+                  marketOrderSummary:
+                    maxBidQuoteSize: '10000.00'
+                    maxBidBaseSize: '43.96'
+                    maxAskQuoteSize: '10000.00'
+                    maxAskBaseSize: '43.96'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/max_order_size:
+    get:
+      summary: Get Max Order Size
+      description: 'Get a summary of the maximum order size that can be placed given the current state of the order book and available margin.
+
+        '
+      operationId: getMaxOrderSize
+      tags:
+      - Margin Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: market
+        in: query
+        description: Market to estimate max order size for
+        required: true
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: buffer
+        in: query
+        description: 'Factor to scale returned sizes to guard against fluctuations between calling this endpoint and placing the order. Must be a decimal between 0 and 1. Defaults to 0.9.
+
+          '
+        required: false
+        schema:
+          type: string
+          example: '0.9'
+      responses:
+        '200':
+          description: Maximum order sizes
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/MaxOrderSizesRes'
+              example:
+                success: true
+                result:
+                  percent100:
+                    maxBidBaseSize: '43.96'
+                    maxAskBaseSize: '43.96'
+                  percent75:
+                    maxBidBaseSize: '32.97'
+                    maxAskBaseSize: '32.97'
+                  percent50:
+                    maxBidBaseSize: '21.98'
+                    maxAskBaseSize: '21.98'
+                  percent25:
+                    maxBidBaseSize: '10.99'
+                    maxAskBaseSize: '10.99'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - insufficient_margin
+                    - invalid_market
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/liquidation_history:
+    get:
+      summary: Get Liquidation History
+      description: Returns a paginated history of liquidation events for the authenticated account.
+      operationId: getLiquidationHistory
+      tags:
+      - Margin Account
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: market
+        in: query
+        description: Filter by market
+        required: false
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 100
+      - name: cursor
+        in: query
+        description: Pagination cursor
+        required: false
+        schema:
+          type: string
+          example: NQ5WWO3THN3Q====
+      - name: startTime
+        in: query
+        description: Start time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1684814400000
+      - name: endTime
+        in: query
+        description: End time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1672549200000
+      responses:
+        '200':
+          description: Paginated list of liquidation events
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/LiquidationEvent'
+                    pageInfo:
+                      $ref: '#/components/schemas/PageInfo'
+              example:
+                success: true
+                result:
+                - id: liq_70a37d8f972f2494837f9dba8364cbb4
+                  time: '2025-02-15T08:00:00Z'
+                  initiatedAt: '2025-02-15T07:59:55Z'
+                  accountId: '10458932786832481'
+                  status: finished
+                  insuranceFundUsed: '0.00'
+                  adl: false
+                  retryCount: 0
+                  filledQuoteSize: '5000.00'
+                  filledQuantity: '22.00'
+                  reclaimOrderMargin: false
+                pageInfo: {}
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - failed_to_parse_timestamp
+                    - invalid_cursor
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    OrdersSummary:
+      type: object
+      properties:
+        bidsInitialMargin:
+          type: string
+          description: Initial margin required for all bid (buy) resting orders
+          example: '100.00'
+        asksInitialMargin:
+          type: string
+          description: Initial margin required for all ask (sell) resting orders
+          example: '80.00'
+        bidsOpenLoss:
+          type: string
+          description: Unrealized open loss on the bid side that counts toward margin
+          example: '5.00'
+        asksOpenLoss:
+          type: string
+          description: Unrealized open loss on the ask side that counts toward margin
+          example: '3.00'
+        bidsBaseSize:
+          type: string
+          description: Total base size of all bid resting orders
+          example: '10.00'
+        asksBaseSize:
+          type: string
+          description: Total base size of all ask resting orders
+          example: '8.00'
+        bidsMaintenanceMargin:
+          type: string
+          description: Maintenance margin required for all bid resting orders
+          example: '50.00'
+        asksMaintenanceMargin:
+          type: string
+          description: Maintenance margin required for all ask resting orders
+          example: '40.00'
+    LiquidationEvent:
+      type: object
+      required:
+      - id
+      - time
+      - initiatedAt
+      - accountId
+      - status
+      - insuranceFundUsed
+      - adl
+      - retryCount
+      properties:
+        id:
+          type: string
+          description: Liquidation event ID
+          example: liq_70a37d8f972f2494837f9dba8364cbb4
+        time:
+          type: string
+          format: date-time
+          description: Time the liquidation completed
+          example: '2024-01-04T16:13:34Z'
+        initiatedAt:
+          type: string
+          format: date-time
+          description: Time the liquidation was initiated
+          example: '2024-01-04T16:13:30Z'
+        accountId:
+          type: string
+          description: Account that was liquidated
+          example: '10458932786832481'
+        status:
+          type: string
+          description: Status of the liquidation event
+          example: start
+          enum:
+          - queued
+          - start
+          - retry
+          - stop
+        insuranceFundUsed:
+          type: string
+          description: Amount drawn from the insurance fund to cover losses
+          example: '0.00'
+        adl:
+          type: boolean
+          description: Whether auto-deleveraging (ADL) was triggered
+          example: false
+        retryCount:
+          type: integer
+          description: Number of retry attempts before the liquidation completed
+          example: 0
+        triggeringPositions:
+          type: array
+          description: Positions that triggered the liquidation (populated for events after August 2024)
+          items:
+            $ref: '#/components/schemas/ApiPosition'
+        filledQuoteSize:
+          type: string
+          description: Total quote value of positions closed during liquidation (populated for events after February 2025)
+          example: '5000.00'
+        filledQuantity:
+          type: string
+          description: Total base quantity of positions closed during liquidation (populated for events after February 2025)
+          example: '0.25'
+        reclaimOrderMargin:
+          type: boolean
+          description: If true, the liquidation only cancelled resting orders to free up margin without closing positions
+          example: false
+    MarketOrdersSummary:
+      type: object
+      properties:
+        maxBidQuoteSize:
+          type: string
+          description: Maximum buy market order size in quote currency
+          example: '10000.00'
+        maxBidBaseSize:
+          type: string
+          description: Maximum buy market order size in base currency
+          example: '5.00'
+        maxBidPositionLeverage:
+          type: string
+          description: Maximum leverage available for a buy market order
+          example: '10.0'
+        maxAskQuoteSize:
+          type: string
+          description: Maximum sell market order size in quote currency
+          example: '10000.00'
+        maxAskBaseSize:
+          type: string
+          description: Maximum sell market order size in base currency
+          example: '5.00'
+        maxAskPositionLeverage:
+          type: string
+          description: Maximum leverage available for a sell market order
+          example: '10.0'
+    MaxOrderSizesRes:
+      type: object
+      required:
+      - percent100
+      - percent75
+      - percent50
+      - percent25
+      properties:
+        percent100:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 100% of available margin
+        percent75:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 75% of available margin
+        percent50:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 50% of available margin
+        percent25:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 25% of available margin
+    MarginAccountBalanceSummary:
+      type: object
+      required:
+      - walletBalance
+      - realizedPnl
+      - unrealizedPnl
+      - marginBalance
+      - usedMargin
+      - availableMargin
+      - withdrawableMargin
+      - maintenanceMarginRequirement
+      - totalMaintenanceMargin
+      - marginRatio
+      - leverage
+      - underLiquidation
+      - totalFundingPayments
+      - totalTradingFees
+      - totalPnL
+      properties:
+        walletBalance:
+          type: string
+          description: 'The amount in USDC resulting from transfers in/out, realized PnL, and fees. wallet_balance = deposits - withdrawals + realized_pnl + trading_fees + funding_rate_fees
+
+            '
+          example: '2000'
+        realizedPnl:
+          type: string
+          description: Total realized PNL in USDC
+          example: '600'
+        unrealizedPnl:
+          type: string
+          description: The current unrealized PNL in USDC at mark price for open positions
+          example: '-500'
+        marginBalance:
+          type: string
+          description: 'Margin balance in USDC. margin_balance = wallet_balance + unrealized_pnl
+
+            '
+          example: '1500'
+        usedMargin:
+          type: string
+          description: 'Amount of used margin in USDC for resting orders and positions. used_margin = sum_for_all_markets(max(position_ask + resting_orders_ask, position_bid + resting_orders_bid) + open_loss_total)
+
+            '
+          example: '200'
+        availableMargin:
+          type: string
+          description: 'Amount of margin in USDC available for new positions. available_balance = margin_balance - used_margin. Will not be negative.
+
+            '
+          example: '1300'
+        withdrawableMargin:
+          type: string
+          description: 'Amount in USDC available for withdrawal. withdrawable_amount = max(0, min(available_balance, wallet_balance))
+
+            '
+          example: '100'
+        maintenanceMarginRequirement:
+          type: string
+          description: Total maintenance margin requirement for all open positions
+          example: '150'
+        totalMaintenanceMargin:
+          type: string
+          description: Total maintenance margin requirement for all open positions and resting orders
+          example: '200'
+        marginRatio:
+          type: string
+          description: 'Margin ratio (0–100%) indicating liquidation proximity. margin_ratio = maintenance_margin / margin_balance. Returns 9999 if margin balance is negative or zero.
+
+            '
+          example: '0.13'
+        leverage:
+          type: string
+          description: Effective leverage for the entire account (notional value of all positions / margin balance)
+          example: '5.0'
+        underLiquidation:
+          type: boolean
+          description: Whether the account is currently under liquidation
+          example: false
+        totalFundingPayments:
+          type: string
+          description: Sum of all funding payments applied to this account
+          example: '123'
+        totalTradingFees:
+          type: string
+          description: Sum of all trading fees paid. A negative value implies a net rebate.
+          example: '123'
+        totalPnL:
+          type: string
+          description: All-time PnL including realized/unrealized PnL, fees, and funding payments
+          example: '477'
+        netInvested:
+          type: string
+          description: Net amount invested
+          example: '1000'
+    GetOrdersSummariesRes:
+      type: object
+      required:
+      - market
+      properties:
+        market:
+          type: string
+          description: Perps market
+          example: AAPL-USD.P
+        restingOrdersSummary:
+          $ref: '#/components/schemas/OrdersSummary'
+          description: Margin summary for resting (open) orders
+        positionSummary:
+          $ref: '#/components/schemas/OrdersSummary'
+          description: Margin summary for the open position
+        marketOrderSummary:
+          $ref: '#/components/schemas/MarketOrdersSummary'
+          description: Maximum order sizes available for market orders
+    ApiPosition:
+      type: object
+      required:
+      - market
+      - direction
+      - netQuantity
+      - averageEntryPrice
+      - usedMargin
+      - unrealizedPnl
+      - markPrice
+      - liquidationPrice
+      - bankruptcyPrice
+      - maintenanceMargin
+      - notionalValue
+      - leverage
+      - netFundingSinceNeutral
+      - returnOnEquity
+      properties:
+        market:
+          type: string
+          description: Perps market
+          example: AAPL-USD.P
+        direction:
+          type: string
+          description: Position direction
+          enum:
+          - long
+          - short
+          - neutral
+          example: short
+        netQuantity:
+          type: string
+          description: Size of the position in base currency
+          example: '1.5489'
+        averageEntryPrice:
+          type: string
+          description: Average entry price
+          example: '20566.84'
+        usedMargin:
+          type: string
+          description: Margin used for the position
+          example: '2566.84'
+        unrealizedPnl:
+          type: string
+          description: Unrealized PNL relative to the mark price. Positive is profit, negative is loss.
+          example: '-900.54'
+        markPrice:
+          type: string
+          description: Current mark price
+          example: '20000.54'
+        liquidationPrice:
+          type: string
+          description: Price at which the position will be liquidated
+          example: '9000.87'
+        bankruptcyPrice:
+          type: string
+          description: Price at which bankruptcy occurs during liquidation
+          example: '6000.11'
+        maintenanceMargin:
+          type: string
+          description: Maintenance margin required for this position
+          example: '1500.22'
+        notionalValue:
+          type: string
+          description: Notional value of the position
+          example: '30000.00'
+        leverage:
+          type: string
+          description: Current effective leverage for this position
+          example: '10.0'
+        netFundingSinceNeutral:
+          type: string
+          description: Net funding payments since the position was opened
+          example: '-12.34'
+        returnOnEquity:
+          type: string
+          description: Return on equity for this position
+          example: '-0.35'
+        stopLossTriggerPrice:
+          type: string
+          description: Triggering price for stop loss order (optional)
+          example: '18000.00'
+        takeProfitTriggerPrice:
+          type: string
+          description: Triggering price for take profit order (optional)
+          example: '25000.00'
+    TransferReq:
+      type: object
+      required:
+      - from
+      - to
+      - amount
+      - symbol
+      properties:
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer pulls funds from
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer sends funds to
+        amount:
+          type: string
+          description: Amount to transfer
+          example: '100'
+        symbol:
+          type: string
+          description: The symbol to transfer
+          example: USDC
+    AccountWalletKey:
+      type: object
+      required:
+      - id
+      - wallet
+      properties:
+        id:
+          type: string
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
+          type: string
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    OrderSizes:
+      type: object
+      required:
+      - maxBidBaseSize
+      - maxAskBaseSize
+      properties:
+        maxBidBaseSize:
+          type: string
+          description: Allowed buy order size in base asset
+          example: '123.4'
+        maxAskBaseSize:
+          type: string
+          description: Allowed ask order size in base asset
+          example: '123.4'
+    Transfer:
+      type: object
+      required:
+      - id
+      - from
+      - to
+      - amount
+      - symbol
+      - time
+      - type
+      properties:
+        id:
+          type: string
+          description: ID of the transfer
+          example: '23210984785321024'
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer pulled funds from
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer sent funds to
+        amount:
+          type: string
+          description: The amount transferred
+          example: '100'
+        symbol:
+          type: string
+          description: The symbol transferred
+          example: USDC
+        time:
+          type: string
+          format: date-time
+          description: ISO8601 timestamp of when the transfer was created
+          example: '2024-01-04T16:13:34Z'
+        type:
+          type: integer
+          description: 'The type of transfer. 0 = margin transfer.
+
+            '
+          example: 0
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

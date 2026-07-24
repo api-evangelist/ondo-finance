@@ -1,0 +1,961 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Private Channels API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Private Channels
+paths:
+  /ws/ordersPerps:
+    post:
+      summary: 'Subscribe: Perps Orders'
+      operationId: subscribe_ordersPerps
+      description: 'Subscribe to the `ordersPerps` channel. Requires authentication (login first).
+
+
+        Optional `markets` to filter.'
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: ordersPerps
+      responses:
+        '200':
+          description: Channel update for `ordersPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - ordersPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+              example:
+                type: update
+                channel: ordersPerps
+                data:
+                - orderId: 197ec08e001658690721be129e7fa595
+                  side: buy
+                  price: '227.50'
+                  size: '10.00'
+                  market: AAPL-USD.P
+                  filledSize: '0.00'
+                  filledCost: '0.00'
+                  fee: '0.00'
+                  status: open
+                  createdAt: '2025-03-05T14:30:00Z'
+                  type: limit
+                  timeInForce: GTC
+  /ws/fillsPerps:
+    post:
+      summary: 'Subscribe: Perps Fills'
+      operationId: subscribe_fillsPerps
+      description: 'Subscribe to the `fillsPerps` channel. Requires authentication (login first).
+
+
+        Optional `markets` to filter.'
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: fillsPerps
+      responses:
+        '200':
+          description: Channel update for `fillsPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - fillsPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Fill'
+  /ws/positionsPerps:
+    post:
+      summary: 'Subscribe: Perps Positions'
+      operationId: subscribe_positionsPerps
+      description: Subscribe to the `positionsPerps` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: positionsPerps
+      responses:
+        '200':
+          description: Channel update for `positionsPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - positionsPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Position'
+              example:
+                type: update
+                channel: positionsPerps
+                data:
+                - market: AAPL-USD.P
+                  direction: long
+                  netQuantity: '10.00'
+                  averageEntryPrice: '225.00'
+                  usedMargin: '1125.00'
+                  unrealizedPnl: '25.00'
+                  markPrice: '227.50'
+                  liquidationPrice: '180.00'
+                  bankruptcyPrice: '170.00'
+                  maintenanceMargin: '112.50'
+                  notionalValue: '2275.00'
+                  leverage: '2.0'
+                  netFundingSinceNeutral: '-1.23'
+                  returnOnEquity: '0.022'
+  /ws/balancePerps:
+    post:
+      summary: 'Subscribe: Perps Balance'
+      operationId: subscribe_balancePerps
+      description: Subscribe to the `balancePerps` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: balancePerps
+      responses:
+        '200':
+          description: Channel update for `balancePerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - balancePerps
+                  data:
+                    $ref: '#/components/schemas/Balance'
+              example:
+                type: update
+                channel: balancePerps
+                data:
+                  walletBalance: '5000.00'
+                  realizedPnl: '250.00'
+                  unrealizedPnl: '-50.00'
+                  marginBalance: '4950.00'
+                  usedMargin: '1125.00'
+  /ws/liquidationPerps:
+    post:
+      summary: 'Subscribe: Perps Liquidation'
+      operationId: subscribe_liquidationPerps
+      description: Subscribe to the `liquidationPerps` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: liquidationPerps
+      responses:
+        '200':
+          description: Channel update for `liquidationPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - liquidationPerps
+                  data:
+                    $ref: '#/components/schemas/LiquidationEvent'
+  /ws/marginTransfersPerps:
+    post:
+      summary: 'Subscribe: Perps Margin Transfers'
+      operationId: subscribe_marginTransfersPerps
+      description: Subscribe to the `marginTransfersPerps` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: marginTransfersPerps
+      responses:
+        '200':
+          description: Channel update for `marginTransfersPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - marginTransfersPerps
+                  data:
+                    $ref: '#/components/schemas/MarginTransfer'
+  /ws/ordersSummariesPerps:
+    post:
+      summary: 'Subscribe: Perps Order Summaries'
+      operationId: subscribe_ordersSummariesPerps
+      description: Subscribe to the `ordersSummariesPerps` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: ordersSummariesPerps
+      responses:
+        '200':
+          description: Channel update for `ordersSummariesPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - ordersSummariesPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrdersSummary'
+  /ws/fundingPaymentsPerps:
+    post:
+      summary: 'Subscribe: Perps Funding Payments'
+      operationId: subscribe_fundingPaymentsPerps
+      description: Subscribe to the `fundingPaymentsPerps` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: fundingPaymentsPerps
+      responses:
+        '200':
+          description: Channel update for `fundingPaymentsPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - fundingPaymentsPerps
+                  data:
+                    $ref: '#/components/schemas/FundingPayment'
+  /ws/cancelAllOrdersAfterPerps:
+    post:
+      summary: 'Subscribe: Perps Dead Man''s Switch'
+      operationId: subscribe_cancelAllOrdersAfterPerps
+      description: 'Subscribe to the `cancelAllOrdersAfterPerps` channel. Requires authentication (login first).
+
+
+        **Required**: `timeout_seconds` (the dead man''s switch duration in seconds).'
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: cancelAllOrdersAfterPerps
+      responses:
+        '200':
+          description: Channel update for `cancelAllOrdersAfterPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - cancelAllOrdersAfterPerps
+                  data:
+                    type: object
+  /ws/deposits:
+    post:
+      summary: 'Subscribe: Deposits'
+      operationId: subscribe_deposits
+      description: Subscribe to the `deposits` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: deposits
+      responses:
+        '200':
+          description: Channel update for `deposits`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - deposits
+                  data:
+                    $ref: '#/components/schemas/Deposit'
+  /ws/withdrawals:
+    post:
+      summary: 'Subscribe: Withdrawals'
+      operationId: subscribe_withdrawals
+      description: Subscribe to the `withdrawals` channel. Requires authentication (login first).
+      tags:
+      - Private Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: withdrawals
+      responses:
+        '200':
+          description: Channel update for `withdrawals`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - withdrawals
+                  data:
+                    $ref: '#/components/schemas/Withdrawal'
+components:
+  schemas:
+    OrdersSummary:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        restingOrdersSummary:
+          type: object
+        positionSummary:
+          type: object
+        marketOrderSummary:
+          type: object
+    LiquidationEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        initiatedAt:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        status:
+          type: string
+        insuranceFundUsed:
+          type: string
+          example: '0.00'
+        adl:
+          type: boolean
+        retryCount:
+          type: integer
+        triggeringPositions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Position'
+        filledQuoteSize:
+          type: string
+        filledQuantity:
+          type: string
+        reclaimOrderMargin:
+          type: boolean
+    Position:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        direction:
+          type: string
+          enum:
+          - long
+          - short
+        netQuantity:
+          type: string
+          example: '10.00'
+        averageEntryPrice:
+          type: string
+          example: '225.00'
+        usedMargin:
+          type: string
+          example: '1125.00'
+        unrealizedPnl:
+          type: string
+          example: '25.00'
+        markPrice:
+          type: string
+          example: '227.50'
+        liquidationPrice:
+          type: string
+          example: '180.00'
+        bankruptcyPrice:
+          type: string
+          example: '170.00'
+        maintenanceMargin:
+          type: string
+          example: '112.50'
+        notionalValue:
+          type: string
+          example: '2275.00'
+        leverage:
+          type: string
+          example: '2.0'
+        netFundingSinceNeutral:
+          type: string
+          example: '-1.23'
+        stopLossTriggerPrice:
+          type: string
+        takeProfitTriggerPrice:
+          type: string
+        returnOnEquity:
+          type: string
+          example: '0.022'
+    Deposit:
+      type: object
+      properties:
+        coin:
+          type: string
+          example: USDC
+        size:
+          type: string
+          example: '1000.00'
+        status:
+          type: string
+          example: confirmed
+        txid:
+          type: string
+        fromAddress:
+          type: string
+        time:
+          type: string
+          format: date-time
+        currentConfirmations:
+          type: integer
+        requiredConfirmations:
+          type: integer
+        accountId:
+          type: string
+        chainId:
+          type: string
+        usdValue:
+          type: string
+    Order:
+      type: object
+      properties:
+        orderId:
+          type: string
+          example: 197ec08e001658690721be129e7fa595
+        clientOrderId:
+          type: string
+        parentOrderId:
+          type: string
+        side:
+          type: string
+          enum:
+          - buy
+          - sell
+        price:
+          type: string
+          example: '227.50'
+        size:
+          type: string
+          example: '10.00'
+        market:
+          type: string
+          example: AAPL-USD.P
+        filledSize:
+          type: string
+          example: '0.00'
+        lastFillSize:
+          type: string
+          example: '0.00'
+        filledCost:
+          type: string
+          example: '0.00'
+        realizedPnl:
+          type: string
+        fee:
+          type: string
+          example: '0.00'
+        feeRebate:
+          type: string
+        status:
+          type: string
+          enum:
+          - open
+          - fullyfilled
+          - canceled
+        createdAt:
+          type: string
+          format: date-time
+        filledAt:
+          type: string
+          format: date-time
+        canceledAt:
+          type: string
+          format: date-time
+        cancelReason:
+          type: string
+        type:
+          type: string
+          enum:
+          - limit
+          - market
+        timeInForce:
+          type: string
+          enum:
+          - GTC
+          - IOC
+          - FOK
+        reduceOnly:
+          type: boolean
+        liquidationId:
+          type: string
+        closePosition:
+          type: boolean
+        stopOrderType:
+          type: string
+        triggerPrice:
+          type: string
+      example:
+        orderId: 197ec08e001658690721be129e7fa595
+        side: buy
+        price: '227.50'
+        size: '10.00'
+        market: AAPL-USD.P
+        filledSize: '0.00'
+        filledCost: '0.00'
+        fee: '0.00'
+        status: open
+        createdAt: '2025-03-05T14:30:00Z'
+        type: limit
+        timeInForce: GTC
+    FundingPayment:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+        markPrice:
+          type: string
+          example: '227.50'
+        positionSize:
+          type: string
+          example: '10.00'
+        positionDirection:
+          type: string
+          enum:
+          - long
+          - short
+        rate:
+          type: string
+          example: '0.0000125'
+        payer:
+          type: string
+          enum:
+          - long
+          - short
+        amount:
+          type: string
+          example: '-0.02844'
+    WebSocketRequest:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          enum:
+          - ping
+          - login
+          - subscribe
+          - unsubscribe
+          - sendMessage
+          description: Operation type
+        channel:
+          type: string
+          description: Channel to subscribe/unsubscribe
+          enum:
+          - topOfBooksPerps
+          - depthBooksPerps
+          - tradesPerps
+          - ordersPerps
+          - fillsPerps
+          - cancelAllOrdersAfterPerps
+          - positionsPerps
+          - liquidationPerps
+          - liquidationAnnouncementsPerps
+          - marginTransfersPerps
+          - balancePerps
+          - ordersSummariesPerps
+          - fundingRatesPerps
+          - markPricesPerps
+          - fundingPaymentsPerps
+          - kLinePerps
+          - deposits
+          - withdrawals
+          - chat
+        markets:
+          type: array
+          items:
+            type: string
+          description: Filter by market(s). Required for kLine (exactly one). Optional for most channels.
+        args:
+          $ref: '#/components/schemas/LoginArgs'
+        numPastTrades:
+          type: integer
+          description: Number of historical trades to receive on subscribe (trades channels only)
+        resolution:
+          type: string
+          enum:
+          - '1'
+          - '5'
+          - '15'
+          - 1H
+          - 4H
+          - 1D
+          - 1W
+          description: Kline resolution (required for kLine channels)
+        timeout_seconds:
+          type: integer
+          description: Dead man's switch timeout (required for cancelAllOrdersAfter channels)
+        depthLevels:
+          type: string
+          description: Price grouping level for depth book (depthBooks channels only)
+        limit:
+          type: integer
+          description: Max depth levels to return; 0 for unlimited (depthBooks channels only)
+        message:
+          type: string
+          description: Chat message text (sendMessage only)
+        context:
+          type: object
+          description: Optional context for chat (market, page, etc.)
+          additionalProperties: true
+    MarginTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+        amount:
+          type: string
+          example: '1000.00'
+        symbol:
+          type: string
+          example: USDC
+        time:
+          type: string
+          format: date-time
+        type:
+          type: integer
+          description: Transfer type
+    Fill:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 70a37d8f972f2494837f9dba8364cbb4
+        orderId:
+          type: string
+          example: 197ec08e001658690721be129e7fa595
+        clientOrderId:
+          type: string
+        parentOrderID:
+          type: string
+        market:
+          type: string
+          example: AAPL-USD.P
+        price:
+          type: string
+          example: '227.50'
+        size:
+          type: string
+          example: '5.00'
+        side:
+          type: string
+          enum:
+          - buy
+          - sell
+        direction:
+          type: string
+          enum:
+          - open long
+          - open short
+          - close long
+          - close short
+          - flip long to short
+          - flip short to long
+        filledCost:
+          type: string
+          example: '1137.50'
+        fee:
+          type: string
+          example: '0.57'
+        feeRebate:
+          type: string
+        pnl:
+          type: string
+        time:
+          type: string
+          format: date-time
+        isADL:
+          type: boolean
+        adlReason:
+          type: string
+        isMaker:
+          type: boolean
+      example:
+        id: 70a37d8f972f2494837f9dba8364cbb4
+        orderId: 197ec08e001658690721be129e7fa595
+        market: AAPL-USD.P
+        price: '227.50'
+        size: '5.00'
+        side: buy
+        direction: open long
+        filledCost: '1137.50'
+        fee: '0.57'
+        time: '2025-03-05T14:30:00Z'
+        isMaker: false
+    AccountWalletKey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Account ID
+        wallet:
+          type: string
+          enum:
+          - main
+          - margin
+          description: Wallet type
+    Balance:
+      type: object
+      properties:
+        walletBalance:
+          type: string
+          example: '5000.00'
+        realizedPnl:
+          type: string
+          example: '250.00'
+        unrealizedPnl:
+          type: string
+          example: '-50.00'
+        marginBalance:
+          type: string
+          example: '4950.00'
+        usedMargin:
+          type: string
+          example: '1125.00'
+        availableMargin:
+          type: string
+          example: '3825.00'
+        withdrawableMargin:
+          type: string
+          example: '3825.00'
+        maintenanceMarginRequirement:
+          type: string
+          example: '112.50'
+        totalMaintenanceMargin:
+          type: string
+          example: '200.00'
+        marginRatio:
+          type: string
+          example: '0.04'
+        leverage:
+          type: string
+          example: '0.46'
+        underLiquidation:
+          type: boolean
+          example: false
+        totalFundingPayments:
+          type: string
+          example: '-5.67'
+        totalTradingFees:
+          type: string
+          example: '12.34'
+        totalPnL:
+          type: string
+          example: '232.00'
+        netInvested:
+          type: string
+          example: '4750.00'
+    Withdrawal:
+      type: object
+      properties:
+        coin:
+          type: string
+          example: USDC
+        size:
+          type: string
+          example: '500.00'
+        status:
+          type: string
+          example: confirmed
+        address:
+          type: string
+        withdrawal_id:
+          type: string
+        txid:
+          type: string
+        customer_withdrawal_id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        usdValue:
+          type: string
+        usdFee:
+          type: string
+        chainId:
+          type: string
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

@@ -1,0 +1,1715 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Assets API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Assets
+  description: Get Asset Price Information
+paths:
+  /v1/assets/all/prices/latest:
+    get:
+      tags:
+      - Assets
+      summary: Get Current Prices for All Supported Assets
+      description: 'This endpoint retrieves the latest prices for all supported assets. Note that the `primaryMarket` represents the on-chain token while the `underlyingMarket`
+
+        represents the off-chain collateralized stock. Assets can be sorted by price in either ascending or descending order.
+
+
+        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.
+
+
+        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAllPrices
+      parameters:
+      - name: sort
+        in: query
+        description: The sort direction for prices.
+        required: false
+        schema:
+          type: string
+          enum:
+          - desc
+          - asc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetPrice'
+              example:
+              - primaryMarket:
+                  symbol: TSLAon
+                  price: '48.516937826065743784'
+                underlyingMarket:
+                  ticker: TSLA
+                  price: '338.88'
+                timestamp: 1755888858907
+              - primaryMarket:
+                  symbol: AAPLon
+                  price: '171.383708297189751178'
+                underlyingMarket:
+                  ticker: AAPL
+                  price: '228.330909'
+                timestamp: 1755888858893
+              - '...'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: invalid symbol; must be at least 3 characters long and end with 'on'
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/{symbol}/prices/latest:
+    get:
+      tags:
+      - Assets
+      summary: Get Current Price for an Asset
+      description: 'This endpoint retrieves the latest price for a specific asset. Note that the `primaryMarket` represents the on-chain token while the `underlyingMarket`
+
+        represents the off-chain collateralized stock.
+
+
+        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.
+
+
+        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getPrice
+      parameters:
+      - name: symbol
+        in: path
+        description: The GM token symbol
+        example: AAPLon
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Price fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssetPrice'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: invalid symbol; must be at least 3 characters long and end with 'on'
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: The provided asset symbol does not exist and cannot be found.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/all/prices/latest/enhanced:
+    get:
+      tags:
+      - Assets
+      summary: Get Enhanced Prices for All Supported Assets
+      description: 'This endpoint retrieves the latest prices along with the price change and percentage change in the last 24 hours of open market for all supported assets. Assets can be sorted by price in either ascending or descending order.
+
+
+        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.
+
+
+        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAllAssetEnhancedPrices
+      parameters:
+      - name: sort
+        in: query
+        description: The sort direction for prices.
+        required: false
+        schema:
+          type: string
+          enum:
+          - desc
+          - asc
+          default: desc
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetEnhancedPrice'
+              example:
+              - symbol: NFLXon
+                price: '860.66471'
+                priceChange24h: '26.80883'
+                priceChangePct24h: '3.215043587628116264'
+                timestamp: 1769190970623
+              - symbol: QQQon
+                price: '533.707886795396811068'
+                priceChange24h: '0.175407218134272389'
+                priceChangePct24h: '0.032876577312266724'
+                timestamp: 1769190970623
+              - '...'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: invalid symbol; must be at least 3 characters long and end with 'on'
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/{symbol}/prices/ohlc:
+    get:
+      tags:
+      - Assets
+      summary: Get OHLC (Open, High, Low, Close) Data for an Asset
+      operationId: getOHLCPrices
+      description: 'This endpoint retrieves historical Open, High, Low, Close (OHLC) price data for both the primary market (on-chain token) and underlying market (off-chain stock) for a specified asset.
+
+
+        This endpoint returns historical candles. To receive live, minute-bucketed OHLC updates as they occur, use the [OHLC Streaming](https://docs.ondo.finance/api-reference/ohlc-streaming) endpoint.
+
+
+        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+
+
+        The `interval` parameter determines the bucket size for data points, while the `range` parameter determines how far back historically to look for price data. See below for valid interval/range pairs.
+
+
+        Valid `interval`/`range` pairs:
+
+        - 1min/1day *(rolling 24-hour period of open market data)*
+
+        - 5min/1day
+
+        - 15min/1day
+
+        - 1hour/1month
+
+        - 4hour/1month
+
+        - 12hour/3month
+
+        - 1day/3month
+
+        - 1day/6month
+
+        - 1day/1year
+
+        - 1day/all *(all historical data)*
+
+
+        **Note on `range=1day` and off-hours-tradable assets:** For assets that are tradable during the off-hours session, the `1day` range returns a plain rolling 24-hour calendar window so weekend and off-hours candles are included. For all other assets, the `1day` range returns a market-hours-aware rolling 24-hour window over open market data.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      parameters:
+      - name: symbol
+        in: path
+        description: The GM token symbol
+        required: true
+        example: AAPLon
+        schema:
+          type: string
+      - name: interval
+        in: query
+        description: The time interval between data points.
+        required: true
+        schema:
+          $ref: '#/components/schemas/IntervalEnum'
+      - name: range
+        in: query
+        description: The lookback range for historical data.
+        required: true
+        schema:
+          $ref: '#/components/schemas/RangeEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OHLCResponse'
+              example:
+                interval: 1day
+                range: 3month
+                primaryMarket:
+                  symbol: BABAon
+                  data:
+                  - timestamp: 1750723200000
+                    open: '117.0544'
+                    high: '117.3426'
+                    low: '117.0544'
+                    close: '117.3426'
+                  - timestamp: 1750809600000
+                    open: '117.87'
+                    high: '117.87'
+                    low: '114.3677'
+                    close: '114.8076'
+                  - '...'
+                underlyingMarket:
+                  ticker: BABA
+                  data:
+                  - timestamp: 1750723200000
+                    open: '117.0544'
+                    high: '117.3426'
+                    low: '117.0544'
+                    close: '117.3426'
+                  - timestamp: 1750809600000
+                    open: '117.87'
+                    high: '117.87'
+                    low: '114.3677'
+                    close: '114.8076'
+                  - '...'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: One of the request parameters is invalid.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: The provided asset symbol does not exist and cannot be found.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/all/market:
+    get:
+      tags:
+      - Assets
+      summary: Get Market Data for All Supported Assets
+      description: 'This endpoint retrieves comprehensive market data for all supported assets. Each asset includes both primary market (on-chain token) and underlying market (off-chain stock) information.
+
+
+        Primary market data includes current price, 24-hour price changes, 24-hour historical chart data, and total token holders. Underlying market data provides stock fundamentals like company name, 52-week highs/lows, trading volume, shares outstanding, and market capitalization.
+
+
+        This endpoint is useful for dashboard overviews and market analysis across the entire asset portfolio.
+
+
+        The "Tradable Sessions" parameter indicates the tradability for the asset; for example, some assets are available in the regular and extended stock sessions, but not overnight. Learn more about sessions at [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).
+
+
+        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAllMarkets
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Market'
+              example:
+              - primaryMarket:
+                  symbol: ADBEon
+                  price: '361.986667'
+                  priceChange24h: '8.76'
+                  priceChangePct24h: '2.479993958100564361'
+                  priceHistory24h:
+                  - timestamp: 1755802800000
+                    price: '353.226667'
+                  - timestamp: 1755803700000
+                    price: '353.216667'
+                  - '...'
+                  totalHolders: 7
+                  sharesMultiplier: '1'
+                underlyingMarket:
+                  ticker: ADBE
+                  name: Adobe Inc.
+                  price: '361.986667'
+                  priceHigh52w: '587.75'
+                  priceLow52w: '330.04'
+                  volume: '1851321'
+                  averageVolume: '3610882'
+                  sharesOutstanding: '424200000'
+                  marketCap: '149925006000'
+                constituentTokens: []
+                timestamp: 1755890061815
+              - primaryMarket:
+                  symbol: APPon
+                  price: '440.094'
+                  priceChange24h: '20.824'
+                  priceChangePct24h: '4.966727884179645574'
+                  priceHistory24h:
+                  - timestamp: 1755802800000
+                    price: '419.27'
+                  - timestamp: 1755803700000
+                    price: '418.55'
+                  - '...'
+                  totalHolders: 7
+                  sharesMultiplier: '1'
+                  tradableSessions:
+                  - premarket
+                  - regular
+                  - postmarket
+                  - overnight
+                underlyingMarket:
+                  ticker: APP
+                  name: Applovin Corporation Class A Common Stock
+                  price: '440.094'
+                  priceHigh52w: '525.15'
+                  priceLow52w: '82.51'
+                  volume: '5220144'
+                  averageVolume: '6480111'
+                  sharesOutstanding: '307636373'
+                  marketCap: '139487499535'
+                constituentTokens: []
+                timestamp: 1755890062869
+              - '...'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/{symbol}/market:
+    get:
+      tags:
+      - Assets
+      summary: Get Market Data for an Asset
+      description: 'This endpoint retrieves comprehensive market data for a specific asset, containing both primary market (on-chain token) and underlying market (off-chain stock) information.
+
+
+        Primary market data includes current price, 24-hour price changes, 24-hour historical chart data, and total token holders. Underlying market data provides stock fundamentals like company name, 52-week highs/lows, trading volume, shares outstanding, and market capitalization.
+
+
+        This endpoint is useful for dashboard overviews and market analysis across the entire asset portfolio.
+
+
+        The "Tradable Sessions" parameter indicates the tradability for the asset; for example, some assets are available in the regular and extended stock sessions, but not overnight. Learn more about sessions at [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).
+
+
+        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getMarket
+      parameters:
+      - name: symbol
+        in: path
+        required: true
+        description: The GM token symbol
+        example: AAPLon
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Market'
+              example:
+                primaryMarket:
+                  symbol: ADBEon
+                  price: '361.986667'
+                  priceChange24h: '8.76'
+                  priceChangePct24h: '2.479993958100564361'
+                  priceHistory24h:
+                  - timestamp: 1755802800000
+                    price: '353.226667'
+                  - timestamp: 1755803700000
+                    price: '353.216667'
+                  - '...'
+                  totalHolders: 7
+                  sharesMultiplier: '1'
+                  tradableSessions:
+                  - premarket
+                  - regular
+                  - postmarket
+                  - overnight
+                underlyingMarket:
+                  ticker: ADBE
+                  name: Adobe Inc.
+                  price: '361.986667'
+                  priceHigh52w: '587.75'
+                  priceLow52w: '330.04'
+                  volume: '1851321'
+                  averageVolume: '3610882'
+                  sharesOutstanding: '424200000'
+                  marketCap: '149925006000'
+                constituentTokens: []
+                timestamp: 1755890061815
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: invalid symbol; must be at least 3 characters long and end with 'on'
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: The provided asset symbol does not exist and cannot be found.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/{symbol}/dividends:
+    get:
+      tags:
+      - Assets
+      summary: Get Dividend Information for an Asset
+      description: 'This endpoint retrieves the latest dividend information for a specific asset, including dividend yield, payment history, and upcoming payment dates.
+
+
+        **Dividend Yield**
+
+
+        The dividend yield is calculated based on the past year''s worth of dividend payments and the current stock price.
+
+
+        **Payout Frequencies**
+
+
+        Below outline the day ranges for each payout frequency:
+
+
+        | Frequency         | Average Days Between Dividends |
+
+        |-------------------|:------------------------------:|
+
+        | **none**          | N/A                            |
+
+        | **monthly**       | 25-35 days                     |
+
+        | **quarterly**     | 80-100 days                    |
+
+        | **semi-annually** | 160-200 days                   |
+
+        | **yearly**        | 345-385 days                   |
+
+        | **irregular**     | Outside defined ranges         |
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getLatestDividend
+      parameters:
+      - name: symbol
+        in: path
+        description: The GM token symbol
+        example: AAPLon
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DividendInfo'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: invalid symbol; must be at least 3 characters long and end with 'on'
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: The provided asset symbol does not exist and cannot be found.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/all/addresses:
+    get:
+      tags:
+      - Assets
+      summary: Get All Contract Addresses Across Networks
+      description: 'This endpoint retrieves all contract addresses for all supported assets across different blockchain networks.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAllAssetAddresses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SymbolAssetAddresses'
+              example:
+              - symbol: AAPLon
+                addresses:
+                - networkChainId: bsc-56
+                  address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
+                  decimals: 18
+                - networkChainId: ethereum-1
+                  address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+                  decimals: 18
+              - symbol: ABNBon
+                addresses:
+                - networkChainId: bsc-56
+                  address: '0xef80743f78d98fc2b47a2253b293152ce8b879ba'
+                  decimals: 18
+                - networkChainId: ethereum-1
+                  address: '0xb035c3d5083bdc80074f380aebc9fcb68aba0a28'
+                  decimals: 18
+              - '...'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/{symbol}/addresses:
+    get:
+      tags:
+      - Assets
+      summary: Get Contract Addresses for an Asset
+      description: 'This endpoint retrieves all contract addresses for a specific asset across different blockchain networks.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAssetAddresses
+      parameters:
+      - name: symbol
+        in: path
+        description: The GM token symbol
+        example: AAPLon
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AssetAddress'
+              example:
+                symbol: AAPLon
+                addresses:
+                - networkChainId: bsc-56
+                  address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
+                  decimals: 18
+                - networkChainId: ethereum-1
+                  address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+                  decimals: 18
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: invalid symbol; must be at least 3 characters long and end with 'on'
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: The provided asset symbol does not exist and cannot be found.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/all/metadata:
+    get:
+      tags:
+      - Assets
+      summary: Get Metadata for All Supported Assets
+      description: 'Returns all metadata for all symbols including identifiers, addresses, and classification tags.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAllAssetMetadata
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MetadataEntry'
+              example:
+              - symbol: AAPLon
+                ticker: AAPL
+                coingeckoId: apple-ondo-tokenized-stock
+                coinmarketCapId: '38037'
+                addresses:
+                - networkChainId: bsc-56
+                  address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
+                  decimals: 18
+                - networkChainId: ethereum-1
+                  address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+                  decimals: 18
+                tags:
+                  assetClass: Equities
+                  instrumentType: Stock
+              - symbol: ABNBon
+                ticker: ABNB
+                coingeckoId: airbnb-ondo-tokenized-stock
+                coinmarketCapId: '38044'
+                addresses:
+                - networkChainId: bsc-56
+                  address: '0xef80743f78d98fc2b47a2253b293152ce8b879ba'
+                  decimals: 18
+                - networkChainId: ethereum-1
+                  address: '0xb035c3d5083bdc80074f380aebc9fcb68aba0a28'
+                  decimals: 18
+                tags:
+                  assetClass: Equities
+                  instrumentType: Stock
+              - '...'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/assets/{symbol}/shares-multiplier:
+    get:
+      tags:
+      - Assets
+      summary: Get Shares Multiplier History for an Asset
+      operationId: getSharesMultiplier
+      description: 'This endpoint retrieves the shares multiplier history for a specific asset. Note that some asset events do not result in the shares multiplier value changing. This endpoint will show the earliest timestamp for each value change.
+
+
+        The `range` parameter determines how far back historically to look for shares multiplier data. See below for valid range values.
+
+
+        Valid `range` values:
+
+        - 1day
+
+        - 1month
+
+        - 3month
+
+        - 6month
+
+        - 1year
+
+        - all *(all historical data)*
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      parameters:
+      - name: symbol
+        in: path
+        description: The GM token symbol
+        required: true
+        example: AAPLon
+        schema:
+          type: string
+      - name: range
+        in: query
+        description: The lookback range for historical data.
+        required: true
+        schema:
+          $ref: '#/components/schemas/RangeEnum'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SharesMultiplierResponse'
+              example:
+                history:
+                - sharesMultiplier: '0.481891643381832405'
+                  changeTimestamp: 1762736520093
+                - sharesMultiplier: '0.481566453805576042'
+                  changeTimestamp: 1754870400044
+                - sharesMultiplier: '0.481185641420460013'
+                  changeTimestamp: 1753992000000
+                - '...'
+                timestamp: 1770161184102
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: One of the request parameters is invalid.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '404':
+          description: The provided asset symbol does not exist and cannot be found. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: ASSET_NOT_FOUND
+                    message: The provided asset symbol does not exist and cannot be found.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#asset_not_found
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+components:
+  schemas:
+    RangeEnum:
+      type: string
+      description: The look back range for historical data. (Note that '1day' will return a rolling 24-hour period of data and 'all' will return all historical data.)
+      enum:
+      - 1day
+      - 1month
+      - 3month
+      - 6month
+      - 1year
+      - all
+    OHLCDataPoint:
+      type: object
+      properties:
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data point was recorded.
+          example: 1746655938000
+        open:
+          type: string
+          description: The opening price for the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '10.000000000000000000'
+        high:
+          type: string
+          description: The highest price during the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '12.500000000000000000'
+        low:
+          type: string
+          description: The lowest price during the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '8.500000000000000000'
+        close:
+          type: string
+          description: The closing price for the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '9.000000000000000000'
+      required:
+      - timestamp
+      - open
+      - high
+      - low
+      - close
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    SharesMultiplierResponse:
+      type: object
+      properties:
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/SharesMultiplierDataPoint'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data point was recorded.
+          example: 1746655938000
+      required:
+      - history
+      - timestamp
+    MetadataEntry:
+      properties:
+        symbol:
+          type: string
+          example: AAPLon
+        ticker:
+          type: string
+          example: AAPL
+        coingeckoId:
+          type: string
+          nullable: true
+          example: apple-ondo-tokenized-stock
+        addresses:
+          type: array
+          description: Contract addresses for various chains.
+          items:
+            $ref: '#/components/schemas/AssetAddress'
+          example:
+          - networkChainId: bsc-56
+            address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
+            decimals: 18
+          - networkChainId: ethereum-1
+            address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+            decimals: 18
+        tags:
+          type: object
+          properties:
+            assetClass:
+              type: string
+              description: High-level category of the asset
+              example: equities
+            instrumentType:
+              type: string
+              description: Instrument type within the asset class
+              example: stock
+            sectorIndustry:
+              type: array
+              items:
+                type: string
+              description: Sector and industry classifications for the asset.
+              example:
+              - Technology
+              - Consumer Electronics
+            typeFactorRiskProfile:
+              type: array
+              items:
+                type: string
+              description: Type, factor, and risk profile classifications.
+              example:
+              - Growth
+              - Large Cap
+            regionMarketExposure:
+              type: array
+              items:
+                type: string
+              description: Region and market exposure classifications.
+              example:
+              - US
+              - Global
+          required:
+          - assetClass
+          - instrumentType
+        coinmarketcapId:
+          type: string
+          nullable: true
+          example: '38037'
+      required:
+      - symbol
+      - ticker
+      - tags
+    Market:
+      type: object
+      properties:
+        primaryMarket:
+          type: object
+          properties:
+            symbol:
+              type: string
+              description: The GM symbol of the asset.
+              example: AAPLon
+            price:
+              type: string
+              description: The current price of the asset, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '12.345'
+            priceChange24h:
+              type: string
+              description: The price change in the last 24 hours of open market.
+              example: '0.123'
+            priceChangePct24h:
+              type: string
+              description: The percentage change in price over the last 24 hours of open market.
+              example: '5.45'
+            priceHistory24h:
+              type: array
+              description: Historical price data for the last 24 hours of open market.
+              items:
+                type: object
+                properties:
+                  timestamp:
+                    type: number
+                    description: The Unix timestamp in milliseconds, representing the time of the price data point.
+                    example: 1746655938000
+                  price:
+                    type: string
+                    description: The closing price of the token for the interval.
+                    example: '12.345678901234567890'
+            totalHolders:
+              type: number
+              description: The total number of holders for the asset
+              example: 1234
+            sharesMultiplier:
+              type: string
+              description: The number of shares each token is equivalent to, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '1.25'
+            tradableSessions:
+              type: array
+              items:
+                type: string
+                enum:
+                - premarket
+                - regular
+                - postmarket
+                - overnight
+                - offhours
+              description: The trading sessions during which this asset is available for trading. Includes `offhours` for assets that opt in to off-hours trading (weekends, the window after the Friday postmarket close, or eligible holidays). `offhours` is only included when off-hours trading is enabled.
+              example:
+              - premarket
+              - regular
+              - postmarket
+              - overnight
+              - offhours
+        underlyingMarket:
+          type: object
+          nullable: true
+          description: The off-chain stock that backs the token. This is `null` for tokens that represent several underlying assets rather than a single stock; for those, see `constituentTokens`. For a token backed by a single stock, this object is populated as shown.
+          properties:
+            ticker:
+              type: string
+              description: The stock ticker associated with the asset.
+              example: AAPL
+            name:
+              type: string
+              description: The company's name.
+              example: Apple Inc
+            price:
+              type: string
+              description: The current price of the underlying stock, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '195.34'
+            priceHigh52w:
+              type: string
+              description: The highest trading price in the past 52 weeks, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '259.47'
+            priceLow52w:
+              type: string
+              description: The lowest trading price in the past 52 weeks, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '168.99'
+            volume:
+              type: string
+              description: The total trading volume in the past 24 hours, represented as a string-encoded integer.
+              example: '43020691'
+            averageVolume:
+              type: string
+              description: The average trading volume over the past year, represented as a string-encoded integer.
+              example: '38390632'
+            sharesOutstanding:
+              type: string
+              description: The total number of shares outstanding, represented as a string-encoded integer.
+              example: '14935800000'
+            marketCap:
+              type: string
+              description: The total market capitalization in USD, represented as a string-encoded integer.
+              example: '2934137946000'
+        constituentTokens:
+          type: array
+          items:
+            type: string
+          description: GM token symbols of the underlying assets that make up this token, for tokens that represent several underlying assets rather than a single stock. Each symbol can be looked up individually via the market endpoints. For a token backed by a single stock this is an empty array (`[]`), and `underlyingMarket` is populated instead.
+          example:
+          - AAPLon
+          - MSFTon
+          - NVDAon
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data was last updated.
+          example: 1746655938000
+      required:
+      - primaryMarket
+      - underlyingMarket
+      - constituentTokens
+      - timestamp
+    AssetPrice:
+      type: object
+      properties:
+        primaryMarket:
+          type: object
+          properties:
+            symbol:
+              type: string
+              description: The GM symbol of the asset.
+              example: AAPLon
+            price:
+              type: string
+              description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '12.345'
+        underlyingMarket:
+          type: object
+          properties:
+            ticker:
+              type: string
+              description: The stock ticker associated with the asset.
+              example: AAPL
+            price:
+              type: string
+              description: The stock price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '12.345'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds, representing the time of the price data retrieval.
+          example: 1746655938
+      required:
+      - primaryMarket
+      - underlyingMarket
+      - timestamp
+    AssetAddress:
+      type: object
+      properties:
+        networkChainId:
+          $ref: '#/components/schemas/GMChains'
+        address:
+          type: string
+          description: The contract address on the specified chain.
+          example: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+        decimals:
+          type: integer
+          format: int64
+          description: The number of decimals places for the asset.
+          example: 18
+      required:
+      - networkChainId
+      - address
+      - decimals
+    DividendInfo:
+      type: object
+      properties:
+        ticker:
+          type: string
+          description: The stock ticker associated with the asset.
+          example: AAPL
+        dividendYield:
+          type: string
+          description: The dividend yield, represented as a string-encoded decimal with up to 18 digits after the decimal point. ("0.05" is the equivalent of 5%)
+          example: '0.0245'
+        payoutFrequency:
+          type: string
+          description: The frequency at which dividends are paid to shareholders.
+          enum:
+          - monthly
+          - quarterly
+          - semi-annually
+          - annually
+          - irregular
+          - none
+          example: quarterly
+        lastCashAmount:
+          type: string
+          description: The last dividend payment amount per share, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '1.54'
+        lastPaymentDate:
+          type: string
+          format: date
+          description: The date of last dividend payment in YYYY-MM-DD format.
+          example: '2025-02-15'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data was last updated.
+          example: 1746655938000
+      required:
+      - ticker
+      - dividendYield
+      - payoutFrequency
+      - lastCashAmount
+      - lastPaymentDate
+      - timestamp
+    AssetEnhancedPrice:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM symbol of the asset.
+          example: NFLXon
+        price:
+          type: string
+          description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '836.26176'
+        priceChange24h:
+          type: string
+          description: The price change in the last 24 hours of open market.
+          example: '-19.22815'
+        priceChangePct24h:
+          type: string
+          description: The percentage change in price over the last 24 hours of open market.
+          example: '-2.247618560457364132'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data was last updated.
+          example: 1769125830623
+      required:
+      - symbol
+      - price
+      - priceChange24h
+      - priceChangePct24h
+      - timestamp
+    GMChains:
+      type: string
+      description: The chain's identifier including the chain name and chain id.
+      enum:
+      - ethereum-1
+      - bsc-56
+      - solana-900
+    OHLCResponse:
+      type: object
+      properties:
+        interval:
+          $ref: '#/components/schemas/IntervalEnum'
+        range:
+          $ref: '#/components/schemas/RangeEnum'
+        primaryMarket:
+          type: object
+          properties:
+            symbol:
+              type: string
+              description: The GM symbol associated with the asset.
+              example: AAPLon
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OHLCDataPoint'
+        underlyingMarket:
+          type: object
+          properties:
+            ticker:
+              type: string
+              description: The stock ticker associated with the asset.
+              example: AAPL
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OHLCDataPoint'
+      required:
+      - interval
+      - primaryMarket
+      - underlyingMarket
+      - range
+    SymbolAssetAddresses:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM symbol associated with the asset.
+          example: AAPLon
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetAddress'
+      required:
+      - symbol
+      - addresses
+    IntervalEnum:
+      type: string
+      description: The time interval between data points.
+      enum:
+      - 1min
+      - 5min
+      - 15min
+      - 1hour
+      - 4hour
+      - 12hour
+      - 1day
+    SharesMultiplierDataPoint:
+      type: object
+      properties:
+        sharesMultiplier:
+          type: string
+          description: The number of shares each token is equivalent to, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '1.25'
+        changeTimestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when this `sharesMultiplier` value was first set.
+          example: 1746655938000
+      required:
+      - sharesMultiplier
+      - changeTimestamp
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

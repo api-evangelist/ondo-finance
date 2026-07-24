@@ -1,0 +1,862 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account TWAP Orders API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: TWAP Orders
+paths:
+  /v1/perps/twap/order:
+    post:
+      summary: Create TWAP Order
+      description: Creates a new TWAP (Time-Weighted Average Price) order. The order is split into child orders placed at regular intervals over the specified running time. Running time must be between 5 minutes and 24 hours and a multiple of the frequency. The number of child orders (runningTime / frequency) must be between 2 and 200.
+      operationId: createTWAPOrder
+      tags:
+      - TWAP Orders
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTWAPOrderReq'
+      responses:
+        '200':
+          description: Created TWAP order
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/TWAPOrderApiResp'
+              example:
+                success: true
+                result:
+                  twapId: twap_70a37d8f972f2494837f9dba8364cbb4
+                  market: AAPL-USD.P
+                  side: buy
+                  startTime: '2025-03-05T14:00:00Z'
+                  runningTime: 3600
+                  frequency: 60
+                  avgFilledPrice: '0.00'
+                  filledSize: '0.00'
+                  totalSize: '20.00'
+                  totalFees: '0.00'
+                  orderStatus: running
+                  reduceOnly: false
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - feature_disabled
+                    - invalid_market
+                    - invalid_twap_order_request
+                    - too_many_twap_orders
+              example:
+                success: false
+                error: Description of the error
+                error_code: feature_disabled
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/twap/order/{orderID}:
+    get:
+      summary: Get TWAP Order by ID
+      description: Returns a single TWAP order by its ID.
+      operationId: getTWAPOrderByID
+      tags:
+      - TWAP Orders
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: orderID
+        in: path
+        description: TWAP order ID (prefixed with `twap_`)
+        required: true
+        schema:
+          type: string
+          example: twap_70a37d8f972f2494837f9dba8364cbb4
+      responses:
+        '200':
+          description: TWAP order
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/TWAPOrderApiResp'
+              example:
+                success: true
+                result:
+                  twapId: twap_70a37d8f972f2494837f9dba8364cbb4
+                  market: AAPL-USD.P
+                  side: buy
+                  startTime: '2025-03-05T14:00:00Z'
+                  runningTime: 3600
+                  frequency: 60
+                  avgFilledPrice: '227.42'
+                  filledSize: '10.00'
+                  totalSize: '20.00'
+                  totalFees: '1.14'
+                  orderStatus: running
+                  reduceOnly: false
+                  successfulOrders: 30
+                  failedOrders: 0
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - feature_disabled
+                    - invalid_twap_order_id
+                    - missing_twap_order_id
+                    - twap_order_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: feature_disabled
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Cancel TWAP Order
+      description: Cancels a running TWAP order. Child orders already placed are not affected.
+      operationId: cancelTWAPOrder
+      tags:
+      - TWAP Orders
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: orderID
+        in: path
+        description: TWAP order ID (prefixed with `twap_`)
+        required: true
+        schema:
+          type: string
+          example: twap_70a37d8f972f2494837f9dba8364cbb4
+      responses:
+        '200':
+          description: TWAP order cancelled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                success: true
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - feature_disabled
+                    - invalid_twap_order_id
+                    - missing_twap_order_id
+                    - twap_order_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: feature_disabled
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/twap/order/{orderID}/fills:
+    get:
+      summary: Get TWAP Order Fills
+      description: Returns all fills for all child orders of a TWAP order.
+      operationId: getTWAPOrderFills
+      tags:
+      - TWAP Orders
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: orderID
+        in: path
+        description: TWAP order ID (prefixed with `twap_`)
+        required: true
+        schema:
+          type: string
+          example: twap_70a37d8f972f2494837f9dba8364cbb4
+      responses:
+        '200':
+          description: List of fills for all child orders
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ApiFill'
+              example:
+                success: true
+                result:
+                - id: 70a37d8f972f2494837f9dba8364cbb4
+                  orderId: child_abc123
+                  parentOrderID: twap_70a37d8f972f2494837f9dba8364cbb4
+                  market: AAPL-USD.P
+                  price: '227.50'
+                  size: '0.33'
+                  side: buy
+                  filledCost: '75.08'
+                  fee: '0.04'
+                  time: '2025-03-05T14:01:00Z'
+                  isMaker: false
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - feature_disabled
+                    - invalid_twap_order_id
+                    - missing_twap_order_id
+                    - twap_order_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: feature_disabled
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/twap/orders/running:
+    get:
+      summary: Get Running TWAP Orders
+      description: Returns all currently running TWAP orders for the authenticated account. Optionally filter by market.
+      operationId: getTWAPRunningOrders
+      tags:
+      - TWAP Orders
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: market
+        in: query
+        description: Filter by market
+        required: false
+        schema:
+          type: string
+          example: AAPL-USD.P
+      responses:
+        '200':
+          description: Array of running TWAP orders
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/TWAPOrderApiResp'
+              example:
+                success: true
+                result:
+                - twapId: twap_70a37d8f972f2494837f9dba8364cbb4
+                  market: AAPL-USD.P
+                  side: buy
+                  startTime: '2025-03-05T14:00:00Z'
+                  runningTime: 3600
+                  frequency: 60
+                  avgFilledPrice: '227.42'
+                  filledSize: '10.00'
+                  totalSize: '20.00'
+                  totalFees: '1.14'
+                  orderStatus: running
+                  reduceOnly: false
+                  successfulOrders: 30
+                  failedOrders: 0
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - feature_disabled
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/twap/orders/history:
+    get:
+      summary: Get TWAP Order History
+      description: Returns a paginated list of completed or cancelled TWAP orders for the authenticated account.
+      operationId: getTWAPOrderHistory
+      tags:
+      - TWAP Orders
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: market
+        in: query
+        description: Filter by market
+        required: false
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 100
+      - name: cursor
+        in: query
+        description: Pagination cursor
+        required: false
+        schema:
+          type: string
+          example: NQ5WWO3THN3Q====
+      - name: startTime
+        in: query
+        description: Start time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1684814400000
+      - name: endTime
+        in: query
+        description: End time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1672549200000
+      responses:
+        '200':
+          description: Paginated list of TWAP orders
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/TWAPOrderApiResp'
+                    pageInfo:
+                      $ref: '#/components/schemas/PageInfo'
+              example:
+                success: true
+                result:
+                - twapId: twap_70a37d8f972f2494837f9dba8364cbb4
+                  market: AAPL-USD.P
+                  side: buy
+                  startTime: '2025-03-05T14:00:00Z'
+                  finishTime: '2025-03-05T15:00:00Z'
+                  runningTime: 3600
+                  frequency: 60
+                  avgFilledPrice: '227.42'
+                  filledSize: '20.00'
+                  totalSize: '20.00'
+                  totalFees: '2.27'
+                  orderStatus: completed
+                  reduceOnly: false
+                  successfulOrders: 60
+                  failedOrders: 0
+                pageInfo:
+                  nextCursor: NQ5WWO3THN3Q====
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - failed_to_parse_timestamp
+                    - feature_disabled
+                    - invalid_cursor
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  schemas:
+    TWAPOrderApiResp:
+      type: object
+      required:
+      - twapId
+      - market
+      - side
+      - startTime
+      - runningTime
+      - frequency
+      - avgFilledPrice
+      - filledSize
+      - totalSize
+      - totalFees
+      - orderStatus
+      - reduceOnly
+      properties:
+        twapId:
+          type: string
+          description: TWAP order ID
+          example: twap_70a37d8f972f2494837f9dba8364cbb4
+        market:
+          type: string
+          description: Perps market
+          example: AAPL-USD.P
+        side:
+          type: string
+          description: Order side
+          enum:
+          - buy
+          - sell
+          example: buy
+        startTime:
+          type: string
+          format: date-time
+          description: Time the TWAP order was created
+          example: '2024-01-04T16:00:00Z'
+        finishTime:
+          type: string
+          format: date-time
+          description: Time the TWAP order completed or was cancelled (omitted if still running)
+          example: '2024-01-04T17:00:00Z'
+        runningTime:
+          type: integer
+          description: Total duration of the TWAP order in seconds
+          example: 3600
+        frequency:
+          type: integer
+          description: Interval between child orders in seconds
+          example: 60
+        avgFilledPrice:
+          type: string
+          description: Volume-weighted average fill price across all child orders
+          example: '150.25'
+        filledSize:
+          type: string
+          description: Total base size filled across all child orders
+          example: '10.00'
+        totalSize:
+          type: string
+          description: Total target base size of the TWAP order
+          example: '20.30'
+        totalFees:
+          type: string
+          description: Total fees paid across all child orders
+          example: '0.152'
+        orderStatus:
+          type: string
+          description: Status of the TWAP order
+          example: running
+        reduceOnly:
+          type: boolean
+          description: Whether child orders are reduce-only
+          example: false
+        maxPrice:
+          type: string
+          description: Maximum allowed price for child orders (omitted if not set)
+          example: '160.00'
+        minPrice:
+          type: string
+          description: Minimum allowed price for child orders (omitted if not set)
+          example: '140.00'
+        successfulOrders:
+          type: integer
+          description: Number of successfully placed child orders (omitted if zero)
+          example: 30
+        failedOrders:
+          type: integer
+          description: Number of failed child order placements (omitted if zero)
+          example: 0
+        twapCancelReason:
+          type: string
+          description: Reason the TWAP order was cancelled (only set if cancelled)
+          example: ''
+        lastChildOrderError:
+          type: string
+          description: Error code of the last failed child order (only set for running orders, never for historical)
+          example: ''
+    CreateTWAPOrderReq:
+      type: object
+      required:
+      - market
+      - side
+      - size
+      - runningTime
+      - frequency
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        side:
+          type: string
+          description: Order side
+          enum:
+          - buy
+          - sell
+          example: buy
+        size:
+          type: string
+          description: Total order size in base currency to execute over the TWAP duration
+          example: '20.30'
+        runningTime:
+          type: integer
+          description: Total duration of the TWAP order in seconds. Must be between 300 (5 minutes) and 86400 (24 hours) and a multiple of `frequency`.
+          example: 3600
+        frequency:
+          type: integer
+          description: Interval between child orders in seconds. runningTime / frequency gives the number of child orders, which must be between 2 and 200.
+          example: 60
+        reduceOnly:
+          type: boolean
+          description: If true, child orders are reduce-only
+          example: false
+        maxPrice:
+          type: string
+          description: Maximum allowed price for child orders. Child orders will not be placed above this price.
+          example: '160.00'
+        minPrice:
+          type: string
+          description: Minimum allowed price for child orders. Child orders will not be placed below this price.
+          example: '140.00'
+    ApiFill:
+      type: object
+      required:
+      - id
+      - orderId
+      - market
+      - price
+      - size
+      - side
+      - filledCost
+      - fee
+      - time
+      - isMaker
+      properties:
+        id:
+          type: string
+          description: Fill ID
+          example: 70a37d8f972f2494837f9dba8364cbb4
+        orderId:
+          type: string
+          description: Order ID this fill belongs to
+          example: 197ec08e001658690721be129e7fa595
+        clientOrderId:
+          type: string
+          description: Client order ID (if set on the order)
+          example: order123
+        parentOrderID:
+          type: string
+          description: Parent order ID (e.g. for TWAP child orders)
+          example: ''
+        market:
+          type: string
+          description: Trading market
+          example: AAPL-USD.P
+        price:
+          type: string
+          description: Fill price
+          example: '1.55'
+        size:
+          type: string
+          description: Fill quantity in base currency
+          example: '5.403'
+        side:
+          type: string
+          description: buy or sell
+          enum:
+          - buy
+          - sell
+          example: buy
+        direction:
+          type: string
+          description: 'Trade direction for perps fills. One of: "open long", "open short", "close long", "close short", "flip long to short", "flip short to long"
+
+            '
+          example: openLong
+          enum:
+          - openLong
+          - openShort
+          - closeLong
+          - closeShort
+          - flipLongToShort
+          - flipShortToLong
+        filledCost:
+          type: string
+          description: Total cost of the fill in quote currency
+          example: '8.37465'
+        fee:
+          type: string
+          description: Fees incurred on this fill
+          example: '0.0837'
+        feeRebate:
+          type: string
+          description: Fee rebate earned on this fill (perps only)
+          example: '0.0042'
+        pnl:
+          type: string
+          description: Realized PNL for this fill (perps only)
+          example: '1.2345'
+        time:
+          type: string
+          format: date-time
+          description: Time the fill occurred
+          example: '2022-06-16T12:35:11.123456Z'
+        isMaker:
+          type: boolean
+          description: True if this was a maker (resting) fill
+          example: false
+        isADL:
+          type: boolean
+          description: True if this was an auto-deleveraging fill (perps only)
+          example: false
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

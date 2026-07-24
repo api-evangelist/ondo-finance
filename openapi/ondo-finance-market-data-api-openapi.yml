@@ -1,0 +1,1002 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Market Data API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Market Data
+paths:
+  /v1/perps/trades:
+    get:
+      summary: Get Trades
+      description: Returns a paginated list of public trades for a market.
+      operationId: getTrades
+      tags:
+      - Market Data
+      parameters:
+      - name: market
+        in: query
+        description: Trading market to query
+        required: true
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 100
+      - name: cursor
+        in: query
+        description: Pagination cursor
+        required: false
+        schema:
+          type: string
+          example: NQ5WWO3THN3Q====
+      responses:
+        '200':
+          description: Paginated list of trades, most recent first
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ApiTrade'
+                    pageInfo:
+                      $ref: '#/components/schemas/PageInfo'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  price: '227.50'
+                  size: '5.00'
+                  cost: '1137.50'
+                  aggressor_side: buy
+                  time: '2025-03-05T14:30:00Z'
+                  id: 70a37d8f972f2494837f9dba8364cbb4
+                pageInfo:
+                  nextCursor: NQ5WWO3THN3Q====
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - failed_to_parse_timestamp
+                    - invalid_cursor
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/depth:
+    get:
+      summary: Get Order Book Depth
+      description: Returns the current order book depth snapshot for a market.
+      operationId: getDepth
+      tags:
+      - Market Data
+      parameters:
+      - name: market
+        in: query
+        description: Trading market to query
+        required: true
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: depth
+        in: query
+        description: Number of price levels to return per side. Defaults to 10.
+        required: false
+        schema:
+          type: integer
+          example: 10
+      responses:
+        '200':
+          description: Order book snapshot
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/ApiBookSnapshot'
+              example:
+                success: true
+                result:
+                  market: AAPL-USD.P
+                  time: '2025-03-05T14:30:00Z'
+                  bids:
+                  - - '227.40'
+                    - '100.0'
+                  - - '227.30'
+                    - '250.0'
+                  asks:
+                  - - '227.60'
+                    - '80.0'
+                  - - '227.70'
+                    - '150.0'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - invalid_market
+                    - invalid_symbol
+              example:
+                success: false
+                error: Description of the error
+                error_code: invalid_market
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/candles:
+    get:
+      summary: Get Candles
+      description: Returns OHLCV candlestick data for a perpetual futures market.
+      operationId: getPerpsCandles
+      tags:
+      - Market Data
+      parameters:
+      - name: market
+        in: query
+        description: Perps trading market
+        required: true
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: resolution
+        in: query
+        description: 'Bar resolution in minutes. Common values: 1, 5, 15, 30, 60, 240, 1D.'
+        required: true
+        schema:
+          type: string
+          example: '1'
+      - name: from
+        in: query
+        description: Start of the requested time range (Unix timestamp in seconds)
+        required: true
+        schema:
+          type: integer
+          example: 1684814400
+      - name: to
+        in: query
+        description: End of the requested time range (Unix timestamp in seconds)
+        required: true
+        schema:
+          type: integer
+          example: 1684900800
+      responses:
+        '200':
+          description: Array of OHLCV candles
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ApiCandle'
+              example:
+                success: true
+                result:
+                - startTime: '2025-03-05T14:00:00Z'
+                  open: '226.80'
+                  high: '228.10'
+                  low: '226.50'
+                  close: '227.50'
+                  volume: '12345.67'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/symbol_info:
+    get:
+      summary: Get Symbol Info (TradingView)
+      description: Returns symbol metadata in TradingView UDF format. See https://www.tradingview.com/rest-api-spec/#operation/getSymbolInfo.
+      operationId: getPerpsSymbolInfo
+      tags:
+      - Market Data
+      responses:
+        '200':
+          description: TradingView symbol info response
+          content:
+            application/json:
+              schema:
+                type: object
+                description: TradingView UDF symbol info response. Contains arrays of values for each symbol.
+                properties:
+                  s:
+                    type: string
+                    description: Status
+                    example: ok
+                  symbol:
+                    type: array
+                    items:
+                      type: string
+                  description:
+                    type: array
+                    items:
+                      type: string
+                  ticker:
+                    type: array
+                    items:
+                      type: string
+                  currency:
+                    type: array
+                    items:
+                      type: string
+                  base-currency:
+                    type: array
+                    items:
+                      type: string
+                  type:
+                    type: array
+                    items:
+                      type: string
+                  session-regular:
+                    type: array
+                    items:
+                      type: string
+                  timezone:
+                    type: array
+                    items:
+                      type: string
+                  minmovement:
+                    type: array
+                    items:
+                      type: integer
+                  pricescale:
+                    type: array
+                    items:
+                      type: integer
+                  has-intraday:
+                    type: array
+                    items:
+                      type: boolean
+                  has-no-volume:
+                    type: array
+                    items:
+                      type: boolean
+                  supported-resolutions:
+                    type: array
+                    items:
+                      type: array
+                      items:
+                        type: string
+              example:
+                s: ok
+                symbol:
+                - AAPL-USD.P
+                - TSLA-USD.P
+                description:
+                - Apple Inc. Perpetual
+                - Tesla Inc. Perpetual
+                ticker:
+                - AAPL-USD.P
+                - TSLA-USD.P
+                currency:
+                - USDC
+                - USDC
+                base-currency:
+                - AAPL
+                - TSLA
+                type:
+                - perpetual
+                - perpetual
+                session-regular:
+                - 24x7
+                - 24x7
+                timezone:
+                - Etc/UTC
+                - Etc/UTC
+                minmovement:
+                - 1
+                - 1
+                pricescale:
+                - 100
+                - 100
+                has-intraday:
+                - true
+                - true
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/streaming:
+    get:
+      summary: Get Streaming Data (TradingView)
+      description: Returns a streaming HTTP chunked response with real-time trade data in TradingView UDF streaming format.
+      operationId: getPerpsStreaming
+      tags:
+      - Market Data
+      responses:
+        '200':
+          description: Chunked streaming response
+          content:
+            text/event-stream:
+              schema:
+                type: string
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/history:
+    get:
+      summary: Get Price History (TradingView)
+      description: Returns historical bar data in TradingView UDF format.
+      operationId: getPerpsHistory
+      tags:
+      - Market Data
+      parameters:
+      - name: symbol
+        in: query
+        description: TradingView symbol identifier
+        required: true
+        schema:
+          type: string
+      - name: resolution
+        in: query
+        description: Bar resolution
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: Start Unix timestamp
+        required: true
+        schema:
+          type: integer
+      - name: to
+        in: query
+        description: End Unix timestamp
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: TradingView UDF history response
+          content:
+            application/json:
+              schema:
+                type: object
+                description: TradingView UDF history response with parallel arrays of OHLCV data.
+                properties:
+                  s:
+                    type: string
+                    description: Status ('ok' or 'no_data')
+                    example: ok
+                  t:
+                    type: array
+                    description: Array of Unix timestamps
+                    items:
+                      type: integer
+                  o:
+                    type: array
+                    description: Array of open prices
+                    items:
+                      type: number
+                  h:
+                    type: array
+                    description: Array of high prices
+                    items:
+                      type: number
+                  l:
+                    type: array
+                    description: Array of low prices
+                    items:
+                      type: number
+                  c:
+                    type: array
+                    description: Array of close prices
+                    items:
+                      type: number
+                  v:
+                    type: array
+                    description: Array of volumes
+                    items:
+                      type: number
+              example:
+                s: ok
+                t:
+                - 1709640000
+                - 1709643600
+                o:
+                - 226.8
+                - 227.5
+                h:
+                - 228.1
+                - 228.5
+                l:
+                - 226.5
+                - 227
+                c:
+                - 227.5
+                - 228
+                v:
+                - 12345.67
+                - 9876.54
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/open_interest:
+    get:
+      summary: Get Open Interest
+      description: Get open interest across all perpetual futures markets.
+      operationId: getOpenInterest
+      tags:
+      - Market Data
+      responses:
+        '200':
+          description: Array of open interest objects per market
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/OpenInterestRes'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  openInterest: '2394.23'
+                  notionalValue: '544683.50'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/volume:
+    get:
+      summary: Get Volume
+      description: Get 24-hour trading volume across all perpetual futures markets.
+      operationId: getVolume
+      tags:
+      - Market Data
+      responses:
+        '200':
+          description: Array of volume objects per market
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/VolumeRes'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  volume: '12500.00'
+                  quoteVolume: '2843750.00'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/contracts:
+    get:
+      summary: Get Contracts
+      description: Gets a list of perpetual futures contracts and their current market data.
+      operationId: getContracts
+      tags:
+      - Market Data
+      parameters:
+      - name: sparkline
+        in: query
+        description: If true, include sparkline price data in the response
+        required: false
+        schema:
+          type: boolean
+          example: false
+      responses:
+        '200':
+          description: List of perpetual futures contracts
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Contract'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  productType: perpetual
+                  contractType: linear
+                  baseCurrency: AAPL
+                  quoteCurrency: USDC
+                  disabled: false
+                  lastPrice: '227.50'
+                  baseVolume: '12500.00'
+                  quoteVolume: '2843750.00'
+                  usdVolume: '2843750.00'
+                  bid: '227.40'
+                  ask: '227.60'
+                  high: '230.00'
+                  low: '225.00'
+                  openInterest: '2394.23'
+                  openInterestUsd: '544683.50'
+                  indexPrice: '227.55'
+                  indexCurrency: USD
+                  fundingRate: '0.0000125'
+                  nextFundingRate: '0.0000130'
+                  nextFundingRateTimestamp: '2025-03-05T16:00:00Z'
+                  makerFee: '0.0002'
+                  takerFee: '0.0005'
+                  priceChangePercent: '1.12'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    BookLevel:
+      type: array
+      description: Price level represented as [price, quantity]
+      items:
+        type: string
+      minItems: 2
+      maxItems: 2
+      example:
+      - '1.55'
+      - '100.0'
+    ApiCandle:
+      type: object
+      required:
+      - startTime
+      - open
+      - high
+      - low
+      - close
+      - volume
+      properties:
+        startTime:
+          type: string
+          format: date-time
+          description: Start time of the candle
+          example: '2024-01-04T16:00:00Z'
+        open:
+          type: string
+          description: Opening price
+          example: '150.25'
+        high:
+          type: string
+          description: Highest price during the interval
+          example: '152.10'
+        low:
+          type: string
+          description: Lowest price during the interval
+          example: '149.80'
+        close:
+          type: string
+          description: Closing price
+          example: '151.45'
+        volume:
+          type: string
+          description: Trading volume in base currency during the interval
+          example: '1234.56'
+    ApiBookSnapshot:
+      type: object
+      required:
+      - market
+      - time
+      - bids
+      - asks
+      properties:
+        market:
+          type: string
+          description: Trading market
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: Snapshot timestamp
+          example: '2022-06-16T12:35:11.123456Z'
+        bids:
+          type: array
+          description: Best bid price levels, sorted descending by price
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        asks:
+          type: array
+          description: Best ask price levels, sorted ascending by price
+          items:
+            $ref: '#/components/schemas/BookLevel'
+    Contract:
+      type: object
+      required:
+      - market
+      - productType
+      - contractType
+      - baseCurrency
+      - quoteCurrency
+      - disabled
+      properties:
+        market:
+          type: string
+          description: Perps market identifier
+          example: AAPL-USD.P
+        productType:
+          type: string
+          description: Type of product
+          example: perpetual
+        contractType:
+          type: string
+          description: Type of contract
+          example: linear
+        baseCurrency:
+          type: string
+          description: The base currency of the contract
+          example: AAPL
+        quoteCurrency:
+          type: string
+          description: The quote currency of the contract
+          example: USDC
+        disabled:
+          type: boolean
+          description: If true, the market is currently unavailable for trading
+          example: false
+        lastPrice:
+          type: string
+          description: Price of the last trade
+          example: '20000.54'
+        baseVolume:
+          type: string
+          description: 24-hour trading volume in base currency
+          example: '1089.12'
+        quoteVolume:
+          type: string
+          description: 24-hour trading volume in quote currency
+          example: '120400.65'
+        usdVolume:
+          type: string
+          description: 24-hour trading volume in USD
+          example: '120400.65'
+        bid:
+          type: string
+          description: Current best bid price
+          example: '1500.22'
+        ask:
+          type: string
+          description: Current best ask price
+          example: '1600.20'
+        high:
+          type: string
+          description: Highest traded price in the last 24 hours
+          example: '1600.20'
+        low:
+          type: string
+          description: Lowest traded price in the last 24 hours
+          example: '1400.20'
+        openInterest:
+          type: string
+          description: Open interest in base currency
+          example: '2394.2301'
+        openInterestUsd:
+          type: string
+          description: Open interest in USD
+          example: '24311.72'
+        indexPrice:
+          type: string
+          description: Current price of the underlying market
+          example: '1600.20'
+        indexCurrency:
+          type: string
+          description: Currency of the underlying market
+          example: USD
+        fundingRate:
+          type: string
+          description: Funding rate at the last completed funding interval
+          example: '0.00152'
+        nextFundingRate:
+          type: string
+          description: Estimated funding rate at the end of the current funding interval
+          example: '0.00152'
+        nextFundingRateTimestamp:
+          type: string
+          format: date-time
+          description: Timestamp when the next funding payments will occur
+          example: '2022-06-16T12:35:10.123456Z'
+        makerFee:
+          type: string
+          description: Fee on a filled resting (maker) order
+          example: '0.0002'
+        takerFee:
+          type: string
+          description: Fee on a filled aggressive (taker) order
+          example: '0.0005'
+        priceChangePercent:
+          type: string
+          description: Price change as a percentage in the last 24 hours
+          example: '-5'
+        sparkline:
+          $ref: '#/components/schemas/Sparkline'
+          description: Sparkline price data, included only when sparkline=true is requested
+    Sparkline:
+      type: object
+      properties:
+        price:
+          type: array
+          description: Array of price values for the sparkline
+          items:
+            type: string
+    ApiTrade:
+      type: object
+      required:
+      - market
+      - price
+      - size
+      - cost
+      - aggressor_side
+      - time
+      - id
+      properties:
+        market:
+          type: string
+          description: Trading market
+          example: AAPL-USD.P
+        price:
+          type: string
+          description: Trade price
+          example: '1.55'
+        size:
+          type: string
+          description: Trade size in base currency
+          example: '5.403'
+        cost:
+          type: string
+          description: Trade cost in quote currency
+          example: '8.37465'
+        aggressor_side:
+          type: string
+          description: Side of the aggressing (taker) order
+          enum:
+          - buy
+          - sell
+          example: buy
+        time:
+          type: string
+          format: date-time
+          description: Time the trade occurred
+          example: '2022-06-16T12:35:11.123456Z'
+        id:
+          type: string
+          description: Trade/fill ID
+          example: 70a37d8f972f2494837f9dba8364cbb4
+    OpenInterestRes:
+      type: object
+      required:
+      - market
+      - openInterest
+      - notionalValue
+      properties:
+        market:
+          type: string
+          description: Perpetual futures market
+          example: AAPL-USD.P
+        openInterest:
+          type: string
+          description: The open interest in base size
+          example: '2394.2301'
+        notionalValue:
+          type: string
+          description: The notional value of the open interest at the current mark price
+          example: '24311.72'
+    VolumeRes:
+      type: object
+      required:
+      - market
+      - volume
+      - quoteVolume
+      properties:
+        market:
+          type: string
+          description: Perpetual futures market
+          example: AAPL-USD.P
+        volume:
+          type: string
+          description: 24-hour trading volume in base size
+          example: '2394.2301'
+        quoteVolume:
+          type: string
+          description: 24-hour trading volume in quote currency (last price × base volume)
+          example: '38310297.12'
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  responses:
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

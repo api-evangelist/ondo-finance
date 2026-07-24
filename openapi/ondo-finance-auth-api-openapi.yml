@@ -1,0 +1,842 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Auth API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Auth
+paths:
+  /v1/auth/erc-4361/login/get_challenge:
+    post:
+      summary: Get SIWE Login Challenge
+      description: Get a Sign-In with Ethereum (ERC-4361) challenge for login. No auth required.
+      operationId: getSIWEChallenge
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginGetChallengeRequest'
+      responses:
+        '200':
+          description: Challenge message for signing
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/AuthChallengeResult'
+              example:
+                success: true
+                result:
+                  id: chg_9f8e7d6c5b4a3210
+                  message: 'api.ondoperps.xyz wants you to sign in with your Ethereum account:
+
+                    0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18
+
+
+                    Sign in to Ondo Perps
+
+
+                    URI: https://api.ondoperps.xyz
+
+                    Version: 1
+
+                    Chain ID: 1
+
+                    Nonce: abc123
+
+                    Issued At: 2025-03-05T14:30:00Z'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - challenge_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: challenge_not_found
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/erc-4361/login/complete_challenge:
+    post:
+      summary: Complete SIWE Login
+      description: Complete Sign-In with Ethereum by submitting the signed challenge. Returns JWT.
+      operationId: completeSIWEChallenge
+      tags:
+      - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginCompleteChallengeRequest'
+      responses:
+        '200':
+          description: Auth token
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/AuthToken'
+              example:
+                success: true
+                result:
+                  identifier: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18'
+                  authType: web3
+                  accountId: '10458932786832481'
+                  issuedAtSecs: 1709648400
+                  expirationSecs: 1709734800
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  newAccount: false
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_cannot_be_verified
+                    - challenge_not_found
+                    - invite_code_already_used
+                    - invite_code_invalid
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_cannot_be_verified
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/erc-4361/address_book/get_challenge:
+    post:
+      summary: Get SIWE Address Book Challenge
+      description: Get a Sign-In with Ethereum challenge for adding a withdrawal address. Requires auth.
+      operationId: getSIWEAddressBookChallenge
+      tags:
+      - Auth
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressBookGetChallengeRequest'
+      responses:
+        '200':
+          description: Challenge for signing
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/AuthChallengeResult'
+              example:
+                success: true
+                result:
+                  id: chg_ab12cd34ef56
+                  message: Sign this message to add withdrawal address 0x054A94b753CBf65D1Bc484F6D41897b48251fbfF to your address book.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/erc-4361/address_book/complete_challenge:
+    post:
+      summary: Complete SIWE Address Book Challenge
+      description: Complete the signed challenge to add a withdrawal address.
+      operationId: completeSIWEAddressBookChallenge
+      tags:
+      - Auth
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressBookCompleteChallengeRequest'
+      responses:
+        '200':
+          description: Result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                success: true
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+                    - bad_label
+                    - bad_withdrawal_address
+                    - challenge_not_found
+                    - empty_label
+                    - internal_withdrawal_address
+                    - withdrawal_address_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/invalidate_jwt:
+    get:
+      summary: Invalidate JWT
+      description: Invalidates all JWTs for the authenticated account. Requires valid auth.
+      operationId: invalidateJWT
+      tags:
+      - Auth
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                success: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/login/google:
+    get:
+      summary: Login with Google (Web2)
+      description: Redirects to Google OAuth. No auth required.
+      operationId: web2LoginGoogle
+      tags:
+      - Auth
+      parameters:
+      - name: redirect_uri
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '302':
+          description: Redirect to Google
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/login/email:
+    get:
+      summary: Login with Email (Web2)
+      description: Redirects to email/password login. No auth required.
+      operationId: web2LoginEmail
+      tags:
+      - Auth
+      parameters:
+      - name: redirect_uri
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '302':
+          description: Redirect to login
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/login/complete:
+    get:
+      summary: OAuth Login Callback
+      description: Callback for Web2 OAuth flow. Exchanges code for session. No auth required.
+      operationId: web2LoginComplete
+      tags:
+      - Auth
+      parameters:
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: code
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: error
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Redirect or response
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - auth_invalid
+                    - email_already_in_use
+                    - invite_code_already_used
+                    - invite_code_invalid
+                    - session_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: auth_invalid
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/get_token:
+    post:
+      summary: Get Token (Web2)
+      description: Exchange Web2 session for JWT. Requires valid session cookie.
+      operationId: web2GetToken
+      tags:
+      - Auth
+      responses:
+        '200':
+          description: JWT token
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/AuthToken'
+              example:
+                success: true
+                result:
+                  identifier: user@example.com
+                  authType: web2:google
+                  accountId: '10458932786832481'
+                  issuedAtSecs: 1709648400
+                  expirationSecs: 1709734800
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  newAccount: false
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - feature_disabled
+                    - session_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: feature_disabled
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/address_book:
+    post:
+      summary: Add Withdrawal Address (Web2)
+      description: Initiates adding a withdrawal address via Web2 auth. May return MFA challenge.
+      operationId: web2AddressBook
+      tags:
+      - Auth
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Web2AddressBookRequest'
+      responses:
+        '200':
+          description: Result or MFA challenge
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+                    - auth_invalid
+                    - bad_label
+                    - bad_withdrawal_address
+                    - empty_label
+                    - invalid_redirect_uri
+                    - session_not_found
+                    - withdrawal_address_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/mfa/complete:
+    get:
+      summary: MFA Callback
+      description: Callback after MFA completion (e.g. for address book). No auth required.
+      operationId: web2MfaComplete
+      tags:
+      - Auth
+      parameters:
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: code
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: error
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Redirect or response
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - auth_invalid
+                    - session_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: auth_invalid
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/auth/web2/password_reset:
+    post:
+      summary: Request Password Reset
+      description: Request a password reset email for Web2 accounts. Requires auth.
+      operationId: web2PasswordReset
+      tags:
+      - Auth
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                success: true
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - auth_invalid
+              example:
+                success: false
+                error: Description of the error
+                error_code: auth_invalid
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    AddressBookCompleteChallengeRequest:
+      type: object
+      required:
+      - id
+      - signature
+      properties:
+        id:
+          type: string
+          description: The ID of the challenge
+          example: chg_ab12cd34ef56
+        signature:
+          type: string
+          description: The signed challenge proving wallet ownership
+          example: d5ee68784479z8n5utzebecfbd6926a89d7e24e9z5nut313611186z0da4206be4e57b809cbb3372d52b865bda7f372ea0808286009e572a66c8ab717cf85cdbc1b
+        addressLabel:
+          type: string
+          description: Optional label for the withdrawal address
+          example: My Ledger Nano X
+    LoginGetChallengeRequest:
+      type: object
+      required:
+      - walletAddress
+      - chainId
+      properties:
+        walletAddress:
+          type: string
+          description: The wallet address requesting to sign in
+          example: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18'
+        chainId:
+          type: string
+          description: EVM chain ID (1=Ethereum, 43114=Avalanche)
+          example: '1'
+          enum:
+          - '1'
+          - '43114'
+    AuthChallengeResult:
+      type: object
+      required:
+      - id
+      - message
+      properties:
+        id:
+          type: string
+          description: Challenge ID
+          example: abc123
+        message:
+          type: string
+          description: Message to be signed by the wallet
+    Web2AddressBookRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      - addressLabel
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to add
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+        addressLabel:
+          type: string
+          description: Label for the withdrawal address
+          example: My Ledger Nano X
+    LoginCompleteChallengeRequest:
+      type: object
+      required:
+      - id
+      - signature
+      properties:
+        id:
+          type: string
+          description: The ID of the login challenge
+          example: ub6EabCuCiw9HvYyhsZhWzv8mntMgZ-vDGzZKvvCi_o=
+        signature:
+          type: string
+          description: The signed challenge proving wallet ownership
+          example: 8650fc18ca35d1e3c358b566ff786783978dc16519c055ba2085a2345bed89f46719876e3e01cf3bbf94c50f6b5524c3df3d9881386f11910ddb3a15bfade5f21c
+        source:
+          type: string
+          description: Optional source identifier
+          example: web
+    AddressBookGetChallengeRequest:
+      type: object
+      required:
+      - walletAddress
+      - chainId
+      - withdrawalAddress
+      properties:
+        walletAddress:
+          type: string
+          description: The wallet address requesting to add a withdrawal address
+          example: '0x505D602729B932959935C1efd350Cea74527d3D1'
+        chainId:
+          type: string
+          description: EVM chain ID (1=Ethereum, 43114=Avalanche)
+          example: '43114'
+          enum:
+          - '1'
+          - '43114'
+        withdrawalAddress:
+          type: string
+          description: The address to add to the withdrawal address book
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+    AuthToken:
+      type: object
+      required:
+      - identifier
+      - authType
+      - accountId
+      - issuedAtSecs
+      - expirationSecs
+      - token
+      - newAccount
+      properties:
+        identifier:
+          type: string
+          description: Wallet address or email
+        authType:
+          type: string
+          description: Authentication type
+          enum:
+          - web3
+          - web2:email_pass
+          - web2:google
+          - unknown
+        accountId:
+          type: string
+          description: Account ID
+        issuedAtSecs:
+          type: integer
+          description: Token issue time (Unix seconds)
+        expirationSecs:
+          type: integer
+          description: Token expiration time (Unix seconds)
+        token:
+          type: string
+          description: JWT token
+        newAccount:
+          type: boolean
+          description: True if a new account was created during this login
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

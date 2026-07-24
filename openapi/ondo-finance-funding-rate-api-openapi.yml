@@ -1,0 +1,590 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Funding Rate API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Funding Rate
+paths:
+  /v1/perps/funding_rates:
+    get:
+      summary: Get Funding Rates
+      description: 'Get an estimate of the current-interval funding rate in a given market, as well as when the next funding is and what premium index measurements make up the funding rate.
+
+        '
+      operationId: getFundingRates
+      tags:
+      - Funding Rate
+      parameters:
+      - name: market
+        in: query
+        description: Market to query
+        required: true
+        schema:
+          type: string
+          example: AAPL-USD.P
+      responses:
+        '200':
+          description: Current funding rate estimate
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/FundingRate'
+              example:
+                success: true
+                result:
+                  market: AAPL-USD.P
+                  rate: '0.0000125'
+                  intervalEnds: '2025-03-05T16:00:00Z'
+                  premiums:
+                  - time: '2025-03-05T15:00:00Z'
+                    premiumIndex: '0.000025'
+                  - time: '2025-03-05T15:30:00Z'
+                    premiumIndex: '0.000015'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/funding_rate_history:
+    get:
+      summary: Get Funding Rate History
+      description: Get the historical funding rates for a market.
+      operationId: getFundingRateHistory
+      tags:
+      - Funding Rate
+      parameters:
+      - name: market
+        in: query
+        description: Perps trading market
+        required: true
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 1000
+      - name: cursor
+        in: query
+        description: Pagination cursor
+        required: false
+        schema:
+          type: string
+          example: NQ5WWO3THN3Q====
+      - name: startTime
+        in: query
+        description: Start time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1684814400000
+      - name: endTime
+        in: query
+        description: End time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1672549200000
+      responses:
+        '200':
+          description: Paginated list of historical funding rates, most recent first
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/FundingRateValue'
+                    pageInfo:
+                      $ref: '#/components/schemas/PageInfo'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  time: '2025-03-05T12:00:00Z'
+                  fundingRate: '0.0000125'
+                pageInfo:
+                  nextCursor: NQ5WWO3THN3Q====
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - failed_to_parse_timestamp
+                    - invalid_cursor
+                    - invalid_market
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/funding_fees:
+    get:
+      summary: Get Funding Fee Payments
+      description: Get a paginated history of funding fee payments for the authenticated account.
+      operationId: getFundingFees
+      tags:
+      - Funding Rate
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: market
+        in: query
+        description: Trading market to filter by
+        required: false
+        schema:
+          type: string
+          example: AAPL-USD.P
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          example: 1000
+      - name: cursor
+        in: query
+        description: Pagination cursor
+        required: false
+        schema:
+          type: string
+          example: NQ5WWO3THN3Q====
+      - name: startTime
+        in: query
+        description: Start time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1684814400000
+      - name: endTime
+        in: query
+        description: End time filter (UTC milliseconds)
+        required: false
+        schema:
+          type: integer
+          example: 1672549200000
+      responses:
+        '200':
+          description: Paginated list of funding fee payments, most recent first
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/FundingFeeTransfer'
+                    pageInfo:
+                      $ref: '#/components/schemas/PageInfo'
+              example:
+                success: true
+                result:
+                - market: AAPL-USD.P
+                  time: '2025-03-05T12:00:00Z'
+                  markPrice: '227.50'
+                  positionSize: '10.00'
+                  positionDirection: long
+                  rate: '0.0000125'
+                  payer: long
+                  amount: '-0.02844'
+                pageInfo:
+                  nextCursor: NQ5WWO3THN3Q====
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_query_param
+                    - failed_to_parse_timestamp
+                    - invalid_cursor
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_query_param
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/perps/mark_prices:
+    get:
+      summary: Get Mark Prices
+      description: Get the current mark prices for all perpetual futures markets.
+      operationId: getMarkPrices
+      tags:
+      - Funding Rate
+      responses:
+        '200':
+          description: Map from market to mark price
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: object
+                      additionalProperties:
+                        $ref: '#/components/schemas/MarkPrice'
+              example:
+                success: true
+                result:
+                  AAPL-USD.P:
+                    pair:
+                      base: AAPL
+                      quote: USD
+                    price: '227.50'
+                    time: '2025-03-05T14:30:00Z'
+                  TSLA-USD.P:
+                    pair:
+                      base: TSLA
+                      quote: USD
+                    price: '180.25'
+                    time: '2025-03-05T14:30:00Z'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  schemas:
+    PremiumIndexValue:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Time of the premium index measurement
+          example: '2022-06-16T12:00:00Z'
+        premiumIndex:
+          type: string
+          description: The premium index value
+          example: '0.000025'
+    FundingRateValue:
+      type: object
+      required:
+      - market
+      - time
+      - fundingRate
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: The time funding was paid
+          example: '2022-06-16T12:35:10.123456Z'
+        fundingRate:
+          type: string
+          description: The funding rate as a fraction
+          example: '0.0000125'
+    MarkPrice:
+      type: object
+      required:
+      - pair
+      - price
+      - time
+      properties:
+        pair:
+          type: object
+          description: Currency pair
+          properties:
+            base:
+              type: string
+              example: AAPL
+            quote:
+              type: string
+              example: USD
+        price:
+          type: string
+          description: Current mark price
+          example: '150.25'
+        time:
+          type: string
+          format: date-time
+          description: Time of the mark price measurement
+    FundingFeeTransfer:
+      type: object
+      required:
+      - market
+      - time
+      - markPrice
+      - positionSize
+      - positionDirection
+      - rate
+      - payer
+      - amount
+      properties:
+        market:
+          type: string
+          description: Market that the fee was paid in
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: The time that the funding fee was paid
+          example: '2022-06-16T12:35:10.123456Z'
+        markPrice:
+          type: string
+          description: The mark price at the time the fee was paid
+          example: '12.03'
+        positionSize:
+          type: string
+          description: The base size of the position at the time the fee was paid
+          example: '1.00'
+        positionDirection:
+          type: string
+          description: The direction of the position at the time the fee was paid
+          enum:
+          - long
+          - short
+          - neutral
+          example: long
+        rate:
+          type: string
+          description: The funding rate that led to this fee
+          example: '0.0000125'
+        payer:
+          type: string
+          description: The side that paid the fee
+          enum:
+          - long
+          - short
+          - neutral
+          example: long
+        amount:
+          type: string
+          description: 'The actual amount of USDC transferred. Positive indicates a fee you earned, negative a fee you paid.
+
+            '
+          example: '-0.16402'
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    FundingRate:
+      type: object
+      required:
+      - market
+      - rate
+      - intervalEnds
+      properties:
+        market:
+          type: string
+          description: The market the funding rate applies to
+          example: AAPL-USD.P
+        rate:
+          type: string
+          description: The current estimated funding rate
+          example: '0.0000125'
+        intervalEnds:
+          type: string
+          format: date-time
+          description: The time the current funding interval ends and the funding rate will be paid
+          example: '2022-06-16T12:35:10.123456Z'
+        premiums:
+          type: array
+          description: Premium index measurements that make up the funding rate
+          items:
+            $ref: '#/components/schemas/PremiumIndexValue'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

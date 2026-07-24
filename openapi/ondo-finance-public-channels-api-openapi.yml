@@ -1,0 +1,613 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Public Channels API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Public Channels
+paths:
+  /ws/topOfBooksPerps:
+    post:
+      summary: 'Subscribe: Perps Top of Book'
+      operationId: subscribe_topOfBooksPerps
+      description: 'Subscribe to the `topOfBooksPerps` channel.
+
+
+        Optional `markets` to filter; omit for all markets.'
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: topOfBooksPerps
+      responses:
+        '200':
+          description: Channel update for `topOfBooksPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - topOfBooksPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BookSnapshot'
+              example:
+                type: update
+                channel: topOfBooksPerps
+                data:
+                - market: AAPL-USD.P
+                  time: '2025-03-05T14:30:00Z'
+                  asks:
+                  - price: '227.60'
+                    size: '80.0'
+                  bids:
+                  - price: '227.40'
+                    size: '100.0'
+  /ws/depthBooksPerps:
+    post:
+      summary: 'Subscribe: Perps Depth Book'
+      operationId: subscribe_depthBooksPerps
+      description: 'Subscribe to the `depthBooksPerps` channel.
+
+
+        Optional `markets`, `depthLevels` (price grouping), and `limit` (max levels).'
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: depthBooksPerps
+      responses:
+        '200':
+          description: Channel update for `depthBooksPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - depthBooksPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BookSnapshot'
+  /ws/tradesPerps:
+    post:
+      summary: 'Subscribe: Perps Trades'
+      operationId: subscribe_tradesPerps
+      description: 'Subscribe to the `tradesPerps` channel.
+
+
+        Optional `markets` and `numPastTrades` (number of historical trades on subscribe).'
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: tradesPerps
+      responses:
+        '200':
+          description: Channel update for `tradesPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - tradesPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Trade'
+              example:
+                type: update
+                channel: tradesPerps
+                data:
+                - market: AAPL-USD.P
+                  price: '227.50'
+                  size: '5.00'
+                  cost: '1137.50'
+                  aggressor_side: buy
+                  time: '2025-03-05T14:30:00Z'
+                  id: 70a37d8f972f2494837f9dba8364cbb4
+  /ws/fundingRatesPerps:
+    post:
+      summary: 'Subscribe: Perps Funding Rates'
+      operationId: subscribe_fundingRatesPerps
+      description: 'Subscribe to the `fundingRatesPerps` channel.
+
+
+        Optional `markets` to filter.'
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: fundingRatesPerps
+      responses:
+        '200':
+          description: Channel update for `fundingRatesPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - fundingRatesPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FundingRate'
+  /ws/markPricesPerps:
+    post:
+      summary: 'Subscribe: Perps Mark Prices'
+      operationId: subscribe_markPricesPerps
+      description: 'Subscribe to the `markPricesPerps` channel.
+
+
+        Optional `markets` to filter.'
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: markPricesPerps
+      responses:
+        '200':
+          description: Channel update for `markPricesPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - markPricesPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MarkPrice'
+              example:
+                type: update
+                channel: markPricesPerps
+                data:
+                - market: AAPL-USD.P
+                  markPrice: '227.50'
+  /ws/liquidationAnnouncementsPerps:
+    post:
+      summary: 'Subscribe: Perps Liquidation Announcements'
+      operationId: subscribe_liquidationAnnouncementsPerps
+      description: Subscribe to the `liquidationAnnouncementsPerps` channel.
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: liquidationAnnouncementsPerps
+      responses:
+        '200':
+          description: Channel update for `liquidationAnnouncementsPerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - liquidationAnnouncementsPerps
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LiquidationAnnouncement'
+  /ws/kLinePerps:
+    post:
+      summary: 'Subscribe: Perps Kline / Candlesticks'
+      operationId: subscribe_kLinePerps
+      description: 'Subscribe to the `kLinePerps` channel.
+
+
+        **Required**: exactly one `markets` entry and a `resolution`.
+
+
+        Valid resolutions: `1`, `5`, `15`, `1H`, `4H`, `1D`, `1W`.'
+      tags:
+      - Public Channels
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: subscribe
+              channel: kLinePerps
+      responses:
+        '200':
+          description: Channel update for `kLinePerps`
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - update
+                  channel:
+                    type: string
+                    enum:
+                    - kLinePerps
+                  data:
+                    $ref: '#/components/schemas/Kline'
+              example:
+                type: update
+                channel: kLinePerps
+                data:
+                  m: AAPL-USD.P
+                  t: 1709648400
+                  s: 1709648340
+                  e: 1709648400
+                  o: 226.8
+                  h: 228.1
+                  l: 226.5
+                  c: 227.5
+                  v: 12345.67
+                  x: false
+components:
+  schemas:
+    Kline:
+      type: object
+      description: Candlestick/kline data point
+      properties:
+        m:
+          type: string
+          description: Market
+          example: AAPL-USD.P
+        t:
+          type: integer
+          format: int64
+          description: Bar timestamp (Unix seconds)
+        s:
+          type: integer
+          format: int64
+          description: Interval start (Unix seconds)
+        e:
+          type: integer
+          format: int64
+          description: Interval end (Unix seconds)
+        o:
+          type: number
+          description: Open price
+          example: 226.8
+        h:
+          type: number
+          description: High price
+          example: 228.1
+        l:
+          type: number
+          description: Low price
+          example: 226.5
+        c:
+          type: number
+          description: Close price
+          example: 227.5
+        v:
+          type: number
+          description: Volume
+          example: 12345.67
+        x:
+          type: boolean
+          description: Whether this bar is closed
+          example: false
+    BookLevel:
+      type: object
+      description: A price level in the order book
+      properties:
+        price:
+          type: string
+          description: Price
+          example: '227.50'
+        size:
+          type: string
+          description: Quantity at this price
+          example: '100.0'
+    PremiumIndexValue:
+      type: object
+      properties:
+        market:
+          type: string
+        time:
+          type: string
+          format: date-time
+        mark:
+          type: string
+          description: Mark price
+        bid:
+          type: string
+          description: Best bid
+        ask:
+          type: string
+          description: Best ask
+        premiumIndex:
+          type: string
+    MarkPrice:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        markPrice:
+          type: string
+          example: '227.50'
+    WebSocketRequest:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          enum:
+          - ping
+          - login
+          - subscribe
+          - unsubscribe
+          - sendMessage
+          description: Operation type
+        channel:
+          type: string
+          description: Channel to subscribe/unsubscribe
+          enum:
+          - topOfBooksPerps
+          - depthBooksPerps
+          - tradesPerps
+          - ordersPerps
+          - fillsPerps
+          - cancelAllOrdersAfterPerps
+          - positionsPerps
+          - liquidationPerps
+          - liquidationAnnouncementsPerps
+          - marginTransfersPerps
+          - balancePerps
+          - ordersSummariesPerps
+          - fundingRatesPerps
+          - markPricesPerps
+          - fundingPaymentsPerps
+          - kLinePerps
+          - deposits
+          - withdrawals
+          - chat
+        markets:
+          type: array
+          items:
+            type: string
+          description: Filter by market(s). Required for kLine (exactly one). Optional for most channels.
+        args:
+          $ref: '#/components/schemas/LoginArgs'
+        numPastTrades:
+          type: integer
+          description: Number of historical trades to receive on subscribe (trades channels only)
+        resolution:
+          type: string
+          enum:
+          - '1'
+          - '5'
+          - '15'
+          - 1H
+          - 4H
+          - 1D
+          - 1W
+          description: Kline resolution (required for kLine channels)
+        timeout_seconds:
+          type: integer
+          description: Dead man's switch timeout (required for cancelAllOrdersAfter channels)
+        depthLevels:
+          type: string
+          description: Price grouping level for depth book (depthBooks channels only)
+        limit:
+          type: integer
+          description: Max depth levels to return; 0 for unlimited (depthBooks channels only)
+        message:
+          type: string
+          description: Chat message text (sendMessage only)
+        context:
+          type: object
+          description: Optional context for chat (market, page, etc.)
+          additionalProperties: true
+    Trade:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        price:
+          type: string
+          example: '227.50'
+        size:
+          type: string
+          example: '5.00'
+        cost:
+          type: string
+          example: '1137.50'
+        aggressor_side:
+          type: string
+          enum:
+          - buy
+          - sell
+        time:
+          type: string
+          format: date-time
+        id:
+          type: string
+          example: 70a37d8f972f2494837f9dba8364cbb4
+      example:
+        market: AAPL-USD.P
+        price: '227.50'
+        size: '5.00'
+        cost: '1137.50'
+        aggressor_side: buy
+        time: '2025-03-05T14:30:00Z'
+        id: 70a37d8f972f2494837f9dba8364cbb4
+    LiquidationAnnouncement:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum:
+          - active
+          - resolved
+        nextOffload:
+          type: string
+          format: date-time
+        orders:
+          type: array
+          items:
+            type: object
+            properties:
+              market:
+                type: string
+              side:
+                type: string
+                enum:
+                - buy
+                - sell
+              price:
+                type: string
+              quantity:
+                type: string
+              positionSize:
+                type: string
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
+    FundingRate:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        rate:
+          type: string
+          example: '0.0000125'
+        intervalEnds:
+          type: string
+          format: date-time
+        premiums:
+          type: array
+          items:
+            $ref: '#/components/schemas/PremiumIndexValue'
+    BookSnapshot:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        depthLevels:
+          type: string
+          description: Price grouping level (if requested)
+      example:
+        market: AAPL-USD.P
+        time: '2025-03-05T14:30:00Z'
+        asks:
+        - price: '227.60'
+          size: '80.0'
+        - price: '227.70'
+          size: '150.0'
+        bids:
+        - price: '227.40'
+          size: '100.0'
+        - price: '227.30'
+          size: '250.0'
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

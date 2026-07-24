@@ -1,0 +1,365 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Portfolio API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Portfolio
+paths:
+  /v1/portfolio/summary:
+    get:
+      summary: Get Portfolio Summary
+      description: 'Returns current portfolio metrics for the authenticated account: margin balance, net invested, PnL, volume metrics, and Sharpe ratios (when enabled and sufficient data).'
+      operationId: getPortfolioSummary
+      tags:
+      - Portfolio
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Portfolio summary with metrics and optional Sharpe ratio data
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/PortfolioSummaryRes'
+              example:
+                success: true
+                result:
+                  marginBalance: '4950.00'
+                  netInvested: '4750.00'
+                  totalPnL: '232.00'
+                  realizedPnl: '250.00'
+                  volume7d: '15000.00'
+                  volume30d: '85000.00'
+                  volumeAllTime: '250000.00'
+                  points: 45
+                  sharpe30d:
+                    sharpeRatio: '1.85'
+                    daysOfData: 30
+                    meanDailyROI: '0.0012'
+                    stdDevROI: '0.0065'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/portfolio/summary/graph:
+    get:
+      summary: Get Portfolio Summary Graph
+      description: 'Returns time-series portfolio snapshots for the authenticated account. Optional query parameter `range` controls the bucket size: 7d (default), 24h, 30d, or all.'
+      operationId: getPortfolioSummaryGraph
+      tags:
+      - Portfolio
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: range
+        in: query
+        description: 'Time range for bucketing: 7d (default), 24h, 30d, or all'
+        required: false
+        schema:
+          type: string
+          enum:
+          - 7d
+          - 24h
+          - 30d
+          - all
+          default: 7d
+      responses:
+        '200':
+          description: Array of portfolio graph points (time-series)
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/PortfolioGraphPoint'
+              example:
+                success: true
+                result:
+                - time: '2025-03-04T00:00:00Z'
+                  marginBalance: '4800.00'
+                  totalPnL: '180.00'
+                  realizedPnl: '200.00'
+                  netInvested: '4620.00'
+                  fillVolume: '240000.00'
+                  allTimeDeposits: '5000.00'
+                  allTimeWithdrawals: '500.00'
+                - time: '2025-03-05T00:00:00Z'
+                  marginBalance: '4950.00'
+                  totalPnL: '232.00'
+                  realizedPnl: '250.00'
+                  netInvested: '4750.00'
+                  fillVolume: '250000.00'
+                  allTimeDeposits: '5000.00'
+                  allTimeWithdrawals: '500.00'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  schemas:
+    PortfolioSummaryRes:
+      type: object
+      description: Current portfolio metrics and optional Sharpe ratios
+      properties:
+        marginBalance:
+          type: string
+          description: Current margin account balance
+        netInvested:
+          type: string
+          description: Net invested amount
+        totalPnL:
+          type: string
+          description: Total unrealized + realized PnL
+        realizedPnl:
+          type: string
+          description: Realized PnL
+        volume7d:
+          type: string
+          description: Trading volume over last 7 days
+        volume30d:
+          type: string
+          description: Trading volume over last 30 days
+        volumeAllTime:
+          type: string
+          description: All-time trading volume
+        points:
+          type: integer
+          description: Number of snapshot points used
+        sharpe30d:
+          $ref: '#/components/schemas/SharpeRatioData'
+        sharpeAllTime:
+          $ref: '#/components/schemas/SharpeRatioData'
+    SharpeRatioData:
+      type: object
+      description: Calculated Sharpe ratio and related metadata
+      properties:
+        sharpeRatio:
+          type: string
+          description: Annualized Sharpe ratio
+        daysOfData:
+          type: integer
+          description: Number of days of data used in the calculation
+        meanDailyROI:
+          type: string
+          description: Mean daily return
+        stdDevROI:
+          type: string
+          description: Standard deviation of daily returns
+    PortfolioGraphPoint:
+      type: object
+      description: Single time-series point for portfolio graph
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Timestamp of the snapshot
+        marginBalance:
+          type: string
+          description: Margin balance at this time
+        totalPnL:
+          type: string
+          description: Total PnL at this time
+        realizedPnl:
+          type: string
+          description: Realized PnL at this time
+        netInvested:
+          type: string
+          description: Net invested at this time
+        fillVolume:
+          type: string
+          description: Cumulative fill volume at this time
+        allTimeDeposits:
+          type: string
+          description: All-time deposits at this time
+        allTimeWithdrawals:
+          type: string
+          description: All-time withdrawals at this time
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

@@ -1,0 +1,320 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Chains API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Chains
+  description: Get On Chain Data
+paths:
+  /v1/chains/{chainId}/balances:
+    get:
+      tags:
+      - Chains
+      summary: Get Token Balances for a User or Token
+      description: 'This endpoint retrieves all token balances for a GM Chain. Results can be optionally filtered by `tokenAddress`, `userAddress`, or both parameters together. If no filters are provided, all balances on the chain will be returned.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getBalances
+      parameters:
+      - name: chainId
+        in: path
+        description: The chain's identifier including the chain name and chain id.
+        required: true
+        schema:
+          $ref: '#/components/schemas/GMChains'
+      - name: tokenAddress
+        in: query
+        description: Filter by a token contract address (optional).
+        schema:
+          type: string
+      - name: userAddress
+        in: query
+        description: Filter by a user wallet address (optional).
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tokens:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChainToken'
+                required:
+                - tokens
+              example:
+                tokens:
+                - tokenAddress: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+                  tokenSymbol: AAPLon
+                  balances:
+                  - holderAddress:
+                      account: '0x13116e8b4ffc8125b859ec60917fba540e59e55e'
+                    balance: '0.467583800117038432'
+                  - holderAddress:
+                      account: '0x1db995cb2b3d9679383f0e597704a41e1521f4e1'
+                    balance: '0.641380199330235549'
+                - tokenAddress: '0xf6b1117ec07684d3958cad8beb1b302bfd21103f'
+                  tokenSymbol: TSLAon
+                  balances:
+                  - holderAddress:
+                      account: '0x00000688768803bbd44095770895ad27ad6b0d95'
+                    balance: '0.030594824589372964'
+                  - holderAddress:
+                      account: '0x1db995cb2b3d9679383f0e597704a41e1521f4e1'
+                    balance: '0.088854297224463519'
+                - '...'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: One of the request parameters is invalid.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+  /v1/chains/{chainId}/tokens/{tokenAddress}/info:
+    get:
+      tags:
+      - Chains
+      summary: Get Token Info
+      description: 'This endpoint retrieves contract information about a token on a GM chain.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getTokenInfo
+      parameters:
+      - name: chainId
+        in: path
+        description: The chain's identifier including the chain name and chain id.
+        required: true
+        schema:
+          $ref: '#/components/schemas/GMChains'
+      - name: tokenAddress
+        in: path
+        description: The token contract address
+        example: '0x14c3abF95Cb9C93a8b82C1CdCB76D72Cb87b2d4c'
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTokenInfoResponse'
+        '400':
+          description: One of the request parameters is invalid. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INVALID_SYMBOL
+                    message: One of the request parameters is invalid.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#invalid_symbol
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+components:
+  schemas:
+    GetTokenInfoResponse:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/ChainTokenInfo'
+      required:
+      - token
+      example:
+        token:
+          tokenAddress: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+          tokenName: Apple (Ondo Tokenized)
+          tokenSymbol: AAPLon
+          tokenDecimals: 18
+          tokenSupply:
+            value: '72.428346190773568025'
+    ChainTokenSupply:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The total supply of the token, represented as a string with 18 decimal places.
+      required:
+      - value
+    ChainToken:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+          description: The contract address of the token on the specified chain.
+        tokenSymbol:
+          type: string
+          description: The symbol of the token on the specified chain.
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainBalance'
+      required:
+      - tokenAddress
+      - tokenSymbol
+      - balances
+    ChainBalance:
+      type: object
+      properties:
+        holderAddress:
+          $ref: '#/components/schemas/ChainHolderAddress'
+        balance:
+          type: string
+          description: The token balanced, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+      required:
+      - holderAddress
+      - balance
+    GMChains:
+      type: string
+      description: The chain's identifier including the chain name and chain id.
+      enum:
+      - ethereum-1
+      - bsc-56
+      - solana-900
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    ChainHolderAddress:
+      type: object
+      properties:
+        account:
+          type: string
+          description: The address of the holder account.
+      required:
+      - account
+    ChainTokenInfo:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+          description: The address of the token contract.
+        tokenName:
+          type: string
+          description: The name of the token.
+        tokenSymbol:
+          type: string
+          description: The symbol of the token.
+        tokenDecimals:
+          type: integer
+          description: The number of decimal places the token can be divided into.
+        tokenSupply:
+          $ref: '#/components/schemas/ChainTokenSupply'
+      required:
+      - tokenAddress
+      - tokenName
+      - tokenSymbol
+      - tokenDecimals
+      - tokenSupply
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

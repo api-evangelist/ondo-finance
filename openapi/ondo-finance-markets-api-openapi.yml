@@ -1,0 +1,177 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Markets API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Markets
+paths:
+  /v1/markets:
+    get:
+      summary: Get Markets
+      description: Returns available trading markets. Auth optional; when provided, returns markets available to the account.
+      operationId: getMarkets
+      tags:
+      - Markets
+      responses:
+        '200':
+          description: Markets response
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/MarketsResult'
+              example:
+                success: true
+                result:
+                  perps:
+                    tradingPairs:
+                    - market: AAPL-USD.P
+                      baseIncrement: '0.01'
+                      quoteIncrement: '0.01'
+                      minBaseSize: '0.01'
+                      maxLeverage: 20
+                  tokenConfig:
+                  - id: USDC
+                    name: USD Coin
+                    decimals: 2
+                    tokenDecimals: 6
+                    networks: {}
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  schemas:
+    TokenConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Token symbol identifier
+          example: USDC
+        name:
+          type: string
+          description: Token display name
+          example: USD Coin
+        decimals:
+          type: integer
+          description: Display decimals
+        tokenDecimals:
+          type: integer
+          description: On-chain token decimals
+        networks:
+          type: object
+          description: Supported networks and contract addresses
+          additionalProperties:
+            type: object
+            properties:
+              contractAddresses:
+                type: object
+                additionalProperties:
+                  type: string
+        ucid:
+          type: integer
+          description: Unified coin ID
+        coinGeckoId:
+          type: string
+        coinGeckoCurrency:
+          type: string
+        bridgeInfoUrl:
+          type: string
+        description:
+          type: string
+    MarketsResult:
+      type: object
+      properties:
+        perps:
+          type: object
+          description: Perpetual futures markets
+          properties:
+            tradingPairs:
+              type: array
+              items:
+                type: object
+              description: Available perps trading pairs and their configuration
+        tokenConfig:
+          type: array
+          description: Token configuration for supported assets
+          items:
+            $ref: '#/components/schemas/TokenConfig'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

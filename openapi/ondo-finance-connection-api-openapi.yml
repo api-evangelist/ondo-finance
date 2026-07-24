@@ -1,0 +1,211 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Connection API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Connection
+paths:
+  /ws:
+    get:
+      summary: Connect
+      operationId: wsConnect
+      description: Establish a WebSocket connection. After connecting, send JSON messages to interact with the API.
+      tags:
+      - Connection
+      responses:
+        '101':
+          description: Switching Protocols - WebSocket connection established
+    post:
+      summary: Ping
+      operationId: wsPing
+      description: 'Send `{"op": "ping"}` to keep the connection alive. The server responds with `{"type": "pong"}`.'
+      tags:
+      - Connection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            example:
+              op: ping
+      responses:
+        '200':
+          description: Pong response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - pong
+              example:
+                type: pong
+  /ws/login:
+    post:
+      summary: Login
+      operationId: wsLogin
+      description: 'Authenticate the WebSocket connection. Required before subscribing to private channels.
+
+
+        **JWT login**: provide `args.token`.
+
+
+        **API key login**: provide `args.key`, `args.time` (Unix milliseconds), and `args.sign` (HMAC-SHA256 of `"ondo_perps_ws_login" + time` using your API secret, hex-encoded).'
+      tags:
+      - Connection
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebSocketRequest'
+            examples:
+              jwt:
+                summary: JWT Login
+                value:
+                  op: login
+                  args:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+              apikey:
+                summary: API Key Login
+                value:
+                  op: login
+                  args:
+                    key: key_abc123
+                    time: '1709648400000'
+                    sign: a1b2c3d4e5f6...
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - loggedIn
+                  msg:
+                    type: string
+              example:
+                type: loggedIn
+                msg: Login successful
+        '400':
+          description: Login failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  type:
+                    type: string
+                    enum:
+                    - error
+                  msg:
+                    type: string
+                    enum:
+                    - already logged in on this connection
+                    - account already has too many connections
+components:
+  schemas:
+    WebSocketRequest:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          enum:
+          - ping
+          - login
+          - subscribe
+          - unsubscribe
+          - sendMessage
+          description: Operation type
+        channel:
+          type: string
+          description: Channel to subscribe/unsubscribe
+          enum:
+          - topOfBooksPerps
+          - depthBooksPerps
+          - tradesPerps
+          - ordersPerps
+          - fillsPerps
+          - cancelAllOrdersAfterPerps
+          - positionsPerps
+          - liquidationPerps
+          - liquidationAnnouncementsPerps
+          - marginTransfersPerps
+          - balancePerps
+          - ordersSummariesPerps
+          - fundingRatesPerps
+          - markPricesPerps
+          - fundingPaymentsPerps
+          - kLinePerps
+          - deposits
+          - withdrawals
+          - chat
+        markets:
+          type: array
+          items:
+            type: string
+          description: Filter by market(s). Required for kLine (exactly one). Optional for most channels.
+        args:
+          $ref: '#/components/schemas/LoginArgs'
+        numPastTrades:
+          type: integer
+          description: Number of historical trades to receive on subscribe (trades channels only)
+        resolution:
+          type: string
+          enum:
+          - '1'
+          - '5'
+          - '15'
+          - 1H
+          - 4H
+          - 1D
+          - 1W
+          description: Kline resolution (required for kLine channels)
+        timeout_seconds:
+          type: integer
+          description: Dead man's switch timeout (required for cancelAllOrdersAfter channels)
+        depthLevels:
+          type: string
+          description: Price grouping level for depth book (depthBooks channels only)
+        limit:
+          type: integer
+          description: Max depth levels to return; 0 for unlimited (depthBooks channels only)
+        message:
+          type: string
+          description: Chat message text (sendMessage only)
+        context:
+          type: object
+          description: Optional context for chat (market, page, etc.)
+          additionalProperties: true
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

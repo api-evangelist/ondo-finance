@@ -1,0 +1,243 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Tool API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Tool
+paths:
+  /status:
+    get:
+      summary: Get Status
+      description: Returns public API and system status. No authentication required.
+      operationId: getStatus
+      tags:
+      - Tool
+      responses:
+        '200':
+          description: Status response
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/StatusResult'
+              example:
+                success: true
+                result:
+                  marketStatus: open
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /hello:
+    get:
+      summary: Hello
+      description: Simple health check. Returns a static JSON payload. No authentication required.
+      operationId: hello
+      tags:
+      - Tool
+      responses:
+        '200':
+          description: Hello response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  hello:
+                    type: string
+                    example: world
+              example:
+                hello: world
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/verify_eligibility:
+    get:
+      summary: Verify Eligibility
+      description: Used to verify user eligibility (e.g. geography). No authentication required. May be restricted by Cloudflare.
+      operationId: verifyEligibility
+      tags:
+      - Tool
+      responses:
+        '200':
+          description: Eligibility check passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+              example:
+                success: true
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/price:
+    post:
+      summary: Get Price
+      description: Returns the current price for a given trading pair. No authentication required.
+      operationId: getPrice
+      tags:
+      - Tool
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - pair
+              properties:
+                pair:
+                  type: object
+                  required:
+                  - base
+                  - quote
+                  properties:
+                    base:
+                      type: string
+                      description: Base currency
+                      example: AAPL
+                    quote:
+                      type: string
+                      description: Quote currency
+                      example: USD
+      responses:
+        '200':
+          description: 'Price response. Note: this endpoint uses its own response format, not GenericResponse.'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  result:
+                    type: object
+                    properties:
+                      pair:
+                        type: object
+                        properties:
+                          base:
+                            type: string
+                            example: AAPL
+                          quote:
+                            type: string
+                            example: USD
+                      available:
+                        type: boolean
+                        description: Whether a price is available for this pair
+                        example: true
+                      price:
+                        type: string
+                        description: The quoted price
+                        example: '150.25'
+                      quotedAt:
+                        type: string
+                        format: date-time
+                        description: Time at which the price was quoted
+                        example: '2024-01-04T16:13:34Z'
+              example:
+                success: true
+                result:
+                  pair:
+                    base: AAPL
+                    quote: USD
+                  available: true
+                  price: '227.63'
+                  quotedAt: '2025-03-05T14:30:00Z'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  schemas:
+    StatusResult:
+      type: object
+      properties:
+        marketStatus:
+          type: string
+          description: Current market status information
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

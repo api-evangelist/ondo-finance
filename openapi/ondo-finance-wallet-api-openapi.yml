@@ -1,0 +1,1325 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Wallet API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Wallet
+paths:
+  /v1/withdraw:
+    post:
+      summary: Withdraw
+      description: Submit a withdrawal request. Rate limited per account.
+      operationId: withdraw
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - customer_withdrawal_id
+              - symbol
+              - network
+              - amount
+              - address
+              properties:
+                customer_withdrawal_id:
+                  type: string
+                  description: Unique ID for this withdrawal
+                symbol:
+                  type: string
+                  description: Coin to withdraw (e.g. USDC, SOL)
+                network:
+                  type: string
+                  description: Target network (e.g. ethereum, solana)
+                  enum:
+                  - avalanche
+                  - ethereum
+                  - solana
+                  - bitcoin
+                amount:
+                  type: string
+                  description: Amount to withdraw
+                address:
+                  type: string
+                  description: Withdrawal destination address
+                from:
+                  $ref: '#/components/schemas/AccountWalletKey'
+      responses:
+        '200':
+          description: Withdrawal result
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/WithdrawalResult'
+              example:
+                success: true
+                result:
+                  withdrawal_status: WITHDRAWAL_PENDING
+                  withdrawal_id: w_9f8e7d6c5b4a3210
+                  customer_withdrawal_id: my-withdrawal-001
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - bad_withdrawal_address
+                    - insufficient_funds
+                    - internal_withdrawal_address
+                    - invalid_network
+                    - invalid_symbol
+                    - invalid_withdrawal_network
+                    - service_unavailable
+                    - transfer_amount_precision_overflow
+                    - withdrawal_address_not_found
+                    - withdrawal_amount_too_small
+                    - withdrawal_duplicate_customer_withdrawal_id
+                    - withdrawal_error_insufficient_balance
+                    - withdrawal_failed
+                    - withdrawal_invalid_amount
+                    - withdrawal_limit_exceeded
+                    - withdrawal_missing_customer_withdrawal_id
+                    - withdrawal_system_error
+                    - withdrawal_try_later
+              example:
+                success: false
+                error: Description of the error
+                error_code: bad_withdrawal_address
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/provision_address:
+    post:
+      summary: Provision Deposit Address
+      description: Provision a new deposit address for a given symbol/chain.
+      operationId: provisionAddress
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProvisionAddressRequest'
+      responses:
+        '200':
+          description: Provisioned address
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/ProvisionAddressResult'
+              example:
+                success: true
+                result:
+                  chain: ethereum
+                  accountId: '10458932786832481'
+                  symbol: USDC
+                  address: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - invalid_network
+                    - invalid_symbol
+              example:
+                success: false
+                error: Description of the error
+                error_code: invalid_network
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/get_withdrawal_status:
+    post:
+      summary: Get Withdrawal Status
+      description: Get status of one or more withdrawals.
+      operationId: getWithdrawalStatus
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetWithdrawalStatusRequest'
+      responses:
+        '200':
+          description: Withdrawal status result
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/WithdrawalStatusResult'
+              example:
+                success: true
+                result:
+                  original_request:
+                    account_id: '10458932786832481'
+                    customer_withdrawal_id: my-withdrawal-001
+                    symbol: USDC
+                    amount: '100.00'
+                    address: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+                    network: ethereum
+                  withdrawal_id: w_9f8e7d6c5b4a3210
+                  txid: 0xabc123...
+                  confirmation_number: 12
+                  withdrawal_status: WITHDRAWAL_SUCCESS
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/deposits:
+    get:
+      summary: List Deposits
+      description: Returns deposit history for the authenticated account.
+      operationId: listDeposits
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: List of deposits
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/WalletDeposit'
+              example:
+                success: true
+                result:
+                - coin: USDC
+                  size: '1000.00'
+                  status: confirmed
+                  txid: 0xabc123...
+                  fromAddress: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+                  time: '2025-01-15T10:30:00Z'
+                  currentConfirmations: 64
+                  requiredConfirmations: 64
+                  chainId: '1'
+                  usdValue: '1000.00'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/deposits/{depositID}:
+    get:
+      summary: Get Deposit by ID
+      description: Returns a single deposit by transaction ID.
+      operationId: getDepositById
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: depositID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Deposit
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/WalletDeposit'
+              example:
+                success: true
+                result:
+                  coin: USDC
+                  size: '1000.00'
+                  status: confirmed
+                  txid: 0xabc123...
+                  fromAddress: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+                  time: '2025-01-15T10:30:00Z'
+                  currentConfirmations: 64
+                  requiredConfirmations: 64
+                  chainId: '1'
+                  usdValue: '1000.00'
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - deposit_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: deposit_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/withdrawals:
+    get:
+      summary: List Withdrawals
+      description: Returns withdrawal history for the authenticated account.
+      operationId: listWithdrawals
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: List of withdrawals
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/WalletWithdrawal'
+              example:
+                success: true
+                result:
+                - coin: USDC
+                  size: '500.00'
+                  status: confirmed
+                  address: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+                  withdrawal_id: w_9f8e7d6c5b4a3210
+                  txid: 0xdef456...
+                  customer_withdrawal_id: my-withdrawal-001
+                  time: '2025-02-20T15:45:00Z'
+                  usdValue: '500.00'
+                  usdFee: '0.00'
+                  chainId: '1'
+                  from:
+                    id: '10458932786832481'
+                    wallet: main
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/withdrawals/limit:
+    get:
+      summary: Get Withdrawal Limits
+      description: Returns withdrawal limits for the authenticated account.
+      operationId: getWithdrawalLimits
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Withdrawal limits
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/WithdrawalLimits'
+              example:
+                success: true
+                result:
+                  currentWithdrawalsUsd: '500.00'
+                  withdrawalLimitUsd: '50000.00'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/withdrawals/{withdrawalID}:
+    get:
+      summary: Get Withdrawal by ID
+      description: Returns a single withdrawal by transaction ID.
+      operationId: getWithdrawalById
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      parameters:
+      - name: withdrawalID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Withdrawal
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/WalletWithdrawal'
+              example:
+                success: true
+                result:
+                  coin: USDC
+                  size: '500.00'
+                  status: confirmed
+                  address: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+                  withdrawal_id: w_9f8e7d6c5b4a3210
+                  txid: 0xdef456...
+                  customer_withdrawal_id: my-withdrawal-001
+                  time: '2025-02-20T15:45:00Z'
+                  usdValue: '500.00'
+                  usdFee: '0.00'
+                  chainId: '1'
+                  from:
+                    id: '10458932786832481'
+                    wallet: main
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - withdrawal_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: withdrawal_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/deposit_address/list:
+    post:
+      summary: List Deposit Addresses
+      description: Returns the list of deposit addresses for the account.
+      operationId: listDepositAddresses
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DepositAddressListRequest'
+      responses:
+        '200':
+          description: List of deposit addresses
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/DepositAddress'
+              example:
+                success: true
+                result:
+                - coin: USDC
+                  network: ethereum
+                  address: '0x742d35Cc6634C0532925a3b844Bc9e7595f2bD18'
+                  depositDestination:
+                    id: '10458932786832481'
+                    wallet: main
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - invalid_network
+                    - invalid_symbol
+                    - too_few_items
+              example:
+                success: false
+                error: Description of the error
+                error_code: invalid_network
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/deposits/csv:
+    post:
+      summary: Export Deposits CSV
+      description: Export deposits as CSV for a time range.
+      operationId: exportDepositsCsv
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnixTimeRangeRequest'
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/withdrawals/csv:
+    post:
+      summary: Export Withdrawals CSV
+      description: Export withdrawals as CSV for a time range.
+      operationId: exportWithdrawalsCsv
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UnixTimeRangeRequest'
+      responses:
+        '200':
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /v1/wallet/address_book:
+    get:
+      summary: Get Address Book
+      description: Returns withdrawal address book entries for the authenticated account.
+      operationId: getAddressBook
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Address book
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/GenericResponse'
+                - type: object
+                  properties:
+                    result:
+                      $ref: '#/components/schemas/AddressBookResult'
+              example:
+                success: true
+                result:
+                  addressBook:
+                  - withdrawalAddress: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+                    label: My Ledger
+                    lastUpdated: '2025-01-10T08:00:00Z'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      summary: Edit Address Book Entry
+      description: Update label for a withdrawal address.
+      operationId: editAddressBookEntry
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EditWithdrawalAddressRequest'
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                success: true
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+                    - bad_label
+                    - empty_label
+                    - withdrawal_address_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      summary: Remove Address Book Entry
+      description: Remove a withdrawal address from the address book.
+      operationId: deleteAddressBookEntry
+      tags:
+      - Wallet
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteWithdrawalAddressRequest'
+      responses:
+        '200':
+          description: Removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericResponse'
+              example:
+                success: true
+        '400':
+          description: Bad request. The request was malformed or failed validation.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    description: Human-readable error message
+                  error_code:
+                    type: string
+                    enum:
+                    - account_not_found
+                    - withdrawal_address_not_found
+              example:
+                success: false
+                error: Description of the error
+                error_code: account_not_found
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+components:
+  responses:
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+  schemas:
+    AddressBookResult:
+      type: object
+      properties:
+        addressBook:
+          type: array
+          description: List of withdrawal addresses
+          items:
+            $ref: '#/components/schemas/AddressBookEntry'
+    DepositAddressListRequest:
+      type: object
+      required:
+      - coins
+      properties:
+        coins:
+          type: array
+          items:
+            type: string
+          description: List of token symbols to retrieve deposit addresses for
+          example:
+          - USDC
+        network:
+          type: string
+          description: Filter by network; omit to list all networks
+          example: ethereum
+          enum:
+          - avalanche
+          - ethereum
+          - solana
+          - bitcoin
+        depositDestination:
+          description: Filter by destination wallet; omit to list all destinations
+          $ref: '#/components/schemas/AccountWalletKey'
+    ProvisionAddressResult:
+      type: object
+      required:
+      - chain
+      - accountId
+      - symbol
+      - address
+      properties:
+        chain:
+          type: string
+          description: Blockchain network
+          example: ethereum
+        accountId:
+          type: string
+          description: Account ID
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        address:
+          type: string
+          description: Provisioned deposit address
+    AddressBookEntry:
+      type: object
+      required:
+      - withdrawalAddress
+      - label
+      - lastUpdated
+      properties:
+        withdrawalAddress:
+          type: string
+          description: Withdrawal address
+        label:
+          type: string
+          description: User-defined label for the address
+        lastUpdated:
+          type: string
+          format: date-time
+          description: When the entry was last updated
+    WalletDeposit:
+      type: object
+      required:
+      - coin
+      - size
+      - status
+      - txid
+      - fromAddress
+      - time
+      - chainId
+      - usdValue
+      properties:
+        coin:
+          type: string
+          description: Token symbol
+          example: USDC
+        size:
+          type: string
+          description: Deposit amount
+          example: '100.00'
+        status:
+          type: string
+          description: Deposit status
+          enum:
+          - pending
+          - confirmed
+          example: confirmed
+        txid:
+          type: string
+          description: On-chain transaction ID
+        fromAddress:
+          type: string
+          description: Sender address
+        time:
+          type: string
+          format: date-time
+          description: Deposit time
+        currentConfirmations:
+          type: integer
+          description: Current number of confirmations
+        requiredConfirmations:
+          type: integer
+          description: Required confirmations for finality
+        accountId:
+          type: string
+          description: Account ID
+        chainId:
+          type: string
+          description: Chain ID
+          enum:
+          - avax-c-chain
+          - avax-fuji-c-chain
+          - eth-mainnet
+          - eth-sepolia
+          - btc-mainnet
+          - btc-testnet
+          - sol-mainnet
+          - sol-testnet
+          - bsc-mainnet
+          - bsc-testnet
+          example: eth-mainnet
+        usdValue:
+          type: string
+          description: USD value of the deposit
+        logIndex:
+          type: string
+          description: Log index in the transaction
+    DepositAddress:
+      type: object
+      required:
+      - coin
+      - network
+      - address
+      - depositDestination
+      properties:
+        coin:
+          type: string
+          description: Token symbol
+          example: USDC
+        network:
+          type: string
+          description: Blockchain network
+          example: ethereum
+          enum:
+          - avalanche
+          - ethereum
+          - solana
+          - bitcoin
+        address:
+          type: string
+          description: Deposit address
+        depositDestination:
+          $ref: '#/components/schemas/AccountWalletKey'
+    DeleteWithdrawalAddressRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to remove
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+    UnixTimeRangeRequest:
+      type: object
+      properties:
+        start_time:
+          type: integer
+          format: int64
+          description: Start time as Unix timestamp in seconds
+          example: 1666203390
+        end_time:
+          type: integer
+          format: int64
+          description: End time as Unix timestamp in seconds
+          example: 1709734800
+    WithdrawalResult:
+      type: object
+      required:
+      - withdrawal_status
+      - withdrawal_id
+      - customer_withdrawal_id
+      properties:
+        withdrawal_status:
+          type: string
+          description: Status of the withdrawal
+          example: WITHDRAWAL_PENDING
+          enum:
+          - WITHDRAWAL_SUCCESS
+          - WITHDRAWAL_FAILURE
+          - WITHDRAWAL_PENDING
+          - WITHDRAWAL_CANCELLED
+          - WITHDRAWAL_UNKNOWN
+        withdrawal_id:
+          type: string
+          description: Internal withdrawal ID
+        customer_withdrawal_id:
+          type: string
+          description: Customer-provided withdrawal ID
+        hash:
+          type: string
+          description: On-chain transaction hash (when available)
+    ProvisionAddressRequest:
+      type: object
+      required:
+      - network
+      - symbol
+      - deposit_destination
+      properties:
+        network:
+          type: string
+          description: Blockchain network
+          example: ethereum
+          enum:
+          - avalanche
+          - ethereum
+          - solana
+          - bitcoin
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        deposit_destination:
+          $ref: '#/components/schemas/AccountWalletKey'
+    GetWithdrawalStatusRequest:
+      type: object
+      description: Provide exactly one of withdrawal_id or customer_withdrawal_id
+      properties:
+        withdrawal_id:
+          type: string
+          description: The platform-assigned withdrawal ID
+          example: w_9f8e7d6c5b4a3210
+        customer_withdrawal_id:
+          type: string
+          description: The user-specified withdrawal ID
+          example: my-withdrawal-001
+    WithdrawalLimits:
+      type: object
+      required:
+      - currentWithdrawalsUsd
+      - withdrawalLimitUsd
+      properties:
+        currentWithdrawalsUsd:
+          type: string
+          description: Current withdrawal amount used in this period (USD)
+          example: '500.00'
+        withdrawalLimitUsd:
+          type: string
+          description: Maximum withdrawal amount allowed in this period (USD)
+          example: '50000.00'
+    WalletWithdrawal:
+      type: object
+      required:
+      - coin
+      - size
+      - status
+      - address
+      - withdrawal_id
+      - txid
+      - customer_withdrawal_id
+      - time
+      - chainId
+      properties:
+        coin:
+          type: string
+          description: Token symbol
+          example: USDC
+        size:
+          type: string
+          description: Withdrawal amount
+          example: '100.00'
+        status:
+          type: string
+          description: Withdrawal status
+          enum:
+          - WITHDRAWAL_SUCCESS
+          - WITHDRAWAL_FAILURE
+          - WITHDRAWAL_PENDING
+          - WITHDRAWAL_CANCELLED
+          - WITHDRAWAL_UNKNOWN
+          example: WITHDRAWAL_SUCCESS
+        address:
+          type: string
+          description: Destination address
+        withdrawal_id:
+          type: string
+          description: Internal withdrawal ID
+        txid:
+          type: string
+          description: On-chain transaction ID
+        customer_withdrawal_id:
+          type: string
+          description: Customer-provided withdrawal ID
+        time:
+          type: string
+          format: date-time
+          description: Withdrawal time
+        accountId:
+          type: string
+          description: Account ID
+        usdValue:
+          type: string
+          description: USD value of the withdrawal
+        usdFee:
+          type: string
+          description: USD fee for the withdrawal
+        chainId:
+          type: string
+          description: Chain ID
+          enum:
+          - avax-c-chain
+          - avax-fuji-c-chain
+          - eth-mainnet
+          - eth-sepolia
+          - btc-mainnet
+          - btc-testnet
+          - sol-mainnet
+          - sol-testnet
+          - bsc-mainnet
+          - bsc-testnet
+          example: eth-mainnet
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+    WithdrawalStatusResult:
+      type: object
+      required:
+      - original_request
+      - withdrawal_id
+      - txid
+      - confirmation_number
+      - withdrawal_status
+      properties:
+        original_request:
+          type: object
+          description: The original withdrawal request
+          properties:
+            account_id:
+              type: string
+            customer_withdrawal_id:
+              type: string
+            symbol:
+              type: string
+            amount:
+              type: string
+            address:
+              type: string
+            network:
+              type: string
+              enum:
+              - avalanche
+              - ethereum
+              - solana
+              - bitcoin
+            from:
+              $ref: '#/components/schemas/AccountWalletKey'
+        withdrawal_id:
+          type: string
+          description: Internal withdrawal ID
+        txid:
+          type: string
+          description: On-chain transaction ID
+        confirmation_number:
+          type: integer
+          description: Number of confirmations
+        withdrawal_status:
+          type: string
+          description: Current withdrawal status
+          enum:
+          - WITHDRAWAL_SUCCESS
+          - WITHDRAWAL_FAILURE
+          - WITHDRAWAL_PENDING
+          - WITHDRAWAL_CANCELLED
+          - WITHDRAWAL_UNKNOWN
+    AccountWalletKey:
+      type: object
+      required:
+      - id
+      - wallet
+      properties:
+        id:
+          type: string
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
+          type: string
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
+    EditWithdrawalAddressRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to edit
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+        addressLabel:
+          type: string
+          description: Updated label for the address
+          example: My Ledger Nano X
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header

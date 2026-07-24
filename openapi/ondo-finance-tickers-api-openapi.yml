@@ -1,0 +1,141 @@
+openapi: 3.0.4
+info:
+  title: GM Backend Account Tickers API
+  description: An API spec for the Ondo GM Backend API.
+  version: 1.0.0
+servers:
+- url: https://api.gm.ondo.finance
+  description: GM Backend API
+tags:
+- name: Tickers
+  description: Get Ticker Information
+paths:
+  /v1/tickers:
+    get:
+      tags:
+      - Tickers
+      summary: Get Price and Volume Data for All Supported Tickers
+      description: 'This endpoint retrieves the latest price and volume data for all supported tickers. A ticker represents a specific asset in the market.
+
+
+        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
+
+        '
+      operationId: getAllTickers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TickerResponse'
+              example:
+              - tickerId: TSLAon_USDon
+                baseCurrency: TSLAon
+                targetCurrency: USDon
+                lastPrice: 338.42375
+                baseVolume: 72.720573083
+                targetVolume: 24610.369044819
+              - tickerId: AAPLon_USDon
+                baseCurrency: AAPLon
+                targetCurrency: USDon
+                lastPrice: 228.195452051
+                baseVolume: 2761.011833446
+                targetVolume: 630050.34345192
+              - '...'
+        '401':
+          description: Missing or invalid API key.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: MISSING_API_KEY
+                    message: missing API key
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#missing_api_key
+        '429':
+          description: The account has exceeded its rate limits. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: RATE_LIMITED
+                    message: rate limit exceeded
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#rate_limited
+        '500':
+          description: An internal server error occurred. Please see the returned message and documentation for details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                error:
+                  value:
+                    code: INTERNAL_ERROR
+                    message: An internal server error occurred. Please see the returned message and documentation for details.
+                    documentation: https://docs.ondo.finance/api-reference/error-codes#internal_error
+      security:
+      - apiKey: []
+components:
+  schemas:
+    TickerResponse:
+      type: object
+      properties:
+        tickerId:
+          type: string
+          description: The identifier of a ticker, formatted as `<base>_<target>`.
+          example: aaplon_usdon
+        baseCurrency:
+          type: string
+          description: The GM symbol of the base asset.
+          example: AAPLon
+        targetCurrency:
+          type: string
+          description: The GM symbol of the target asset.
+          example: USDon
+        lastPrice:
+          type: number
+          description: The last transacted price of base currency based on given target currency.
+          example: 12.34
+        baseVolume:
+          type: number
+          description: The 24 hour trading volume for the pair (unit in base).
+          example: 100
+        targetVolume:
+          type: number
+          description: The 24 hour trading volume for the pair (unit in target).
+          example: 250
+      required:
+      - tickerId
+      - baseCurrency
+      - targetCurrency
+      - lastPrice
+      - baseVolume
+      - targetVolume
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: x-api-key
+      in: header
