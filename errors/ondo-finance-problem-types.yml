@@ -1,0 +1,145 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/ondo-finance-gm-openapi-original.json, openapi/ondo-finance-perps-openapi-original.json
+format: custom
+note: GM Backend uses a {code,message,documentation} envelope (see errors/ondo-finance-error-codes.yml);
+  Perps returns JSON errors. Not application/problem+json.
+problems:
+- status: 400
+  api: openapi/ondo-finance-gm-openapi-original.json
+  title: One of the request parameters is invalid. Please see the returned message and documentation for
+    details.
+  content_types:
+  - application/json
+  example_operations:
+  - createAttestation
+  - createSoftAttestationQuote
+  - getAllAssetEnhancedPrices
+  - getAllPrices
+  - getAssetAddresses
+  - getBalances
+  operation_count: 14
+- status: 401
+  api: openapi/ondo-finance-gm-openapi-original.json
+  title: Missing or invalid API key.
+  content_types:
+  - application/json
+  example_operations:
+  - createAttestation
+  - createSoftAttestationQuote
+  - getAllAssetAddresses
+  - getAllAssetEnhancedPrices
+  - getAllAssetMetadata
+  - getAllMarkets
+  operation_count: 20
+- status: 403
+  api: openapi/ondo-finance-gm-openapi-original.json
+  title: The request was denied due to market state, asset state, or insufficient permissions.
+  content_types:
+  - application/json
+  example_operations:
+  - createAttestation
+  - createSoftAttestationQuote
+  - getTradingLimits
+  operation_count: 3
+- status: 404
+  api: openapi/ondo-finance-gm-openapi-original.json
+  title: The provided asset symbol does not exist and cannot be found.
+  content_types:
+  - application/json
+  example_operations:
+  - createAttestation
+  - createSoftAttestationQuote
+  - getAssetAddresses
+  - getLatestDividend
+  - getMarket
+  - getOHLCPrices
+  operation_count: 9
+- status: 429
+  api: openapi/ondo-finance-gm-openapi-original.json
+  title: The account has exceeded its rate limits. Please see the returned message and documentation for
+    details.
+  content_types:
+  - application/json
+  example_operations:
+  - createAttestation
+  - createSoftAttestationQuote
+  - getAllAssetAddresses
+  - getAllAssetEnhancedPrices
+  - getAllAssetMetadata
+  - getAllMarkets
+  operation_count: 20
+- status: 500
+  api: openapi/ondo-finance-gm-openapi-original.json
+  title: An internal server error occurred. Please see the returned message and documentation for details.
+  content_types:
+  - application/json
+  example_operations:
+  - createAttestation
+  - createSoftAttestationQuote
+  - getAllAssetAddresses
+  - getAllAssetEnhancedPrices
+  - getAllAssetMetadata
+  - getAllMarkets
+  operation_count: 20
+- status: 400
+  api: openapi/ondo-finance-perps-openapi-original.json
+  title: Bad request. The request was malformed or failed validation.
+  content_types:
+  - application/json
+  example_operations:
+  - batchCancelOrders
+  - cancelAllOrders
+  - cancelOrderByID
+  - cancelTWAPOrder
+  - completeSIWEAddressBookChallenge
+  - completeSIWEChallenge
+  operation_count: 58
+- status: 401
+  api: openapi/ondo-finance-perps-openapi-original.json
+  title: null
+  content_types: []
+  example_operations:
+  - batchCancelOrders
+  - cancelAllOrders
+  - cancelOrderByID
+  - cancelTWAPOrder
+  - completeSIWEAddressBookChallenge
+  - createApiKey
+  operation_count: 64
+- status: 403
+  api: openapi/ondo-finance-perps-openapi-original.json
+  title: null
+  content_types: []
+  example_operations:
+  - batchCancelOrders
+  - cancelAllOrders
+  - cancelOrderByID
+  - cancelTWAPOrder
+  - completeSIWEAddressBookChallenge
+  - createApiKey
+  operation_count: 64
+- status: 429
+  api: openapi/ondo-finance-perps-openapi-original.json
+  title: null
+  content_types: []
+  example_operations:
+  - batchCancelOrders
+  - cancelAllOrders
+  - cancelOrderByID
+  - cancelTWAPOrder
+  - completeSIWEAddressBookChallenge
+  - completeSIWEChallenge
+  operation_count: 88
+- status: 500
+  api: openapi/ondo-finance-perps-openapi-original.json
+  title: null
+  content_types: []
+  example_operations:
+  - batchCancelOrders
+  - cancelAllOrders
+  - cancelOrderByID
+  - cancelTWAPOrder
+  - completeSIWEAddressBookChallenge
+  - completeSIWEChallenge
+  operation_count: 88

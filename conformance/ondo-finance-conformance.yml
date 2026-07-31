@@ -1,0 +1,36 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/ondo-finance-gm-openapi-original.json, openapi/ondo-finance-perps-openapi-original.json, openapi/ondo-finance-perps-ws-openapi-original.json
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: Three published OpenAPI 3.0.x documents (GM Backend 3.0.4, Perps REST 3.0.3, Perps WS 3.0.3).
+- id: oauth2
+  conforms: false
+  evidence: No oauth2 securitySchemes; auth is apiKey + http bearer (JWT) + SIWE.
+- id: openid-connect
+  conforms: false
+- id: eip-4361-siwe
+  conforms: true
+  evidence: Perps authenticates via Sign-In With Ethereum (ERC-4361) challenge-response (getSIWEChallenge/completeSIWEChallenge).
+- id: jwt-rfc7519
+  conforms: true
+  evidence: Perps BearerAuth bearerFormat JWT.
+- id: grpc
+  conforms: true
+  evidence: GM streaming exposed as gRPC service BackendService (proto3, package ondo.gm.backend.v1).
+- id: protobuf-proto3
+  conforms: true
+  evidence: grpc/ondo-finance-gm-backend.proto (syntax proto3).
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: GM Backend uses a custom {code,message,documentation} error envelope, not application/problem+json.
+- id: pagination
+  conforms: true
+  evidence: Cursor pagination (cursor/nextCursor) in Perps; offset/limit in GM Backend.
+- id: idempotency
+  conforms: false
+  evidence: No Idempotency-Key contract documented.
+- id: websocket
+  conforms: true
+  evidence: Perps real-time surface over wss://api.ondoperps.xyz/ws with 22 subscription channels.

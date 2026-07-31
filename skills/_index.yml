@@ -1,0 +1,12 @@
+generated: '2026-07-20'
+method: generated
+source: openapi/ondo-finance-gm-openapi-original.json, openapi/ondo-finance-perps-openapi-original.json
+skills:
+- file: ondo-finance-quote-and-mint-stock.md
+  name: Quote and mint an Ondo Stock (Global Markets)
+  api: openapi/ondo-finance-gm-openapi-original.json
+  operations: [getMarketStatus, getPrice, createSoftAttestationQuote, createAttestation, getTradingLimits]
+- file: ondo-finance-place-perps-order.md
+  name: Place an Ondo Perps order
+  api: openapi/ondo-finance-perps-openapi-original.json
+  operations: [getSIWEChallenge, completeSIWEChallenge, getMarkets, createOrder, getOrders, getPerpsPositions, getPerpsBalance]

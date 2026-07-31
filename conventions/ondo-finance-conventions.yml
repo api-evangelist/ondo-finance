@@ -1,0 +1,70 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.ondo.finance/api-reference/overview, https://docs.ondo.finance/api-reference/endpoint-caching
+apis:
+- openapi/ondo-finance-gm-openapi-original.json
+- openapi/ondo-finance-perps-openapi-original.json
+authentication:
+  gm_backend:
+    style: api-key
+    header: x-api-key
+    notes: Onboard via onboarding@ondo.finance to receive keys. Keys can be read-only (write ops return READ_ONLY_API_KEY).
+  perps:
+    style: bearer-jwt + api-key
+    bearer:
+      format: JWT
+      obtained_via:
+      - SIWE / EIP-4361 (Sign-In With Ethereum) challenge-response (getSIWEChallenge -> completeSIWEChallenge)
+      - Web2 OAuth (Google / email) then web2GetToken
+    api_key:
+      header: X-API-KEY-ID
+      notes: Programmatic keys support IP whitelisting (setApiKeyIpWhitelist).
+idempotency:
+  supported: false
+  note: No Idempotency-Key header or idempotency contract is documented in either OpenAPI or the docs.
+pagination:
+  gm_backend:
+    style: offset-limit
+    params: [limit, offset]
+  perps:
+    style: cursor
+    params: [cursor, limit]
+    response_fields: [nextCursor]
+rate_limiting:
+  signaled: true
+  http_status: 429
+  error_code: RATE_LIMITED
+  documented_limits:
+    perps_websocket: 25 requests/second (burst 50), 32 KB max message size
+  see: rate-limits/ondo-finance-rate-limits.yml
+caching:
+  gm_backend:
+    latest_prices: 1s
+    ohlc: 1s (underlying data may lag 5-10s; effective lag up to 11s)
+    market_data: 1m
+    session_limits: 1m
+    metadata: 5m
+    trading_limits: none (always live)
+  source: https://docs.ondo.finance/api-reference/endpoint-caching
+error_envelope:
+  gm_backend:
+    shape: {code: string, message: string, documentation: url}
+    format: custom
+    catalog: errors/ondo-finance-error-codes.yml
+  note: Not RFC 9457 application/problem+json.
+versioning:
+  scheme: uri-path
+  current: v1
+  advance_notice: https://docs.ondo.finance/api-reference/upcoming-changes
+streaming:
+  grpc:
+    proto: grpc/ondo-finance-gm-backend.proto
+    streams: [StreamPriceUpdates, StreamOHLC, StreamSoftQuoteDepth]
+  websocket:
+    endpoint: wss://api.ondoperps.xyz/ws
+    spec: openapi/ondo-finance-perps-ws-openapi-original.json
+cross_links:
+  errors: errors/ondo-finance-error-codes.yml
+  lifecycle: lifecycle/ondo-finance-lifecycle.yml
+  authentication: authentication/ondo-finance-authentication.yml
+  rate_limits: rate-limits/ondo-finance-rate-limits.yml

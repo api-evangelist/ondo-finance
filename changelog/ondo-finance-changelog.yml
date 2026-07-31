@@ -1,0 +1,16 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.ondo.finance/api-reference/upcoming-changes
+scheme: advance-notice (forward-looking "Upcoming API changes" notices rather than a dated historical changelog)
+current_version: v1
+url: https://docs.ondo.finance/api-reference/upcoming-changes
+entries:
+- version: unreleased
+  date: null
+  type: additive
+  breaking: false
+  highlights:
+  - "Market responses: new constituentTokens field (array of GM token symbols; empty [] for single-stock tokens)."
+  - "Market responses: underlyingMarket can now be null for tokens representing several underlying assets."
+  affected_operations: [getMarket, getAllMarkets]
+notes: Ondo's public API-change surface is a forward-looking advance-notice page; a dated release-history changelog was not found.

@@ -1,0 +1,15 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.ondo.finance/api-reference/upcoming-changes, https://docs.ondo.finance/api-reference/overview
+versioning:
+  scheme: uri-path
+  current: v1
+  docs: https://docs.ondo.finance/api-reference/overview
+deprecation:
+  policy: advance-notice
+  advance_notice_page: https://docs.ondo.finance/api-reference/upcoming-changes
+  notes: Ondo publishes an "Upcoming API changes" page giving advance notice of contract changes (additive fields, nullable fields) before they ship, so integrators can prepare. No formal Sunset/Deprecation RFC 8594 header support is documented.
+  backward_compatibility: Documented changes are additive (e.g. new constituentTokens field, underlyingMarket becoming nullable) so integrations that ignore new fields keep working.
+status_page: null
+sla: null
+deprecated_operations: []

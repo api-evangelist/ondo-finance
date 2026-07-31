@@ -1,0 +1,65 @@
+generated: '2026-07-20'
+method: derived
+status: candidate
+source: openapi/ondo-finance-gm-openapi-original.json
+note: Candidate read-only MCP tool surface derived from GM Backend GET operations. No official Ondo-hosted
+  MCP server was found.
+server:
+  name: ondo-gm
+  transport: http
+  auth: x-api-key header (Ondo Stocks onboarding-gated)
+tools:
+- name: getAllPrices
+  description: Get Current Prices for All Supported Assets
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAllPrices
+- name: getPrice
+  description: Get Current Price for an Asset
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getPrice
+- name: getAllAssetEnhancedPrices
+  description: Get Enhanced Prices for All Supported Assets
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAllAssetEnhancedPrices
+- name: getOHLCPrices
+  description: Get OHLC (Open, High, Low, Close) Data for an Asset
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getOHLCPrices
+- name: getAllMarkets
+  description: Get Market Data for All Supported Assets
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAllMarkets
+- name: getMarket
+  description: Get Market Data for an Asset
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getMarket
+- name: getLatestDividend
+  description: Get Dividend Information for an Asset
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getLatestDividend
+- name: getAllAssetAddresses
+  description: Get All Contract Addresses Across Networks
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAllAssetAddresses
+- name: getAssetAddresses
+  description: Get Contract Addresses for an Asset
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAssetAddresses
+- name: getAllAssetMetadata
+  description: Get Metadata for All Supported Assets
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAllAssetMetadata
+- name: getSharesMultiplier
+  description: Get Shares Multiplier History for an Asset
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getSharesMultiplier
+- name: getAllTickers
+  description: Get Price and Volume Data for All Supported Tickers
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAllTickers
+- name: getBalances
+  description: Get Token Balances for a User or Token
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getBalances
+- name: getTokenInfo
+  description: Get Token Info
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getTokenInfo
+- name: getTradingLimits
+  description: Get Trading Limits
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getTradingLimits
+- name: getSessionLimits
+  description: Get Session Limits
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getSessionLimits
+- name: getMarketStatus
+  description: Get Current Market Status
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getMarketStatus
+- name: getAssetStatus
+  description: Get Asset Statuses
+  source_operation: openapi/ondo-finance-gm-openapi-original.json#getAssetStatus

@@ -1,0 +1,26 @@
+generated: '2026-07-20'
+method: searched
+source: openapi/ondo-finance-perps-openapi-original.json, https://docs.ondo.finance/api-reference/quickstart
+apis:
+- openapi/ondo-finance-perps-openapi-original.json
+- openapi/ondo-finance-gm-openapi-original.json
+perps:
+  sandbox_operations:
+  - operationId: sandboxDeposit
+    path: /v1/sandbox_deposit
+    method: post
+    description: Simulate a deposit into a Perps test account without moving real funds.
+  - operationId: sandboxWithdrawal
+    path: /v1/sandbox_withdrawal
+    method: post
+    description: Simulate a withdrawal from a Perps test account.
+  notes: Perps exposes explicit sandbox deposit/withdrawal endpoints for testing account flows before live trading.
+gm_backend:
+  non_binding_pricing:
+  - operationId: createSoftAttestationQuote
+    path: /v1/attestations/soft
+    method: post
+    description: Soft quote returns non-binding price estimate without impacting trading limits or creating an attestation - safe to call repeatedly when validating an integration.
+  notes: GM Backend has no separate sandbox host; access is onboarding-gated (onboarding@ondo.finance) and read-only API keys allow safe read-only exploration.
+test_values:
+  note: Ondo does not publish fixed magic test symbols or test card numbers; sandbox is exercised through the sandbox_deposit/sandbox_withdrawal endpoints and soft quotes.

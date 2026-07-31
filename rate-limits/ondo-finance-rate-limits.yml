@@ -1,0 +1,18 @@
+generated: '2026-07-20'
+method: searched
+source: openapi/ondo-finance-perps-ws-openapi-original.json (description), openapi/ondo-finance-gm-openapi-original.json
+signaling:
+  http_status: 429
+  error_code: RATE_LIMITED
+limits:
+- surface: Ondo Perps WebSocket
+  endpoint: wss://api.ondoperps.xyz/ws
+  limit_count: 25
+  window: 1s
+  burst: 50
+  max_message_size: 32 KB
+  source: openapi/ondo-finance-perps-ws-openapi-original.json
+- surface: GM Backend REST
+  endpoint: https://api.gm.ondo.finance
+  limit_count: null
+  note: Per-key rate limits enforced (429 / RATE_LIMITED) but a numeric published ceiling was not found in docs.

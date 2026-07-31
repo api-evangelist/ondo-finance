@@ -1,27 +1,582 @@
 aid: ondo-finance
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/ondo-finance.png
 name: Ondo Finance
-description: 'Ondo Finance is a company surfaced as a portfolio company of pantera-capital and added to
-  the API Evangelist network as a stub for enrichment. Sector: crypto. This profile is a lead awaiting
-  the enrichment pipeline.'
+description: 'Ondo Finance builds institutional-grade platforms and infrastructure to bring financial markets onchain, tokenizing real-world assets and equities. Its developer surface spans three APIs: the GM Backend API (Ondo Stocks / Global Markets) for tokenized-stock prices, market data, dividends, trading limits and mint/redeem attestations, exposed over REST plus a gRPC real-time streaming service; and the Ondo Perps REST and WebSocket APIs for perpetual-futures trading with SIWE (EIP-4361) and Web2 authentication, order management, positions, funding and live market data. Products include Ondo Stocks, USDY (yieldcoin) and OUSG (tokenized US Treasuries).'
 url: https://raw.githubusercontent.com/api-evangelist/ondo-finance/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - pantera-capital
-x-tier: stub
+x-tier: enriched
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-20'
 tags:
 - Company
 - Crypto
-apis: []
+- Tokenization
+- Real World Assets
+- DeFi
+- Stocks
+- Trading
+- Perpetual Futures
+- Market Data
+- Blockchain
+- Financial Services
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: ondo-finance:ondo-finance-account-api
+  name: Ondo Finance Account API
+  description: The Account API from Ondo Finance — 3 operation(s) for account.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-account-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-api-keys-api
+  name: Ondo Finance API Keys API
+  description: The API Keys API from Ondo Finance — 3 operation(s) for api keys.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - API Keys
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-api-keys-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-assets-api
+  name: Ondo Finance Assets API
+  description: Get Asset Price Information
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Assets
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-assets-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-attestations-api
+  name: Ondo Finance Attestations API
+  description: Get Mint and Redeem Attestations
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Attestations
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-attestations-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-auth-api
+  name: Ondo Finance Auth API
+  description: The Auth API from Ondo Finance — 12 operation(s) for auth.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Auth
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-auth-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-chains-api
+  name: Ondo Finance Chains API
+  description: Get On Chain Data
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Chains
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-chains-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-chat-api
+  name: Ondo Finance Chat API
+  description: The Chat API from Ondo Finance — 1 operation(s) for chat.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Chat
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-chat-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-connection-api
+  name: Ondo Finance Connection API
+  description: The Connection API from Ondo Finance — 2 operation(s) for connection.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Connection
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-connection-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-fills-api
+  name: Ondo Finance Fills API
+  description: The Fills API from Ondo Finance — 3 operation(s) for fills.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Fills
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-fills-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-funding-rate-api
+  name: Ondo Finance Funding Rate API
+  description: The Funding Rate API from Ondo Finance — 4 operation(s) for funding rate.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Funding Rate
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-funding-rate-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-limits-api
+  name: Ondo Finance Limits API
+  description: Get Trading Limits
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Limits
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-limits-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-margin-account-api
+  name: Ondo Finance Margin Account API
+  description: The Margin Account API from Ondo Finance — 5 operation(s) for margin account.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Margin Account
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-margin-account-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-market-data-api
+  name: Ondo Finance Market Data API
+  description: The Market Data API from Ondo Finance — 9 operation(s) for market data.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Market Data
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-market-data-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-markets-api
+  name: Ondo Finance Markets API
+  description: The Markets API from Ondo Finance — 1 operation(s) for markets.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Markets
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-markets-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-orders-api
+  name: Ondo Finance Orders API
+  description: The Orders API from Ondo Finance — 6 operation(s) for orders.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-orders-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-portfolio-api
+  name: Ondo Finance Portfolio API
+  description: The Portfolio API from Ondo Finance — 2 operation(s) for portfolio.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Portfolio
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-portfolio-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-positions-api
+  name: Ondo Finance Positions API
+  description: The Positions API from Ondo Finance — 2 operation(s) for positions.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Positions
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-positions-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-private-channels-api
+  name: Ondo Finance Private Channels API
+  description: The Private Channels API from Ondo Finance — 11 operation(s) for private channels.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Private Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-private-channels-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-public-channels-api
+  name: Ondo Finance Public Channels API
+  description: The Public Channels API from Ondo Finance — 7 operation(s) for public channels.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Public Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-public-channels-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-sandbox-api
+  name: Ondo Finance Sandbox API
+  description: The Sandbox API from Ondo Finance — 2 operation(s) for sandbox.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Sandbox
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-sandbox-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-status-api
+  name: Ondo Finance Status API
+  description: Get Market and Trading Statuses
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Status
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-status-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-stop-orders-api
+  name: Ondo Finance Stop Orders API
+  description: The Stop Orders API from Ondo Finance — 1 operation(s) for stop orders.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Stop Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-stop-orders-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-tickers-api
+  name: Ondo Finance Tickers API
+  description: Get Ticker Information
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Tickers
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-tickers-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-tool-api
+  name: Ondo Finance Tool API
+  description: The Tool API from Ondo Finance — 4 operation(s) for tool.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Tool
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-tool-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-twap-orders-api
+  name: Ondo Finance TWAP Orders API
+  description: The TWAP Orders API from Ondo Finance — 5 operation(s) for twap orders.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - TWAP Orders
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-twap-orders-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
+- aid: ondo-finance:ondo-finance-wallet-api
+  name: Ondo Finance Wallet API
+  description: The Wallet API from Ondo Finance — 12 operation(s) for wallet.
+  humanURL: https://docs.ondo.finance/api-reference/overview
+  baseURL: https://api.gm.ondo.finance
+  tags:
+  - Wallet
+  properties:
+  - type: OpenAPI
+    url: openapi/ondo-finance-wallet-api-openapi.yml
+  - type: Protobuf
+    url: grpc/ondo-finance-gm-backend.proto
+  - type: Quickstart
+    url: https://docs.ondo.finance/api-reference/quickstart
+  - type: ErrorCatalog
+    url: errors/ondo-finance-error-codes.yml
+  - type: Webhooks
+    url: openapi/ondo-finance-perps-ws-openapi-original.json
 common:
 - type: Website
   url: https://ondo.finance/
+- type: DeveloperPortal
+  url: https://docs.ondo.finance
+- type: Documentation
+  url: https://docs.ondo.finance/api-reference/overview
+- type: APIReference
+  url: https://docs.ondo.finance/api-reference/overview
+- type: GettingStarted
+  url: https://docs.ondo.finance/api-reference/quickstart
+- type: GitHubOrganization
+  url: https://github.com/ondoprotocol
+- type: Blog
+  url: https://www.ondo.finance/insights
+- type: Support
+  url: https://ondo.finance/contact
+- type: SignUp
+  url: https://app.ondo.finance
+- type: TermsOfService
+  url: https://docs.ondo.finance/legal/terms-of-service
+- type: PrivacyPolicy
+  url: https://docs.ondo.finance/legal/privacy-policy
+- type: Authentication
+  url: authentication/ondo-finance-authentication.yml
+- type: AgenticAccess
+  url: agentic-access/ondo-finance-agentic-access.yml
+- type: DomainSecurity
+  url: security/ondo-finance-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/ondo-finance-vulnerability-disclosure.yml
+- type: Security
+  url: https://immunefi.com/bug-bounty/ondofinance/
+- type: LLMsTxt
+  url: llms/ondo-finance-llms.txt
+- type: ErrorCatalog
+  url: errors/ondo-finance-error-codes.yml
+- type: Conventions
+  url: conventions/ondo-finance-conventions.yml
+- type: Sandbox
+  url: sandbox/ondo-finance-sandbox.yml
+- type: RateLimits
+  url: rate-limits/ondo-finance-rate-limits.yml
+- type: Lifecycle
+  url: lifecycle/ondo-finance-lifecycle.yml
+- type: Deprecation
+  url: https://docs.ondo.finance/api-reference/upcoming-changes
+- type: ChangeLog
+  url: changelog/ondo-finance-changelog.yml
+- type: Conformance
+  url: conformance/ondo-finance-conformance.yml
+- type: MCPServer
+  url: mcp/ondo-finance-mcp.yml
+- type: DataModel
+  url: data-model/ondo-finance-data-model.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Protobuf
+  url: grpc/ondo-finance-gm-backend.proto
+- type: Overlay
+  url: overlays/ondo-finance-gm-overlay.yaml
+- type: Overlay
+  url: overlays/ondo-finance-perps-overlay.yaml
+- type: Overlay
+  url: overlays/ondo-finance-perps-ws-overlay.yaml
+x-enrichment:
+  date: '2026-07-20'
+  status: enriched
+  artifacts_added: 22
+  pass: local-v1

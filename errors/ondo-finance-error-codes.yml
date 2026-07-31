@@ -1,0 +1,193 @@
+generated: '2026-07-20'
+method: searched
+source: https://docs.ondo.finance/api-reference/error-codes
+api: openapi/ondo-finance-gm-openapi-original.json
+scope: GM Backend API (Ondo Stocks / Global Markets)
+envelope:
+  fields:
+  - code
+  - message
+  - documentation
+  note: 'Structured error object: code (machine-readable), message (human-readable), documentation (URL).
+    Not RFC 9457 problem+json.'
+error_count: 40
+errors:
+- code: MARKET_CLOSED
+  status: 403
+  message: market is closed
+  description: The market is closed due to weekends, holidays, or scheduled/unscheduled closures from
+    maintenance or exchange outages.
+- code: MARKET_PAUSED
+  status: 403
+  message: market is paused
+  description: Trading is temporarily paused, either during scheduled session transitions (09:29-09:31
+    ET) or unscheduled halts (circuit breaker triggers).
+- code: ASSET_PAUSED
+  status: 403
+  message: asset trading is paused
+  description: Trading for a specific asset is paused, possibly due to corporate actions, symbol migration,
+    or market volatility.
+- code: ASSET_LIMITED
+  status: 200
+  message: Earnings event in progress
+  description: Returned as a reason code within asset status responses (not as an error). Indicates the
+    asset has limited trading capacity, typically during earnings events. Trading is still permitted,
+    but quantity may be restricted.
+- code: ASSET_CLOSED_FOR_SESSION
+  status: 403
+  message: asset is not available for trading during the current session
+  description: The asset isn't tradable in the current session ("premarket", "regular", "postmarket",
+    "overnight", or "offhours").
+- code: ASSET_REDEEM_ONLY
+  status: 403
+  message: asset is redeem-only
+  description: The asset can only be redeemed (sold), not minted (bought).
+- code: READ_ONLY_API_KEY
+  status: 403
+  message: read-only API key cannot perform write operations
+  description: The API key used is read-only and cannot create attestations or perform other write operations.
+- code: MISSING_API_KEY
+  status: 401
+  message: missing API key
+  description: No API key was provided in the `x-api-key` request header.
+- code: INVALID_API_KEY
+  status: 401
+  message: invalid API key
+  description: The provided API key is not valid or has been revoked.
+- code: INVALID_SYMBOL
+  status: 400
+  message: invalid symbol; must be at least 3 characters long and end with 'on'
+  description: The symbol is invalid, unrecognized, or improperly formatted. Use valid namespaced symbols
+    (e.g., `TSLAon`, `AAPLon`).
+- code: MISSING_SYMBOL
+  status: 400
+  message: missing symbol
+  description: The required `symbol` parameter was not provided.
+- code: ASSET_NOT_FOUND
+  status: 404
+  message: asset not found
+  description: The specified asset does not exist in the system.
+- code: INVALID_SIDE
+  status: 400
+  message: invalid side; side must be either 'buy' or 'sell'
+  description: The `side` parameter must be either `buy` or `sell`.
+- code: INVALID_DURATION
+  status: 400
+  message: invalid duration; duration must be either 'long' or 'short'
+  description: The `duration` parameter must be either `long` or `short`.
+- code: MAX_LIMIT_REACHED
+  status: 400
+  message: exceeded the active notional value limit
+  description: The order exceeds user-based notional caps. Limits reset when attestations expire.
+- code: SESSION_LIMIT_REACHED
+  status: 400
+  message: exceeded the session's notional value limit
+  description: The order exceeds session-based notional caps, which reset after each session transition.
+- code: MAX_ATTESTATIONS
+  status: 400
+  message: exceeded the active attestations limit
+  description: Maximum concurrent attestation requests reached. Wait for some to settle before requesting
+    more.
+- code: OFFHOURS_EXPOSURE_LIMIT_REACHED
+  status: 400
+  message: off-hours exposure limit reached
+  description: The off-hours exposure limit has been reached for the asset during the current off-hours
+    session. Wait for the next session to open, or trade a different asset.
+- code: INSUFFICIENT_LIQUIDITY
+  status: 400
+  message: insufficient liquidity for the requested operation
+  description: An attestation cannot be created due to insufficient funds, typically during sparse overnight
+    trading.
+- code: INVALID_NOTIONAL_VALUE
+  status: 400
+  message: invalid notional value; value must be a string representing a positive decimal value
+  description: The amount is below minimum requirements, above user limits, or malformed/non-numeric.
+- code: INVALID_TOKEN_AMOUNT
+  status: 400
+  message: invalid token amount; amount must be a string representing a positive decimal value
+  description: The token amount is malformed or not a positive decimal value.
+- code: MISSING_TOKEN_OR_NOTIONAL
+  status: 400
+  message: either token amount or notional value must be provided
+  description: The request must include either `tokenAmount` or `notionalValue`, but neither was provided.
+- code: INVALID_ADDRESS
+  status: 403
+  message: user_address is not on the allow list
+  description: The provided wallet address is not whitelisted for trading.
+- code: MISSING_CHAIN_ID
+  status: 400
+  message: chainId is required
+  description: The required `chainId` parameter was not provided in the request.
+- code: MISSING_SIDE
+  status: 400
+  message: side is required
+  description: The required `side` parameter was not provided in the request.
+- code: INVALID_GM_CHAIN
+  status: 400
+  message: 'invalid chain; supported chains: ethereum-1, bsc-56, solana-900'
+  description: The specified chain is not a valid GM chain identifier.
+- code: UNSUPPORTED_GM_CHAIN
+  status: 400
+  message: unsupported chain
+  description: The specified chain is recognized but not currently supported for the requested operation.
+- code: PAUSED_GM_CHAIN
+  status: 400
+  message: chain is paused
+  description: The specified chain is temporarily paused and not accepting requests.
+- code: INVALID_SORT
+  status: 400
+  message: invalid sort order; must be 'asc' or 'desc'
+  description: The `sort` query parameter is invalid. Valid values are `asc` or `desc`.
+- code: INVALID_INTERVAL
+  status: 400
+  message: 'invalid interval format: 2hour'
+  description: The `interval` query parameter is not a valid value. Valid intervals are `1min`, `5min`,
+    `15min`, `1hour`, `4hour`, `12hour`, and `1day`.
+- code: INVALID_RANGE
+  status: 400
+  message: 'invalid time range: 2month; valid ranges: 1day, 1month, 3month, 6month, 1year, all'
+  description: The `range` query parameter is not a valid value. Valid ranges are `1day`, `1month`, `3month`,
+    `6month`, `1year`, and `all`.
+- code: INVALID_INTERVAL_RANGE_PAIR
+  status: 400
+  message: 'invalid interval/range pair: 1min/1year; valid pairs: 1min/1day, 5min/1day, 15min/1day, 1hour/1month,
+    4hour/3month, 12hour/6month, 1day/1year, 1day/all'
+  description: The combination of `interval` and `range` parameters is not supported. See the OHLC endpoint
+    documentation for valid pairs.
+- code: MISSING_TICKER_ID
+  status: 400
+  message: missing ticker ID
+  description: The required `tickerId` parameter was not provided.
+- code: INVALID_TICKER_ID
+  status: 400
+  message: invalid ticker ID
+  description: The provided `tickerId` is not a valid ticker identifier. Ticker IDs are formatted as `<base>_<target>`
+    (e.g., `AAPLon_USDon`).
+- code: RESOURCE_NOT_FOUND
+  status: 404
+  message: resource not found
+  description: The requested resource does not exist.
+- code: MISSING_USER_ADDRESS
+  status: 400
+  message: missing user address
+  description: The `user_address` field is required for firm attestation requests on Solana chains but
+    was not provided.
+- code: INVALID_USER_ADDRESS
+  status: 400
+  message: invalid user address
+  description: The `user_address` provided for a firm attestation request on a Solana chain is not a valid
+    Solana public key.
+- code: GAS_FEE_EXCEEDS_ORDER_VALUE
+  status: 400
+  message: 'gas fee exceeds order value: increase your order size or try again later'
+  description: The estimated gas fee for executing the order on-chain exceeds the total value of the order.
+    Increase your order size or try again when gas fees are lower.
+- code: RATE_LIMITED
+  status: 429
+  message: rate limit exceeded
+  description: The account has exceeded its request rate limits. Wait briefly and retry with exponential
+    backoff.
+- code: INTERNAL_ERROR
+  status: 500
+  message: internal error
+  description: An unexpected server error occurred. If this persists, contact your account manager.

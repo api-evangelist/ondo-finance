@@ -1,0 +1,28 @@
+generated: '2026-07-20'
+method: derived
+source: openapi/ondo-finance-gm-openapi-original.json, openapi/ondo-finance-perps-openapi-original.json
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: x-api-key
+  sources:
+  - openapi/ondo-finance-gm-openapi-original.json
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  sources:
+  - openapi/ondo-finance-perps-openapi-original.json
+- name: ApiKeyAuth
+  type: apiKey
+  in: header
+  parameter: X-API-KEY-ID
+  sources:
+  - openapi/ondo-finance-perps-openapi-original.json
