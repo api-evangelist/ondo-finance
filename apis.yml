@@ -59,7 +59,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-api-keys-api
   name: Ondo Finance API Keys API
   description: The API Keys API from Ondo Finance — 3 operation(s) for api keys.
@@ -77,7 +77,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-assets-api
   name: Ondo Finance Assets API
   description: Get Asset Price Information
@@ -95,7 +95,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-attestations-api
   name: Ondo Finance Attestations API
   description: Get Mint and Redeem Attestations
@@ -113,7 +113,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-auth-api
   name: Ondo Finance Auth API
   description: The Auth API from Ondo Finance — 12 operation(s) for auth.
@@ -131,7 +131,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-chains-api
   name: Ondo Finance Chains API
   description: Get On Chain Data
@@ -149,7 +149,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-chat-api
   name: Ondo Finance Chat API
   description: The Chat API from Ondo Finance — 1 operation(s) for chat.
@@ -167,7 +167,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-connection-api
   name: Ondo Finance Connection API
   description: The Connection API from Ondo Finance — 2 operation(s) for connection.
@@ -185,7 +185,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-fills-api
   name: Ondo Finance Fills API
   description: The Fills API from Ondo Finance — 3 operation(s) for fills.
@@ -203,7 +203,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-funding-rate-api
   name: Ondo Finance Funding Rate API
   description: The Funding Rate API from Ondo Finance — 4 operation(s) for funding rate.
@@ -221,7 +221,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-limits-api
   name: Ondo Finance Limits API
   description: Get Trading Limits
@@ -239,7 +239,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-margin-account-api
   name: Ondo Finance Margin Account API
   description: The Margin Account API from Ondo Finance — 5 operation(s) for margin account.
@@ -257,7 +257,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-market-data-api
   name: Ondo Finance Market Data API
   description: The Market Data API from Ondo Finance — 9 operation(s) for market data.
@@ -275,7 +275,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-markets-api
   name: Ondo Finance Markets API
   description: The Markets API from Ondo Finance — 1 operation(s) for markets.
@@ -293,7 +293,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-orders-api
   name: Ondo Finance Orders API
   description: The Orders API from Ondo Finance — 6 operation(s) for orders.
@@ -311,7 +311,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-portfolio-api
   name: Ondo Finance Portfolio API
   description: The Portfolio API from Ondo Finance — 2 operation(s) for portfolio.
@@ -329,7 +329,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-positions-api
   name: Ondo Finance Positions API
   description: The Positions API from Ondo Finance — 2 operation(s) for positions.
@@ -347,7 +347,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-private-channels-api
   name: Ondo Finance Private Channels API
   description: The Private Channels API from Ondo Finance — 11 operation(s) for private channels.
@@ -365,7 +365,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-public-channels-api
   name: Ondo Finance Public Channels API
   description: The Public Channels API from Ondo Finance — 7 operation(s) for public channels.
@@ -383,7 +383,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-sandbox-api
   name: Ondo Finance Sandbox API
   description: The Sandbox API from Ondo Finance — 2 operation(s) for sandbox.
@@ -401,7 +401,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-status-api
   name: Ondo Finance Status API
   description: Get Market and Trading Statuses
@@ -419,7 +419,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-stop-orders-api
   name: Ondo Finance Stop Orders API
   description: The Stop Orders API from Ondo Finance — 1 operation(s) for stop orders.
@@ -437,7 +437,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-tickers-api
   name: Ondo Finance Tickers API
   description: Get Ticker Information
@@ -455,7 +455,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-tool-api
   name: Ondo Finance Tool API
   description: The Tool API from Ondo Finance — 4 operation(s) for tool.
@@ -473,7 +473,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-twap-orders-api
   name: Ondo Finance TWAP Orders API
   description: The TWAP Orders API from Ondo Finance — 5 operation(s) for twap orders.
@@ -491,7 +491,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 - aid: ondo-finance:ondo-finance-wallet-api
   name: Ondo Finance Wallet API
   description: The Wallet API from Ondo Finance — 12 operation(s) for wallet.
@@ -509,7 +509,7 @@ apis:
   - type: ErrorCatalog
     url: errors/ondo-finance-error-codes.yml
   - type: Webhooks
-    url: openapi/ondo-finance-perps-ws-openapi-original.json
+    url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 common:
 - type: Website
   url: https://ondo.finance/
