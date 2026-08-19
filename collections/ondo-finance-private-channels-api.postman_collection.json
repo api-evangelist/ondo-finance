@@ -1,0 +1,1055 @@
+{
+  "item": [
+    {
+      "id": "e04a5aae-c4d3-435a-838a-feebdb37b3e5",
+      "name": "Private Channels",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b2e80d50-7b4a-4ede-b860-9544cef13e3e",
+          "name": "Subscribe: Perps Orders",
+          "request": {
+            "name": "Subscribe: Perps Orders",
+            "description": {
+              "content": "Subscribe to the `ordersPerps` channel. Requires authentication (login first).\n\nOptional `markets` to filter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "ordersPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": true\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fb4c73d6-9c57-40d0-b15c-1d6ca7bae61b",
+              "name": "Channel update for `ordersPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "ordersPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"ordersPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"ordersPerps\",\n  \"data\": [\n    {\n      \"orderId\": \"197ec08e001658690721be129e7fa595\",\n      \"side\": \"buy\",\n      \"price\": \"227.50\",\n      \"size\": \"10.00\",\n      \"market\": \"AAPL-USD.P\",\n      \"filledSize\": \"0.00\",\n      \"filledCost\": \"0.00\",\n      \"fee\": \"0.00\",\n      \"status\": \"open\",\n      \"createdAt\": \"2025-03-05T14:30:00Z\",\n      \"type\": \"limit\",\n      \"timeInForce\": \"GTC\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "459854ee-7e99-436f-95a0-cb473fd7b4e4",
+          "name": "Subscribe: Perps Fills",
+          "request": {
+            "name": "Subscribe: Perps Fills",
+            "description": {
+              "content": "Subscribe to the `fillsPerps` channel. Requires authentication (login first).\n\nOptional `markets` to filter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "fillsPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f11ce46d-bfad-445f-8540-8116dac0bbd9",
+              "name": "Channel update for `fillsPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "fillsPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"fillsPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"fillsPerps\",\n  \"data\": [\n    {\n      \"orderId\": \"197ec08e001658690721be129e7fa595\",\n      \"market\": \"AAPL-USD.P\",\n      \"price\": \"227.50\",\n      \"size\": \"5.00\",\n      \"side\": \"buy\",\n      \"direction\": \"open long\",\n      \"filledCost\": \"1137.50\",\n      \"fee\": \"0.57\",\n      \"time\": \"2025-03-05T14:30:00Z\",\n      \"isMaker\": false\n    },\n    {\n      \"orderId\": \"197ec08e001658690721be129e7fa595\",\n      \"market\": \"AAPL-USD.P\",\n      \"price\": \"227.50\",\n      \"size\": \"5.00\",\n      \"side\": \"buy\",\n      \"direction\": \"open long\",\n      \"filledCost\": \"1137.50\",\n      \"fee\": \"0.57\",\n      \"time\": \"2025-03-05T14:30:00Z\",\n      \"isMaker\": false\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0e941b07-2713-4c61-9766-2eb139a9195a",
+          "name": "Subscribe: Perps Positions",
+          "request": {
+            "name": "Subscribe: Perps Positions",
+            "description": {
+              "content": "Subscribe to the `positionsPerps` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "positionsPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2d6a010c-3539-45e1-b936-cfd91d9e9a76",
+              "name": "Channel update for `positionsPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "positionsPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"positionsPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"positionsPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"direction\": \"long\",\n      \"netQuantity\": \"10.00\",\n      \"averageEntryPrice\": \"225.00\",\n      \"usedMargin\": \"1125.00\",\n      \"unrealizedPnl\": \"25.00\",\n      \"markPrice\": \"227.50\",\n      \"liquidationPrice\": \"180.00\",\n      \"bankruptcyPrice\": \"170.00\",\n      \"maintenanceMargin\": \"112.50\",\n      \"notionalValue\": \"2275.00\",\n      \"leverage\": \"2.0\",\n      \"netFundingSinceNeutral\": \"-1.23\",\n      \"returnOnEquity\": \"0.022\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0dd3d6f5-a83d-456d-914b-c253a130200f",
+          "name": "Subscribe: Perps Balance",
+          "request": {
+            "name": "Subscribe: Perps Balance",
+            "description": {
+              "content": "Subscribe to the `balancePerps` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "balancePerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0c869690-64c8-4085-8cc9-5a90e061f3b9",
+              "name": "Channel update for `balancePerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "balancePerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"balancePerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"balancePerps\",\n  \"data\": {\n    \"walletBalance\": \"5000.00\",\n    \"realizedPnl\": \"250.00\",\n    \"unrealizedPnl\": \"-50.00\",\n    \"marginBalance\": \"4950.00\",\n    \"usedMargin\": \"1125.00\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a3d67f09-98b7-4658-a4c7-62ea1be50380",
+          "name": "Subscribe: Perps Liquidation",
+          "request": {
+            "name": "Subscribe: Perps Liquidation",
+            "description": {
+              "content": "Subscribe to the `liquidationPerps` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "liquidationPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "021b3919-63ab-4d56-bc38-fceab623869f",
+              "name": "Channel update for `liquidationPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "liquidationPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"liquidationPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"liquidationPerps\",\n  \"data\": {\n    \"id\": \"string\",\n    \"time\": \"2024-01-27T05:10:44.949Z\",\n    \"initiatedAt\": \"1947-06-01T06:32:08.018Z\",\n    \"accountId\": \"string\",\n    \"status\": \"string\",\n    \"insuranceFundUsed\": \"0.00\",\n    \"adl\": true,\n    \"retryCount\": 5073,\n    \"triggeringPositions\": [\n      {\n        \"market\": \"AAPL-USD.P\",\n        \"direction\": \"long\",\n        \"netQuantity\": \"10.00\",\n        \"averageEntryPrice\": \"225.00\",\n        \"usedMargin\": \"1125.00\",\n        \"unrealizedPnl\": \"25.00\",\n        \"markPrice\": \"227.50\",\n        \"liquidationPrice\": \"180.00\",\n        \"bankruptcyPrice\": \"170.00\",\n        \"maintenanceMargin\": \"112.50\",\n        \"notionalValue\": \"2275.00\",\n        \"leverage\": \"2.0\",\n        \"netFundingSinceNeutral\": \"-1.23\",\n        \"stopLossTriggerPrice\": \"string\",\n        \"takeProfitTriggerPrice\": \"string\",\n        \"returnOnEquity\": \"0.022\"\n      },\n      {\n        \"market\": \"AAPL-USD.P\",\n        \"direction\": \"long\",\n        \"netQuantity\": \"10.00\",\n        \"averageEntryPrice\": \"225.00\",\n        \"usedMargin\": \"1125.00\",\n        \"unrealizedPnl\": \"25.00\",\n        \"markPrice\": \"227.50\",\n        \"liquidationPrice\": \"180.00\",\n        \"bankruptcyPrice\": \"170.00\",\n        \"maintenanceMargin\": \"112.50\",\n        \"notionalValue\": \"2275.00\",\n        \"leverage\": \"2.0\",\n        \"netFundingSinceNeutral\": \"-1.23\",\n        \"stopLossTriggerPrice\": \"string\",\n        \"takeProfitTriggerPrice\": \"string\",\n        \"returnOnEquity\": \"0.022\"\n      }\n    ],\n    \"filledQuoteSize\": \"string\",\n    \"filledQuantity\": \"string\",\n    \"reclaimOrderMargin\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c22bbe8f-d86b-4f63-a8b4-97e282ac9843",
+          "name": "Subscribe: Perps Margin Transfers",
+          "request": {
+            "name": "Subscribe: Perps Margin Transfers",
+            "description": {
+              "content": "Subscribe to the `marginTransfersPerps` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "marginTransfersPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cdff3648-9d22-4744-993b-21a928b17438",
+              "name": "Channel update for `marginTransfersPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "marginTransfersPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"marginTransfersPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"marginTransfersPerps\",\n  \"data\": {\n    \"id\": \"string\",\n    \"from\": {\n      \"id\": \"string\",\n      \"wallet\": \"main\"\n    },\n    \"to\": {\n      \"id\": \"string\",\n      \"wallet\": \"margin\"\n    },\n    \"amount\": \"1000.00\",\n    \"symbol\": \"USDC\",\n    \"time\": \"1993-10-12T21:41:19.652Z\",\n    \"type\": 4651\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2a9a7896-7404-4f55-8c9e-d032b096df57",
+          "name": "Subscribe: Perps Order Summaries",
+          "request": {
+            "name": "Subscribe: Perps Order Summaries",
+            "description": {
+              "content": "Subscribe to the `ordersSummariesPerps` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "ordersSummariesPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "34983218-9872-4771-80d8-bde53b35e73e",
+              "name": "Channel update for `ordersSummariesPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "ordersSummariesPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"ordersSummariesPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"ordersSummariesPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"restingOrdersSummary\": {},\n      \"positionSummary\": {},\n      \"marketOrderSummary\": {}\n    },\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"restingOrdersSummary\": {},\n      \"positionSummary\": {},\n      \"marketOrderSummary\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d8c54a79-3e8f-4ad9-bc68-ba2987024ed4",
+          "name": "Subscribe: Perps Funding Payments",
+          "request": {
+            "name": "Subscribe: Perps Funding Payments",
+            "description": {
+              "content": "Subscribe to the `fundingPaymentsPerps` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "fundingPaymentsPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "5b12dc0b-712a-467e-82ee-51834a387592",
+              "name": "Channel update for `fundingPaymentsPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "fundingPaymentsPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"fundingPaymentsPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"fundingPaymentsPerps\",\n  \"data\": {\n    \"market\": \"AAPL-USD.P\",\n    \"time\": \"1977-02-26T23:01:43.312Z\",\n    \"markPrice\": \"227.50\",\n    \"positionSize\": \"10.00\",\n    \"positionDirection\": \"short\",\n    \"rate\": \"0.0000125\",\n    \"payer\": \"short\",\n    \"amount\": \"-0.02844\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ad639e43-66fa-4c2b-bbf6-9e0e5b5220bd",
+          "name": "Subscribe: Perps Dead Man's Switch",
+          "request": {
+            "name": "Subscribe: Perps Dead Man's Switch",
+            "description": {
+              "content": "Subscribe to the `cancelAllOrdersAfterPerps` channel. Requires authentication (login first).\n\n**Required**: `timeout_seconds` (the dead man's switch duration in seconds).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "cancelAllOrdersAfterPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "30e57ebf-cdec-4fc5-9ad5-2a82168fb68e",
+              "name": "Channel update for `cancelAllOrdersAfterPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "cancelAllOrdersAfterPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"cancelAllOrdersAfterPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"cancelAllOrdersAfterPerps\",\n  \"data\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1c74ac4e-361e-488a-82f4-65bc28810d9f",
+          "name": "Subscribe: Deposits",
+          "request": {
+            "name": "Subscribe: Deposits",
+            "description": {
+              "content": "Subscribe to the `deposits` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "deposits"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1cec3329-3461-43cd-8dc9-d21a7c339717",
+              "name": "Channel update for `deposits`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "deposits"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"deposits\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"deposits\",\n  \"data\": {\n    \"coin\": \"USDC\",\n    \"size\": \"1000.00\",\n    \"status\": \"confirmed\",\n    \"txid\": \"string\",\n    \"fromAddress\": \"string\",\n    \"time\": \"1981-03-08T15:58:03.767Z\",\n    \"currentConfirmations\": 6823,\n    \"requiredConfirmations\": 7235,\n    \"accountId\": \"string\",\n    \"chainId\": \"string\",\n    \"usdValue\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "51846b0c-2ad5-49e5-8e64-02622fe963da",
+          "name": "Subscribe: Withdrawals",
+          "request": {
+            "name": "Subscribe: Withdrawals",
+            "description": {
+              "content": "Subscribe to the `withdrawals` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "withdrawals"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5053\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7941aac6-ccc9-4d89-8c51-f39a6fc3c7d7",
+              "name": "Channel update for `withdrawals`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "withdrawals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"withdrawals\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"withdrawals\",\n  \"data\": {\n    \"coin\": \"USDC\",\n    \"size\": \"500.00\",\n    \"status\": \"confirmed\",\n    \"address\": \"string\",\n    \"withdrawal_id\": \"string\",\n    \"txid\": \"string\",\n    \"customer_withdrawal_id\": \"string\",\n    \"time\": \"1971-09-30T17:25:14.822Z\",\n    \"accountId\": \"string\",\n    \"usdValue\": \"string\",\n    \"usdFee\": \"string\",\n    \"chainId\": \"string\",\n    \"from\": {\n      \"id\": \"string\",\n      \"wallet\": \"main\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "0afcc612-bf30-4e6e-af4d-3d0a20a95b07",
+    "name": "GM Backend Account Private Channels API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

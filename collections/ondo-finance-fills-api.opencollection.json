@@ -1,0 +1,111 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Fills API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Fills",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Fills",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/fills",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by trading market"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter by start time (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter by end time (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of fills for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Fills by Order ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/:orderID/fills",
+            "params": [
+              {
+                "name": "orderID",
+                "value": "",
+                "type": "path",
+                "description": "Internal order ID, or `client:{clientOrderID}` for client order ID lookup"
+              }
+            ]
+          },
+          "docs": "Returns all fills for a given order. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)\n"
+        },
+        {
+          "info": {
+            "name": "Get Fills CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/fills/csv",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by trading market"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter by start time (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter by end time (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Export fills as CSV, sorted reverse chronologically."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

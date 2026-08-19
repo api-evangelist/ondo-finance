@@ -1,0 +1,1107 @@
+{
+  "item": [
+    {
+      "id": "f70585b4-7b34-4e5d-914b-d06f1746060d",
+      "name": "Funding Rate",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8d73aa10-28b0-44ee-8c71-85c3aba78437",
+          "name": "Get Funding Rates",
+          "request": {
+            "name": "Get Funding Rates",
+            "description": {
+              "content": "Get an estimate of the current-interval funding rate in a given market, as well as when the next funding is and what premium index measurements make up the funding rate.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "funding_rates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "market",
+                  "value": "<string>",
+                  "description": "(Required) Market to query"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b716a613-2c5f-4398-b02e-246213b486be",
+              "name": "Current funding rate estimate",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": {\n    \"market\": \"AAPL-USD.P\",\n    \"rate\": \"0.0000125\",\n    \"intervalEnds\": \"2025-03-05T16:00:00Z\",\n    \"premiums\": [\n      {\n        \"time\": \"2025-03-05T15:00:00Z\",\n        \"premiumIndex\": \"0.000025\"\n      },\n      {\n        \"time\": \"2025-03-05T15:30:00Z\",\n        \"premiumIndex\": \"0.000015\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b2b341d7-24fe-454f-9694-ec90fd22d78a",
+              "name": "Bad request. The request was malformed or failed validation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"bad_query_param\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2558be06-b75d-4b13-a226-a34bb488e151",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "56f2862d-8c22-4749-93bc-736dc17af46e",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fd524305-d0ac-49f9-816f-f5816cbea9ed",
+          "name": "Get Funding Rate History",
+          "request": {
+            "name": "Get Funding Rate History",
+            "description": {
+              "content": "Get the historical funding rates for a market.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "funding_rate_history"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "market",
+                  "value": "<string>",
+                  "description": "(Required) Perps trading market"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of results to return"
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor"
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<integer>",
+                  "description": "Start time filter (UTC milliseconds)"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<integer>",
+                  "description": "End time filter (UTC milliseconds)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2c69af37-b044-42a9-b729-ff4d531c3d2a",
+              "name": "Paginated list of historical funding rates, most recent first",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rate_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"time\": \"2025-03-05T12:00:00Z\",\n      \"fundingRate\": \"0.0000125\"\n    }\n  ],\n  \"pageInfo\": {\n    \"nextCursor\": \"NQ5WWO3THN3Q====\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "05347734-02a8-4dc4-aa89-d0810ea24d99",
+              "name": "Bad request. The request was malformed or failed validation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rate_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"bad_query_param\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a4ba7982-c48c-494a-8f90-6bf15c0d6c1b",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rate_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "099d35d1-b18e-4d74-9b39-b3366a722887",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_rate_history"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "651abe23-55b5-4c71-ae68-3fb6affced2a",
+          "name": "Get Funding Fee Payments",
+          "request": {
+            "name": "Get Funding Fee Payments",
+            "description": {
+              "content": "Get a paginated history of funding fee payments for the authenticated account.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "funding_fees"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "market",
+                  "value": "<string>",
+                  "description": "Trading market to filter by"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of results to return"
+                },
+                {
+                  "disabled": false,
+                  "key": "cursor",
+                  "value": "<string>",
+                  "description": "Pagination cursor"
+                },
+                {
+                  "disabled": false,
+                  "key": "startTime",
+                  "value": "<integer>",
+                  "description": "Start time filter (UTC milliseconds)"
+                },
+                {
+                  "disabled": false,
+                  "key": "endTime",
+                  "value": "<integer>",
+                  "description": "End time filter (UTC milliseconds)"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "7cfd87b1-af19-42e8-a364-c33e574ce879",
+              "name": "Paginated list of funding fee payments, most recent first",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"time\": \"2025-03-05T12:00:00Z\",\n      \"markPrice\": \"227.50\",\n      \"positionSize\": \"10.00\",\n      \"positionDirection\": \"long\",\n      \"rate\": \"0.0000125\",\n      \"payer\": \"long\",\n      \"amount\": \"-0.02844\"\n    }\n  ],\n  \"pageInfo\": {\n    \"nextCursor\": \"NQ5WWO3THN3Q====\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fed891bb-6a40-4f33-98fa-501e1ce4ef12",
+              "name": "Bad request. The request was malformed or failed validation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"bad_query_param\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "6eaf49fc-23e9-4044-bccb-46837f347433",
+              "name": "Authentication required. Provide a valid JWT or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"auth_missing\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3eda081a-30c0-40e6-b42e-4716f64bffdf",
+              "name": "Access denied. The authenticated account does not have permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"account_not_allowed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a140c594-91e9-438e-947c-2ffa5ae3344e",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "4e770aed-32b3-4e15-9252-007facf576c4",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "funding_fees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "cursor",
+                      "value": "NQ5WWO3THN3Q===="
+                    },
+                    {
+                      "key": "startTime",
+                      "value": "1684814400000"
+                    },
+                    {
+                      "key": "endTime",
+                      "value": "1672549200000"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2cd8953a-3c3e-4434-a16d-819084219dbc",
+          "name": "Get Mark Prices",
+          "request": {
+            "name": "Get Mark Prices",
+            "description": {
+              "content": "Get the current mark prices for all perpetual futures markets.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "mark_prices"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4c6fc35a-dcd9-4f0c-a49c-5c907f6a7357",
+              "name": "Map from market to mark price",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "mark_prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": {\n    \"AAPL-USD.P\": {\n      \"pair\": {\n        \"base\": \"AAPL\",\n        \"quote\": \"USD\"\n      },\n      \"price\": \"227.50\",\n      \"time\": \"2025-03-05T14:30:00Z\"\n    },\n    \"TSLA-USD.P\": {\n      \"pair\": {\n        \"base\": \"TSLA\",\n        \"quote\": \"USD\"\n      },\n      \"price\": \"180.25\",\n      \"time\": \"2025-03-05T14:30:00Z\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7b72910c-943e-4c41-97e6-57935e249582",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "mark_prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "644d075a-2c8d-44fd-9d6f-de0317a53ce4",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "mark_prices"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "83ee7afe-7ff8-4dd9-a8b7-9a199d5534ac",
+    "name": "GM Backend Account Funding Rate API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

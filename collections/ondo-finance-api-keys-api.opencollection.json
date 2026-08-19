@@ -1,0 +1,106 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account API Keys API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "API Keys",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List API Keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/api_keys"
+          },
+          "docs": "Returns API keys for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Create API Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/api_keys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new API key. The secret is returned only once."
+        },
+        {
+          "info": {
+            "name": "Delete API Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/api_keys/:apiKeyID",
+            "params": [
+              {
+                "name": "apiKeyID",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete an API key by ID."
+        },
+        {
+          "info": {
+            "name": "Set API Key IP Whitelist",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/api_keys/:apiKeyID/ip_whitelist",
+            "params": [
+              {
+                "name": "apiKeyID",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Set or update IP whitelist for an API key."
+        },
+        {
+          "info": {
+            "name": "Remove API Key IP Whitelist Entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/api_keys/:apiKeyID/ip_whitelist",
+            "params": [
+              {
+                "name": "apiKeyID",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove an IP address from the whitelist for an API key."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,782 @@
+{
+  "item": [
+    {
+      "id": "06dee87f-f1fb-4039-bc67-9784d0bcc4d5",
+      "name": "Limits",
+      "description": {
+        "content": "Get Trading Limits",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d01245c9-8214-4306-a9e2-a531b6ba41ba",
+          "name": "Get Trading Limits",
+          "request": {
+            "name": "Get Trading Limits",
+            "description": {
+              "content": "Provides real-time trading limits based on global, user, and asset-specific exposure limits.\n\nLimits:\n- The \"Max Notional Value\" limit is based on the dollar value of outstanding attestations. That is, if a user has a limit of \\$1,000,000, and has 30 non-expired, non-filled attestations at a value of \\$999,000, they will not be able to request another attestation for \\$1000.\n- The \"Remaining Attestations\" limits the number of non-expired, non-executed attestations. For example if the limit is 50, and a user has 50 outstanding attestations, they must wait for one to execute or expire before requesting another.\n\nIf the market is closed or paused, the response will indicate that trading is not allowed and provide the reason. For more information on market hours, see [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).\n\n**Trading Limits Reason Codes**\n\nWhen trading is not allowed, the response will include a `reason` field which may include one of the following common codes:\n- `MARKET_CLOSED`: Market is closed.\n- `MARKET_PAUSED`: Market is temporarily paused.\n- `ASSET_PAUSED`: Specific asset is paused.\n- `ASSET_CLOSED_FOR_SESSION`: The asset is not tradable in this session (e.g., not available overnight; see [Get Market Data](https://docs.ondo.finance/api-reference/assets/get-market-data-for-all-supported-assets))\n- `ASSET_LIMITED`: Asset can be traded, but order size is more limited than usual.\n- `MAX_LIMIT_REACHED`: Maximum limit has been reached.\n- `MAX_ATTESTATIONS`: Maximum attestations reached.\n- `OFFHOURS_EXPOSURE_LIMIT_REACHED`: The off-hours exposure limit has been reached for the asset during the current off-hours session.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "limits",
+                "trading"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "symbol",
+                  "value": "<string>",
+                  "description": "(Required) The GM token symbol."
+                },
+                {
+                  "disabled": false,
+                  "key": "side",
+                  "value": "<string>",
+                  "description": "(Required) The trade side"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "x-api-key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "e8dba6ae-8055-46ad-99fb-c45d7fad48c1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "trading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    },
+                    {
+                      "key": "side",
+                      "value": "buy"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"timestamp\": 1746655938000,\n  \"symbol\": \"AAPLon\",\n  \"side\": \"buy\",\n  \"maxTokens\": \"100.000000000000000000\",\n  \"maxNotionalValue\": \"1234.560000000000000000\",\n  \"remainingAttestations\": \"3\",\n  \"isAssetTradingOpen\": false,\n  \"reason\": {\n    \"code\": \"MAX_ATTESTATIONS\",\n    \"documentation\": \"https://docs.ondo.finance/\",\n    \"message\": \"Weekend/Holiday\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7e8277c8-3d58-47af-a4e3-314a396c2c51",
+              "name": "One of the request parameters is invalid. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "trading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    },
+                    {
+                      "key": "side",
+                      "value": "buy"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INVALID_SYMBOL\",\n  \"message\": \"One of the request parameters is invalid.\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#invalid_symbol\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "dbb5c2ec-e55f-4aef-a681-6134c2fd2169",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "trading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    },
+                    {
+                      "key": "side",
+                      "value": "buy"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"MISSING_API_KEY\",\n  \"message\": \"missing API key\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#missing_api_key\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ff9c3e50-d7ca-4b62-a8e1-be574c3b6c81",
+              "name": "Trading is restricted due to market or asset state.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "trading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    },
+                    {
+                      "key": "side",
+                      "value": "buy"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"MARKET_CLOSED\",\n  \"message\": \"market is closed\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#market_closed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e52e7a85-8d34-4571-a046-c164789aabad",
+              "name": "The account has exceeded its rate limits. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "trading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    },
+                    {
+                      "key": "side",
+                      "value": "buy"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"RATE_LIMITED\",\n  \"message\": \"rate limit exceeded\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#rate_limited\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "9745b011-d0aa-4df3-abbb-7e67f350a86d",
+              "name": "An internal server error occurred. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "trading"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    },
+                    {
+                      "key": "side",
+                      "value": "buy"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_ERROR\",\n  \"message\": \"An internal server error occurred. Please see the returned message and documentation for details.\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#internal_error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ce4343fc-6746-4ae3-b4e4-69589992fedc",
+          "name": "Get Session Limits",
+          "request": {
+            "name": "Get Session Limits",
+            "description": {
+              "content": "Provides theoretical maximum asset-specific trading limits for each trading session. These limits are per-user, not global. This API reflects Ondo's statically defined limits; for dynamic, real-time values, see [Get Trading Limits](https://docs.ondo.finance/api-reference/limits/get-trading-limits).\n\nLimits are returned for each session: `premarket`, `regular`, `postmarket`, `overnight`, and `offhours`. The `offhours` block describes the limits that apply when the US equities market is closed for the day (for example, on weekends and holidays). For most assets, off-hours trading is disabled (`tradable: false`).\n\nLimits:\n- The \"Max Attestation Count\" limits the number of non-expired, non-executed attestations. For example if the limit is 50, and a user has 50 outstanding attestations, they must wait for one to execute or expire before requesting another.\n- The \"Max Active Notional Value\" limit is based on the dollar value of outstanding attestations. That is, if a user has a limit of \\$1,000,000, and has 30 non-expired, non-filled attestations at a value of \\$999,000, they will not be able to request another attestation for \\$1000.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "limits",
+                "session"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "symbol",
+                  "value": "<string>",
+                  "description": "The GM token symbol."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "x-api-key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "9836ca40-a2e5-44bb-ae0b-c2a9584a97c8",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "session"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"limits\": [\n      {\n        \"symbol\": \"AAPLon\",\n        \"premarket\": {\n          \"tradable\": true,\n          \"maxAttestationCount\": \"500\",\n          \"maxActiveNotionalValue\": \"10000\"\n        },\n        \"regular\": {\n          \"tradable\": true,\n          \"maxAttestationCount\": \"500\",\n          \"maxActiveNotionalValue\": \"200000\"\n        },\n        \"postmarket\": {\n          \"tradable\": true,\n          \"maxAttestationCount\": \"500\",\n          \"maxActiveNotionalValue\": \"200000\"\n        },\n        \"overnight\": {\n          \"tradable\": true,\n          \"maxAttestationCount\": \"500\",\n          \"maxActiveNotionalValue\": \"200000\"\n        },\n        \"offhours\": {\n          \"tradable\": false,\n          \"maxAttestationCount\": \"0\",\n          \"maxActiveNotionalValue\": \"0\"\n        }\n      },\n      \"...\"\n    ],\n    \"timestamp\": 1769192550134\n  }\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e7cc4941-1078-4f6f-975c-15522a9c6ac0",
+              "name": "One of the request parameters is invalid. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "session"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INVALID_SYMBOL\",\n  \"message\": \"One of the request parameters is invalid.\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#invalid_symbol\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "714ef4a5-7495-4f11-b555-75bbc8a058a2",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "session"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"MISSING_API_KEY\",\n  \"message\": \"missing API key\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#missing_api_key\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bc95343d-ea13-4895-b890-8e413ebe5564",
+              "name": "The provided asset symbol does not exist and cannot be found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "session"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"ASSET_NOT_FOUND\",\n  \"message\": \"asset not found\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#asset_not_found\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1d9999b5-95a8-4101-9c80-c06038b93d51",
+              "name": "The account has exceeded its rate limits. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "session"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"RATE_LIMITED\",\n  \"message\": \"rate limit exceeded\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#rate_limited\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e3b53f7e-06ca-4402-b4f5-9b4de7f1caa7",
+              "name": "An internal server error occurred. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "limits",
+                    "session"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "symbol",
+                      "value": "AAPLon"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_ERROR\",\n  \"message\": \"An internal server error occurred. Please see the returned message and documentation for details.\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#internal_error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "60442919-ba51-4349-810e-ead01b6665c8",
+    "name": "GM Backend Account Limits API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

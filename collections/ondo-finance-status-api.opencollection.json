@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Status API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Status",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Current Market Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/status/market",
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the current status of the market, including whether it is open or closed, and any relevant information about trading pauses or restrictions. When the market is not open, the response provides details about the closure reason and expected reopening time.\n\n**Typical Market Sessions**\n\nThe following table outlines the standard market sessions with brief transitional pauses between each session period.\n\n| **Session**      | **Start Time**  | **End Time**   |\n|:---------------"
+        },
+        {
+          "info": {
+            "name": "Get Asset Statuses",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/status/assets",
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves information about individual asset trading statuses, including the reason and expected duration. Asset trading can be affected for various reasons such as earnings announcements, dividend events, and global market closures.\n\n**Important**:\n  * When the entire market is closed or paused as indicated by `/v1/status/market`, all asset trading is automatically suspended regardless of individual asset status. (See [Get Current Market Status](https://docs.ondo.finance/api-refer"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

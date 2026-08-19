@@ -1,0 +1,60 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Attestations API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Attestations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Request a Mint or Redeem Attestation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/attestations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "An attestation is a signed payload that authorizes a user to mint or redeem tokens. Each attestation is only valid for a limited time and is determined by the duration in the request. A user can specify a duration of `short` for a tighter price spread or `long` for an extended validity period.\n\nNote: There are specific user and session limits which can prevent the creation of an attestation. For more information on limits, see the [Get Trading Limits](https://docs.ondo.finance/api-reference/limi"
+        },
+        {
+          "info": {
+            "name": "Request a Soft Attestation Quote",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/attestations/soft",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "A soft quote provides pricing information for mint or redeem operations without creating an actual attestation. Unlike the [Request a Mint or Redeem Attestation endpoint](https://docs.ondo.finance/api-reference/attestations/request-a-mint-or-redeem-attestation), soft quotes:\n\n- Are not eligible for on-chain submission\n- Do not count against user limits (Active Notional Value, Session Notional Value, or Active Attestations)\n- Serve as pricing references for quote validation and user interface dis"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

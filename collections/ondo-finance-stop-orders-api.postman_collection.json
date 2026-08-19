@@ -1,0 +1,897 @@
+{
+  "item": [
+    {
+      "id": "e65614ad-2baa-4ff1-8436-91306096871d",
+      "name": "Stop Orders",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "459dd935-6e7f-4b2c-8c26-540e63444da2",
+          "name": "Get Stop Orders",
+          "request": {
+            "name": "Get Stop Orders",
+            "description": {
+              "content": "Gets a list of all stop orders for all markets.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "stop_order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "518567ec-9343-43f7-b6ff-e55a388fb812",
+              "name": "Map of market to stop orders",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": {\n    \"AAPL-USD.P\": {\n      \"market\": \"AAPL-USD.P\",\n      \"positionDirection\": \"long\",\n      \"stopLoss\": \"200.00\",\n      \"takeProfit\": \"260.00\"\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "bf99c651-60dc-4bb9-805b-3078d54c16b8",
+              "name": "Authentication required. Provide a valid JWT or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"auth_missing\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "20e0c0af-1a3a-4ba6-b965-69edc6912b29",
+              "name": "Access denied. The authenticated account does not have permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"account_not_allowed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2f1ba136-6f14-4ed7-952c-ca7cca99cf3f",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "888e783b-07c1-436e-adce-1fc1397d1732",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0710782c-d2c2-460d-825f-9e5d34e08513",
+          "name": "Set Stop Order",
+          "request": {
+            "name": "Set Stop Order",
+            "description": {
+              "content": "Set a stop order for a particular position defined by market and direction.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "stop_order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"market\": \"<string>\",\n  \"positionDirection\": \"<string>\",\n  \"type\": \"<string>\",\n  \"triggerPrice\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "74b95762-c5b6-4f98-97e9-4ba944c4d52e",
+              "name": "Updated stop orders for the market",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"market\": \"AAPL-USD.P\",\n  \"positionDirection\": \"long\",\n  \"type\": \"stopLoss\",\n  \"triggerPrice\": \"9.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": {\n    \"market\": \"AAPL-USD.P\",\n    \"positionDirection\": \"long\",\n    \"stopLoss\": \"200.00\",\n    \"takeProfit\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "485941ba-8866-4e2a-a164-3d17674d9c80",
+              "name": "Bad request. The request was malformed or failed validation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"market\": \"AAPL-USD.P\",\n  \"positionDirection\": \"long\",\n  \"type\": \"stopLoss\",\n  \"triggerPrice\": \"9.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"invalid_market\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3ede842b-97aa-479b-bb8c-9f29c609e1ca",
+              "name": "Authentication required. Provide a valid JWT or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"market\": \"AAPL-USD.P\",\n  \"positionDirection\": \"long\",\n  \"type\": \"stopLoss\",\n  \"triggerPrice\": \"9.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"auth_missing\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "af302d0f-1a57-41ed-880a-91b21102e132",
+              "name": "Access denied. The authenticated account does not have permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"market\": \"AAPL-USD.P\",\n  \"positionDirection\": \"long\",\n  \"type\": \"stopLoss\",\n  \"triggerPrice\": \"9.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"account_not_allowed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "369b3444-cdcc-4a04-bd6e-1786be2f1f5c",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"market\": \"AAPL-USD.P\",\n  \"positionDirection\": \"long\",\n  \"type\": \"stopLoss\",\n  \"triggerPrice\": \"9.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3f2952d7-0725-4dd4-94c3-d1ff4ebf65f1",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"market\": \"AAPL-USD.P\",\n  \"positionDirection\": \"long\",\n  \"type\": \"stopLoss\",\n  \"triggerPrice\": \"9.00\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "afad41f4-90c4-4145-b740-6f3de1172257",
+          "name": "Remove Stop Order",
+          "request": {
+            "name": "Remove Stop Order",
+            "description": {
+              "content": "Remove a stop order. If no type is specified, removes both stop loss and take profit.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "perps",
+                "stop_order"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "market",
+                  "value": "<string>",
+                  "description": "(Required) Perps market"
+                },
+                {
+                  "disabled": false,
+                  "key": "type",
+                  "value": "<string>",
+                  "description": "The type of stop order to remove. Either \"stopLoss\" or \"takeProfit\". If not set, removes both stop loss and take profit orders.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "b9069413-9c7b-480e-9b5f-e5b8e166b1a0",
+              "name": "Remaining stop orders for the market after removal",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "type",
+                      "value": "stopLoss"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"result\": {\n    \"market\": \"AAPL-USD.P\",\n    \"positionDirection\": \"long\",\n    \"stopLoss\": null,\n    \"takeProfit\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7292645a-52c9-4efd-9e6f-66721586b52b",
+              "name": "Bad request. The request was malformed or failed validation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "type",
+                      "value": "stopLoss"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"bad_query_param\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3c27a29f-5b07-481f-9493-11041a564ef2",
+              "name": "Authentication required. Provide a valid JWT or API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "type",
+                      "value": "stopLoss"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"auth_missing\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "85644d29-3c5f-42e0-9ea5-803a3502e1ec",
+              "name": "Access denied. The authenticated account does not have permission.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "type",
+                      "value": "stopLoss"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"account_not_allowed\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d4ea43d7-4675-42ba-9aca-1ea35864fbc8",
+              "name": "Rate limit exceeded. Slow down request frequency.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "type",
+                      "value": "stopLoss"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"too_many_requests\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "98826284-f486-4df2-a1ea-c433ee16437f",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "perps",
+                    "stop_order"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "market",
+                      "value": "AAPL-USD.P"
+                    },
+                    {
+                      "key": "type",
+                      "value": "stopLoss"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"error\": \"Description of the error\",\n  \"error_code\": \"unknown\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "63403b87-f6fe-4adb-84f8-8dd13f16d516",
+    "name": "GM Backend Account Stop Orders API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

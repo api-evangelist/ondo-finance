@@ -1,0 +1,35 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Tickers API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tickers",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Price and Volume Data for All Supported Tickers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/tickers",
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the latest price and volume data for all supported tickers. A ticker represents a specific asset in the market.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

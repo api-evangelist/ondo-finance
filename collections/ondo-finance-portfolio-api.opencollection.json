@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Portfolio API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Portfolio",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Portfolio Summary",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/portfolio/summary"
+          },
+          "docs": "Returns current portfolio metrics for the authenticated account: margin balance, net invested, PnL, volume metrics, and Sharpe ratios (when enabled and sufficient data)."
+        },
+        {
+          "info": {
+            "name": "Get Portfolio Summary Graph",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/portfolio/summary/graph",
+            "params": [
+              {
+                "name": "range",
+                "value": "",
+                "type": "query",
+                "description": "Time range for bucketing: 7d (default), 24h, 30d, or all"
+              }
+            ]
+          },
+          "docs": "Returns time-series portfolio snapshots for the authenticated account. Optional query parameter `range` controls the bucket size: 7d (default), 24h, 30d, or all."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

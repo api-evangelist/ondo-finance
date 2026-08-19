@@ -1,0 +1,74 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Limits API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Limits",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Trading Limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/limits/trading",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "query",
+                "description": "The GM token symbol."
+              },
+              {
+                "name": "side",
+                "value": "buy",
+                "type": "query",
+                "description": "The trade side"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Provides real-time trading limits based on global, user, and asset-specific exposure limits.\n\nLimits:\n- The \"Max Notional Value\" limit is based on the dollar value of outstanding attestations. That is, if a user has a limit of \\$1,000,000, and has 30 non-expired, non-filled attestations at a value of \\$999,000, they will not be able to request another attestation for \\$1000.\n- The \"Remaining Attestations\" limits the number of non-expired, non-executed attestations. For example if the limit is 50"
+        },
+        {
+          "info": {
+            "name": "Get Session Limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/limits/session",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "query",
+                "description": "The GM token symbol."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Provides theoretical maximum asset-specific trading limits for each trading session. These limits are per-user, not global. This API reflects Ondo's statically defined limits; for dynamic, real-time values, see [Get Trading Limits](https://docs.ondo.finance/api-reference/limits/get-trading-limits).\n\nLimits are returned for each session: `premarket`, `regular`, `postmarket`, `overnight`, and `offhours`. The `offhours` block describes the limits that apply when the US equities market is closed for"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

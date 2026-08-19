@@ -1,0 +1,287 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Assets API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Assets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Current Prices for All Supported Assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/all/prices/latest",
+            "params": [
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The sort direction for prices."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the latest prices for all supported assets. Note that the `primaryMarket` represents the on-chain token while the `underlyingMarket`\nrepresents the off-chain collateralized stock. Assets can be sorted by price in either ascending or descending order.\n\nFor real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.\n\nPrices are intended for display only. For"
+        },
+        {
+          "info": {
+            "name": "Get Current Price for an Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/:symbol/prices/latest",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "path",
+                "description": "The GM token symbol"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the latest price for a specific asset. Note that the `primaryMarket` represents the on-chain token while the `underlyingMarket`\nrepresents the off-chain collateralized stock.\n\nFor real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.\n\nPrices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ond"
+        },
+        {
+          "info": {
+            "name": "Get Enhanced Prices for All Supported Assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/all/prices/latest/enhanced",
+            "params": [
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "The sort direction for prices."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the latest prices along with the price change and percentage change in the last 24 hours of open market for all supported assets. Assets can be sorted by price in either ascending or descending order.\n\nFor real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.\n\nPrices are intended for display only. For real-time trading prices, use the [Soft Attestati"
+        },
+        {
+          "info": {
+            "name": "Get OHLC (Open, High, Low, Close) Data for an Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/:symbol/prices/ohlc",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "path",
+                "description": "The GM token symbol"
+              },
+              {
+                "name": "interval",
+                "value": "",
+                "type": "query",
+                "description": "The time interval between data points."
+              },
+              {
+                "name": "range",
+                "value": "",
+                "type": "query",
+                "description": "The lookback range for historical data."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves historical Open, High, Low, Close (OHLC) price data for both the primary market (on-chain token) and underlying market (off-chain stock) for a specified asset.\n\nThis endpoint returns historical candles. To receive live, minute-bucketed OHLC updates as they occur, use the [OHLC Streaming](https://docs.ondo.finance/api-reference/ohlc-streaming) endpoint.\n\nPrices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.f"
+        },
+        {
+          "info": {
+            "name": "Get Market Data for All Supported Assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/all/market",
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves comprehensive market data for all supported assets. Each asset includes both primary market (on-chain token) and underlying market (off-chain stock) information.\n\nPrimary market data includes current price, 24-hour price changes, 24-hour historical chart data, and total token holders. Underlying market data provides stock fundamentals like company name, 52-week highs/lows, trading volume, shares outstanding, and market capitalization.\n\nThis endpoint is useful for dashboar"
+        },
+        {
+          "info": {
+            "name": "Get Market Data for an Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/:symbol/market",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "path",
+                "description": "The GM token symbol"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves comprehensive market data for a specific asset, containing both primary market (on-chain token) and underlying market (off-chain stock) information.\n\nPrimary market data includes current price, 24-hour price changes, 24-hour historical chart data, and total token holders. Underlying market data provides stock fundamentals like company name, 52-week highs/lows, trading volume, shares outstanding, and market capitalization.\n\nThis endpoint is useful for dashboard overviews a"
+        },
+        {
+          "info": {
+            "name": "Get Dividend Information for an Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/:symbol/dividends",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "path",
+                "description": "The GM token symbol"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the latest dividend information for a specific asset, including dividend yield, payment history, and upcoming payment dates.\n\n**Dividend Yield**\n\nThe dividend yield is calculated based on the past year's worth of dividend payments and the current stock price.\n\n**Payout Frequencies**\n\nBelow outline the day ranges for each payout frequency:\n\n| Frequency         | Average Days Between Dividends |\n|-------------------|:------------------------------:|\n| **none**          | N/"
+        },
+        {
+          "info": {
+            "name": "Get All Contract Addresses Across Networks",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/all/addresses",
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves all contract addresses for all supported assets across different blockchain networks.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+        },
+        {
+          "info": {
+            "name": "Get Contract Addresses for an Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/:symbol/addresses",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "path",
+                "description": "The GM token symbol"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves all contract addresses for a specific asset across different blockchain networks.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+        },
+        {
+          "info": {
+            "name": "Get Metadata for All Supported Assets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/all/metadata",
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "Returns all metadata for all symbols including identifiers, addresses, and classification tags.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+        },
+        {
+          "info": {
+            "name": "Get Shares Multiplier History for an Asset",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/assets/:symbol/shares-multiplier",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "AAPLon",
+                "type": "path",
+                "description": "The GM token symbol"
+              },
+              {
+                "name": "range",
+                "value": "",
+                "type": "query",
+                "description": "The lookback range for historical data."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves the shares multiplier history for a specific asset. Note that some asset events do not result in the shares multiplier value changing. This endpoint will show the earliest timestamp for each value change.\n\nThe `range` parameter determines how far back historically to look for shares multiplier data. See below for valid range values.\n\nValid `range` values:\n- 1day\n- 1month\n- 3month\n- 6month\n- 1year\n- all *(all historical data)*\n\nFor caching details on this endpoint, please "
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

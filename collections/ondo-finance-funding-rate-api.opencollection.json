@@ -1,0 +1,134 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Funding Rate API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Funding Rate",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Funding Rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/funding_rates",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Market to query"
+              }
+            ]
+          },
+          "docs": "Get an estimate of the current-interval funding rate in a given market, as well as when the next funding is and what premium index measurements make up the funding rate.\n"
+        },
+        {
+          "info": {
+            "name": "Get Funding Rate History",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/funding_rate_history",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Perps trading market"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time filter (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time filter (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Get the historical funding rates for a market."
+        },
+        {
+          "info": {
+            "name": "Get Funding Fee Payments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/funding_fees",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Trading market to filter by"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time filter (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time filter (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Get a paginated history of funding fee payments for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Mark Prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/mark_prices"
+          },
+          "docs": "Get the current mark prices for all perpetual futures markets."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,183 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Private Channels API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Private Channels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Subscribe: Perps Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/ordersPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `ordersPerps` channel. Requires authentication (login first).\n\nOptional `markets` to filter."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Fills",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/fillsPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `fillsPerps` channel. Requires authentication (login first).\n\nOptional `markets` to filter."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Positions",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/positionsPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `positionsPerps` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/balancePerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `balancePerps` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Liquidation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/liquidationPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `liquidationPerps` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Margin Transfers",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/marginTransfersPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `marginTransfersPerps` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Order Summaries",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/ordersSummariesPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `ordersSummariesPerps` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Funding Payments",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/fundingPaymentsPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `fundingPaymentsPerps` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Dead Man's Switch",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/cancelAllOrdersAfterPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `cancelAllOrdersAfterPerps` channel. Requires authentication (login first).\n\n**Required**: `timeout_seconds` (the dead man's switch duration in seconds)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Deposits",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/deposits",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `deposits` channel. Requires authentication (login first)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Withdrawals",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/withdrawals",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `withdrawals` channel. Requires authentication (login first)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,318 @@
+{
+  "item": [
+    {
+      "id": "b34f4d16-aeb2-468e-890d-2ce5d5316f44",
+      "name": "Connection",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ad9763af-0330-4f1b-8ab2-b86f8c6d9ba6",
+          "name": "Connect",
+          "request": {
+            "name": "Connect",
+            "description": {
+              "content": "Establish a WebSocket connection. After connecting, send JSON messages to interact with the API.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9571f9ba-4dad-4b2d-aacc-16b692cb84c2",
+              "name": "Switching Protocols - WebSocket connection established",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Switching Protocols",
+              "code": 101,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c78321df-3e16-4515-937b-39eb9eccb32d",
+          "name": "Ping",
+          "request": {
+            "name": "Ping",
+            "description": {
+              "content": "Send `{\"op\": \"ping\"}` to keep the connection alive. The server responds with `{\"type\": \"pong\"}`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "69c77406-8340-4f62-99ea-bd3977f09260",
+              "name": "Pong response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"ping\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"pong\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "26389957-0fcb-4f1c-878b-b88d33a212d9",
+          "name": "Login",
+          "request": {
+            "name": "Login",
+            "description": {
+              "content": "Authenticate the WebSocket connection. Required before subscribing to private channels.\n\n**JWT login**: provide `args.token`.\n\n**API key login**: provide `args.key`, `args.time` (Unix milliseconds), and `args.sign` (HMAC-SHA256 of `\"ondo_perps_ws_login\" + time` using your API secret, hex-encoded).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "login"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 4725,\n    \"key_1\": 6082\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7184f5e3-7979-4e48-8c88-9e12a2930a58",
+              "name": "Login successful",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "login"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"login\",\n  \"args\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"loggedIn\",\n  \"msg\": \"Login successful\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e6125125-ee0c-48c9-838c-2ecfc62044cf",
+              "name": "Login failed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "login"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"login\",\n  \"args\": {\n    \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"error\",\n  \"msg\": \"account already has too many connections\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "7f90c039-8bf4-4b02-bdb3-f84ab040acb3",
+    "name": "GM Backend Account Connection API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

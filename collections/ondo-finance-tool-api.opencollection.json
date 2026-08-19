@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Tool API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Tool",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/status"
+          },
+          "docs": "Returns public API and system status. No authentication required."
+        },
+        {
+          "info": {
+            "name": "Hello",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/hello"
+          },
+          "docs": "Simple health check. Returns a static JSON payload. No authentication required."
+        },
+        {
+          "info": {
+            "name": "Verify Eligibility",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/verify_eligibility"
+          },
+          "docs": "Used to verify user eligibility (e.g. geography). No authentication required. May be restricted by Cloudflare."
+        },
+        {
+          "info": {
+            "name": "Get Price",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/price",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the current price for a given trading pair. No authentication required."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

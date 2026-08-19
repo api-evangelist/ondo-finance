@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Sandbox API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Sandbox",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Sandbox Deposit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/sandbox_deposit",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Credits the account with funds in sandbox environment only."
+        },
+        {
+          "info": {
+            "name": "Sandbox Withdrawal",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/sandbox_withdrawal",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Debits the account in sandbox environment only."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

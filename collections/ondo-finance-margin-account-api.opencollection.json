@@ -1,0 +1,160 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Margin Account API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Margin Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Margin Transfers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/transfers",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time filter (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time filter (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of margin transfers."
+        },
+        {
+          "info": {
+            "name": "Create Margin Transfer",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/transfers",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a margin transfer. Margin transfers must be between the main and margin wallet of the same account, in either direction.\n"
+        },
+        {
+          "info": {
+            "name": "Get Balance",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/balance"
+          },
+          "docs": "Get a summary of the balance for a margin account."
+        },
+        {
+          "info": {
+            "name": "Get Orders Summaries",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders_summaries"
+          },
+          "docs": "Returns a summary of resting orders, position, and market order margin requirements for each market."
+        },
+        {
+          "info": {
+            "name": "Get Max Order Size",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/max_order_size",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Market to estimate max order size for"
+              },
+              {
+                "name": "buffer",
+                "value": "",
+                "type": "query",
+                "description": "Factor to scale returned sizes to guard against fluctuations between calling this endpoint and placing the order. Must be a decimal between 0 and 1. Defaults to 0.9.\n"
+              }
+            ]
+          },
+          "docs": "Get a summary of the maximum order size that can be placed given the current state of the order book and available margin.\n"
+        },
+        {
+          "info": {
+            "name": "Get Liquidation History",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/liquidation_history",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by market"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time filter (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time filter (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Returns a paginated history of liquidation events for the authenticated account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

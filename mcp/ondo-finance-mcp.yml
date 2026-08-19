@@ -63,3 +63,9 @@ tools:
 - name: getAssetStatus
   description: Get Asset Statuses
   source_operation: openapi/ondo-finance-gm-openapi-original.json#getAssetStatus
+deployment:
+  mode: none
+  verified: derived
+  tools: 18
+  checked: '2026-08-12'
+  source: catalog MCP census

@@ -1,0 +1,683 @@
+{
+  "item": [
+    {
+      "id": "ab538e61-b9af-4d18-be57-e48d76ae129b",
+      "name": "Public Channels",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "979c95fa-312f-4751-84a5-14ed93f773d5",
+          "name": "Subscribe: Perps Top of Book",
+          "request": {
+            "name": "Subscribe: Perps Top of Book",
+            "description": {
+              "content": "Subscribe to the `topOfBooksPerps` channel.\n\nOptional `markets` to filter; omit for all markets.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "topOfBooksPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": 5425,\n    \"key_1\": \"string\",\n    \"key_2\": 5996.363510527174\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "52c1ecd6-4327-494f-8e00-b3ea35dcca47",
+              "name": "Channel update for `topOfBooksPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "topOfBooksPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"topOfBooksPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"topOfBooksPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"time\": \"2025-03-05T14:30:00Z\",\n      \"asks\": [\n        {\n          \"price\": \"227.60\",\n          \"size\": \"80.0\"\n        }\n      ],\n      \"bids\": [\n        {\n          \"price\": \"227.40\",\n          \"size\": \"100.0\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b809b730-8e75-4d93-a284-bb72e9411fdf",
+          "name": "Subscribe: Perps Depth Book",
+          "request": {
+            "name": "Subscribe: Perps Depth Book",
+            "description": {
+              "content": "Subscribe to the `depthBooksPerps` channel.\n\nOptional `markets`, `depthLevels` (price grouping), and `limit` (max levels).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "depthBooksPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d7c7960a-20e8-4b63-aedc-5ac59b54c972",
+              "name": "Channel update for `depthBooksPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "depthBooksPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"depthBooksPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"depthBooksPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"time\": \"2025-03-05T14:30:00Z\",\n      \"asks\": [\n        {\n          \"price\": \"227.60\",\n          \"size\": \"80.0\"\n        },\n        {\n          \"price\": \"227.70\",\n          \"size\": \"150.0\"\n        }\n      ],\n      \"bids\": [\n        {\n          \"price\": \"227.40\",\n          \"size\": \"100.0\"\n        },\n        {\n          \"price\": \"227.30\",\n          \"size\": \"250.0\"\n        }\n      ]\n    },\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"time\": \"2025-03-05T14:30:00Z\",\n      \"asks\": [\n        {\n          \"price\": \"227.60\",\n          \"size\": \"80.0\"\n        },\n        {\n          \"price\": \"227.70\",\n          \"size\": \"150.0\"\n        }\n      ],\n      \"bids\": [\n        {\n          \"price\": \"227.40\",\n          \"size\": \"100.0\"\n        },\n        {\n          \"price\": \"227.30\",\n          \"size\": \"250.0\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "34b168da-a151-4539-b63f-95cba950da21",
+          "name": "Subscribe: Perps Trades",
+          "request": {
+            "name": "Subscribe: Perps Trades",
+            "description": {
+              "content": "Subscribe to the `tradesPerps` channel.\n\nOptional `markets` and `numPastTrades` (number of historical trades on subscribe).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "tradesPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b7ec727c-aba5-45f0-bede-7bcaf922853b",
+              "name": "Channel update for `tradesPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "tradesPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"tradesPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"tradesPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"price\": \"227.50\",\n      \"size\": \"5.00\",\n      \"cost\": \"1137.50\",\n      \"aggressor_side\": \"buy\",\n      \"time\": \"2025-03-05T14:30:00Z\",\n      \"id\": \"70a37d8f972f2494837f9dba8364cbb4\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8ed39658-057a-4e61-b84a-6fadc445ad7b",
+          "name": "Subscribe: Perps Funding Rates",
+          "request": {
+            "name": "Subscribe: Perps Funding Rates",
+            "description": {
+              "content": "Subscribe to the `fundingRatesPerps` channel.\n\nOptional `markets` to filter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "fundingRatesPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0c5d5a8c-0cf1-4170-bbaa-9788f5301bab",
+              "name": "Channel update for `fundingRatesPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "fundingRatesPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"fundingRatesPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"fundingRatesPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"rate\": \"0.0000125\",\n      \"intervalEnds\": \"2024-09-13T15:35:48.947Z\",\n      \"premiums\": [\n        {\n          \"market\": \"string\",\n          \"time\": \"1954-11-11T08:34:03.017Z\",\n          \"mark\": \"string\",\n          \"bid\": \"string\",\n          \"ask\": \"string\",\n          \"premiumIndex\": \"string\"\n        },\n        {\n          \"market\": \"string\",\n          \"time\": \"1970-04-30T10:17:30.808Z\",\n          \"mark\": \"string\",\n          \"bid\": \"string\",\n          \"ask\": \"string\",\n          \"premiumIndex\": \"string\"\n        }\n      ]\n    },\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"rate\": \"0.0000125\",\n      \"intervalEnds\": \"1974-01-28T13:41:34.812Z\",\n      \"premiums\": [\n        {\n          \"market\": \"string\",\n          \"time\": \"2017-06-16T00:07:30.212Z\",\n          \"mark\": \"string\",\n          \"bid\": \"string\",\n          \"ask\": \"string\",\n          \"premiumIndex\": \"string\"\n        },\n        {\n          \"market\": \"string\",\n          \"time\": \"2011-01-15T03:44:01.932Z\",\n          \"mark\": \"string\",\n          \"bid\": \"string\",\n          \"ask\": \"string\",\n          \"premiumIndex\": \"string\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bfe1dd7c-7cea-4f13-9cf2-46614f9c1700",
+          "name": "Subscribe: Perps Mark Prices",
+          "request": {
+            "name": "Subscribe: Perps Mark Prices",
+            "description": {
+              "content": "Subscribe to the `markPricesPerps` channel.\n\nOptional `markets` to filter.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "markPricesPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d56d89ba-abd4-4b48-bf47-93a15f796c81",
+              "name": "Channel update for `markPricesPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "markPricesPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"markPricesPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"markPricesPerps\",\n  \"data\": [\n    {\n      \"market\": \"AAPL-USD.P\",\n      \"markPrice\": \"227.50\"\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "161df390-da11-4a6d-864d-7e76e598096b",
+          "name": "Subscribe: Perps Liquidation Announcements",
+          "request": {
+            "name": "Subscribe: Perps Liquidation Announcements",
+            "description": {
+              "content": "Subscribe to the `liquidationAnnouncementsPerps` channel.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "liquidationAnnouncementsPerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2f880666-f13f-4b9d-af54-c0388e9665a4",
+              "name": "Channel update for `liquidationAnnouncementsPerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "liquidationAnnouncementsPerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"liquidationAnnouncementsPerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"liquidationAnnouncementsPerps\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"status\": \"active\",\n      \"nextOffload\": \"1982-08-04T06:12:22.020Z\",\n      \"orders\": [\n        {\n          \"market\": \"string\",\n          \"side\": \"sell\",\n          \"price\": \"string\",\n          \"quantity\": \"string\",\n          \"positionSize\": \"string\"\n        },\n        {\n          \"market\": \"string\",\n          \"side\": \"buy\",\n          \"price\": \"string\",\n          \"quantity\": \"string\",\n          \"positionSize\": \"string\"\n        }\n      ]\n    },\n    {\n      \"id\": \"string\",\n      \"status\": \"active\",\n      \"nextOffload\": \"2010-04-08T10:22:44.148Z\",\n      \"orders\": [\n        {\n          \"market\": \"string\",\n          \"side\": \"sell\",\n          \"price\": \"string\",\n          \"quantity\": \"string\",\n          \"positionSize\": \"string\"\n        },\n        {\n          \"market\": \"string\",\n          \"side\": \"sell\",\n          \"price\": \"string\",\n          \"quantity\": \"string\",\n          \"positionSize\": \"string\"\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cf919ab5-7318-4aee-9021-085c27469652",
+          "name": "Subscribe: Perps Kline / Candlesticks",
+          "request": {
+            "name": "Subscribe: Perps Kline / Candlesticks",
+            "description": {
+              "content": "Subscribe to the `kLinePerps` channel.\n\n**Required**: exactly one `markets` entry and a `resolution`.\n\nValid resolutions: `1`, `5`, `15`, `1H`, `4H`, `1D`, `1W`.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "kLinePerps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "62f8383d-93c1-487f-9486-cabd184b0abe",
+              "name": "Channel update for `kLinePerps`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "kLinePerps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"kLinePerps\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"kLinePerps\",\n  \"data\": {\n    \"m\": \"AAPL-USD.P\",\n    \"t\": 1709648400,\n    \"s\": 1709648340,\n    \"e\": 1709648400,\n    \"o\": 226.8,\n    \"h\": 228.1,\n    \"l\": 226.5,\n    \"c\": 227.5,\n    \"v\": 12345.67,\n    \"x\": false\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "65c03659-380b-4dc1-9025-f9c425cf6f9d",
+    "name": "GM Backend Account Public Channels API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

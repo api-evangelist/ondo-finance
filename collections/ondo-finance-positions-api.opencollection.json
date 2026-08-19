@@ -1,0 +1,63 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Positions API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Positions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Positions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/positions"
+          },
+          "docs": "Returns all open positions for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Leverage",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/leverage",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by market. If omitted, returns leverage for all markets."
+              }
+            ]
+          },
+          "docs": "Returns the current leverage setting(s) for the authenticated account. If `market` is provided, returns leverage for that market only; otherwise returns leverage for all markets."
+        },
+        {
+          "info": {
+            "name": "Set Leverage",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/leverage",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Sets the leverage for a market. Leverage must be a positive integer and cannot exceed the market's maximum leverage. Reducing leverage while insufficient margin is available will return 400 with `error_code=insufficient_margin`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

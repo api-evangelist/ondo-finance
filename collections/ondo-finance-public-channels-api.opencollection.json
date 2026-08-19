@@ -1,0 +1,123 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Public Channels API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Public Channels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Subscribe: Perps Top of Book",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/topOfBooksPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `topOfBooksPerps` channel.\n\nOptional `markets` to filter; omit for all markets."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Depth Book",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/depthBooksPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `depthBooksPerps` channel.\n\nOptional `markets`, `depthLevels` (price grouping), and `limit` (max levels)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Trades",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/tradesPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `tradesPerps` channel.\n\nOptional `markets` and `numPastTrades` (number of historical trades on subscribe)."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Funding Rates",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/fundingRatesPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `fundingRatesPerps` channel.\n\nOptional `markets` to filter."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Mark Prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/markPricesPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `markPricesPerps` channel.\n\nOptional `markets` to filter."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Liquidation Announcements",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/liquidationAnnouncementsPerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `liquidationAnnouncementsPerps` channel."
+        },
+        {
+          "info": {
+            "name": "Subscribe: Perps Kline / Candlesticks",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/kLinePerps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Subscribe to the `kLinePerps` channel.\n\n**Required**: exactly one `markets` entry and a `resolution`.\n\nValid resolutions: `1`, `5`, `15`, `1H`, `4H`, `1D`, `1W`."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

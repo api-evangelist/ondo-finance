@@ -1,0 +1,125 @@
+{
+  "item": [
+    {
+      "id": "8dfc415d-33c1-4438-928b-5c3d919c6b0a",
+      "name": "Chat",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2c3dcde4-407f-400f-aa62-13bd41b72338",
+          "name": "Subscribe: Chat",
+          "request": {
+            "name": "Subscribe: Chat",
+            "description": {
+              "content": "Subscribe to the `chat` channel. Requires authentication (login first).",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "ws",
+                "chat"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"op\": \"<string>\",\n  \"channel\": \"<string>\",\n  \"markets\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"args\": {\n    \"token\": \"<string>\",\n    \"key\": \"<string>\",\n    \"time\": \"<string>\",\n    \"sign\": \"<string>\"\n  },\n  \"numPastTrades\": \"<integer>\",\n  \"resolution\": \"<string>\",\n  \"timeout_seconds\": \"<integer>\",\n  \"depthLevels\": \"<string>\",\n  \"limit\": \"<integer>\",\n  \"message\": \"<string>\",\n  \"context\": {\n    \"key_0\": \"string\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "a48171a7-463b-407d-b164-005b49817466",
+              "name": "Channel update for `chat`",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "ws",
+                    "chat"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"op\": \"subscribe\",\n  \"channel\": \"chat\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"update\",\n  \"channel\": \"chat\",\n  \"data\": {\n    \"type\": \"message\",\n    \"status\": \"complete\",\n    \"content\": \"string\",\n    \"role\": \"assistant\",\n    \"timestamp\": \"1983-12-14T08:52:25.855Z\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "98286ef7-ed7b-4c2d-86d5-bc1f1f125b63",
+    "name": "GM Backend Account Chat API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

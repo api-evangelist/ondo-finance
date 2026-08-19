@@ -1,0 +1,59 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Connection API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Connection",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Connect",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/ws"
+          },
+          "docs": "Establish a WebSocket connection. After connecting, send JSON messages to interact with the API."
+        },
+        {
+          "info": {
+            "name": "Ping",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Send `{\"op\": \"ping\"}` to keep the connection alive. The server responds with `{\"type\": \"pong\"}`."
+        },
+        {
+          "info": {
+            "name": "Login",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/ws/login",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticate the WebSocket connection. Required before subscribing to private channels.\n\n**JWT login**: provide `args.token`.\n\n**API key login**: provide `args.key`, `args.time` (Unix milliseconds), and `args.sign` (HMAC-SHA256 of `\"ondo_perps_ws_login\" + time` using your API secret, hex-encoded)."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

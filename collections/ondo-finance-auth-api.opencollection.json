@@ -1,0 +1,218 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Auth API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Auth",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get SIWE Login Challenge",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/erc-4361/login/get_challenge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a Sign-In with Ethereum (ERC-4361) challenge for login. No auth required."
+        },
+        {
+          "info": {
+            "name": "Complete SIWE Login",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/erc-4361/login/complete_challenge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Complete Sign-In with Ethereum by submitting the signed challenge. Returns JWT."
+        },
+        {
+          "info": {
+            "name": "Get SIWE Address Book Challenge",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/erc-4361/address_book/get_challenge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get a Sign-In with Ethereum challenge for adding a withdrawal address. Requires auth."
+        },
+        {
+          "info": {
+            "name": "Complete SIWE Address Book Challenge",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/erc-4361/address_book/complete_challenge",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Complete the signed challenge to add a withdrawal address."
+        },
+        {
+          "info": {
+            "name": "Invalidate JWT",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/auth/invalidate_jwt"
+          },
+          "docs": "Invalidates all JWTs for the authenticated account. Requires valid auth."
+        },
+        {
+          "info": {
+            "name": "Login with Google (Web2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/login/google",
+            "params": [
+              {
+                "name": "redirect_uri",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Redirects to Google OAuth. No auth required."
+        },
+        {
+          "info": {
+            "name": "Login with Email (Web2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/login/email",
+            "params": [
+              {
+                "name": "redirect_uri",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Redirects to email/password login. No auth required."
+        },
+        {
+          "info": {
+            "name": "OAuth Login Callback",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/login/complete",
+            "params": [
+              {
+                "name": "state",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "code",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "error",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Callback for Web2 OAuth flow. Exchanges code for session. No auth required."
+        },
+        {
+          "info": {
+            "name": "Get Token (Web2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/get_token"
+          },
+          "docs": "Exchange Web2 session for JWT. Requires valid session cookie."
+        },
+        {
+          "info": {
+            "name": "Add Withdrawal Address (Web2)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/address_book",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Initiates adding a withdrawal address via Web2 auth. May return MFA challenge."
+        },
+        {
+          "info": {
+            "name": "MFA Callback",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/mfa/complete",
+            "params": [
+              {
+                "name": "state",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "code",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "error",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Callback after MFA completion (e.g. for address book). No auth required."
+        },
+        {
+          "info": {
+            "name": "Request Password Reset",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/auth/web2/password_reset"
+          },
+          "docs": "Request a password reset email for Web2 accounts. Requires auth."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

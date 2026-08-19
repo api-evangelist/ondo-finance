@@ -1,0 +1,240 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Orders API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by trading market"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by order status"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter orders placed at or after this time (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter orders placed at or before this time (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of orders matching the given parameters."
+        },
+        {
+          "info": {
+            "name": "Create Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a limit or market order. Change the \"type\" field to switch between order types. If `postOnly` is `true` and an order would match at placement, a 400 is returned with error `post_only_has_match`.\n"
+        },
+        {
+          "info": {
+            "name": "Cancel All Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "If specified, only cancel orders for this market"
+              }
+            ]
+          },
+          "docs": "Cancels all orders for the authenticated user. Optionally restricted to a single market.\n"
+        },
+        {
+          "info": {
+            "name": "Create Order (Delayed)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/delayed",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Redirect target for speed-bumped order placement. When POST /v1/perps/orders returns a 307 redirect due to a speed bump, clients should resubmit the same request to this endpoint."
+        },
+        {
+          "info": {
+            "name": "Create Batched Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/batch",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates multiple orders in a single API call. Some orders may succeed while others fail. The response code is 2XX as long as there is no internal server error. Returns 400 with `error_code=batch_order_empty` if the `orders` array is empty. Returns 400 with `error_code=batch_order_too_many_orders` if too many orders are provided (max 20).\n"
+        },
+        {
+          "info": {
+            "name": "Batch Cancel Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/batch",
+            "params": [
+              {
+                "name": "orderIDs",
+                "value": "",
+                "type": "query",
+                "description": "Comma-separated list of order IDs to cancel"
+              }
+            ]
+          },
+          "docs": "Cancels multiple orders in a single call. Returns results for each order. Provide a comma-separated list of order IDs via the `orderIDs` query parameter. Each entry can be an internal order ID or `client:{clientOrderID}`.\n"
+        },
+        {
+          "info": {
+            "name": "Create Batched Orders (Delayed)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/batch/delayed",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Redirect target for speed-bumped batch order placement. When POST /v1/perps/orders/batch returns a 307 redirect due to a speed bump, clients should resubmit the same request to this endpoint."
+        },
+        {
+          "info": {
+            "name": "Get Order by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/:orderID",
+            "params": [
+              {
+                "name": "orderID",
+                "value": "",
+                "type": "path",
+                "description": "Internal order ID, or `client:{clientOrderID}` for client order ID lookup"
+              }
+            ]
+          },
+          "docs": "Gets an individual order by order ID. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)\n"
+        },
+        {
+          "info": {
+            "name": "Cancel Order by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/:orderID",
+            "params": [
+              {
+                "name": "orderID",
+                "value": "",
+                "type": "path",
+                "description": "Internal order ID, or `client:{clientOrderID}` for client order ID lookup"
+              }
+            ]
+          },
+          "docs": "Cancels an individual order by order ID. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)\nReturns 400 with error codes `order_already_canceled`, `order_not_in_cancelable_state`, or `order_already_filled` if the order cannot be cancelled.\n"
+        },
+        {
+          "info": {
+            "name": "Get Orders CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/orders/csv",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by trading market"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter by order status"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter by start time (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "Filter by end time (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Export filled orders as CSV, sorted reverse chronologically."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

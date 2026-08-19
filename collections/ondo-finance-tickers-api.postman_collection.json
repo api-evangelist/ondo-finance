@@ -1,0 +1,260 @@
+{
+  "item": [
+    {
+      "id": "b885e4ed-1e3b-4809-b3b9-928796f40ec0",
+      "name": "Tickers",
+      "description": {
+        "content": "Get Ticker Information",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8f42f9b9-4e52-4304-af89-00a6af848aad",
+          "name": "Get Price and Volume Data for All Supported Tickers",
+          "request": {
+            "name": "Get Price and Volume Data for All Supported Tickers",
+            "description": {
+              "content": "This endpoint retrieves the latest price and volume data for all supported tickers. A ticker represents a specific asset in the market.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "tickers"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "apikey",
+              "apikey": [
+                {
+                  "key": "key",
+                  "value": "x-api-key"
+                },
+                {
+                  "key": "value",
+                  "value": "{{apiKey}}"
+                },
+                {
+                  "key": "in",
+                  "value": "header"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "a929677d-e78a-46a2-bc0c-08183f5da773",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "[\n  {\n    \"tickerId\": \"TSLAon_USDon\",\n    \"baseCurrency\": \"TSLAon\",\n    \"targetCurrency\": \"USDon\",\n    \"lastPrice\": 338.42375,\n    \"baseVolume\": 72.720573083,\n    \"targetVolume\": 24610.369044819\n  },\n  {\n    \"tickerId\": \"AAPLon_USDon\",\n    \"baseCurrency\": \"AAPLon\",\n    \"targetCurrency\": \"USDon\",\n    \"lastPrice\": 228.195452051,\n    \"baseVolume\": 2761.011833446,\n    \"targetVolume\": 630050.34345192\n  },\n  \"...\"\n]",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1d0b8f8e-7d81-4036-a332-69aa38296852",
+              "name": "Missing or invalid API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"MISSING_API_KEY\",\n  \"message\": \"missing API key\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#missing_api_key\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "ba9d154f-0e1e-4198-a144-38a7c8f6d05c",
+              "name": "The account has exceeded its rate limits. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"RATE_LIMITED\",\n  \"message\": \"rate limit exceeded\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#rate_limited\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "8a981ac8-bc0a-4eef-b013-757f08519aa3",
+              "name": "An internal server error occurred. Please see the returned message and documentation for details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "tickers"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: apikey",
+                      "type": "text/plain"
+                    },
+                    "key": "x-api-key",
+                    "value": "<API Key>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"code\": \"INTERNAL_ERROR\",\n  \"message\": \"An internal server error occurred. Please see the returned message and documentation for details.\",\n  \"documentation\": \"https://docs.ondo.finance/api-reference/error-codes#internal_error\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.gm.ondo.finance",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "6bcaaee4-8c76-4743-852f-3637480f6414",
+    "name": "GM Backend Account Tickers API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "An API spec for the Ondo GM Backend API.",
+      "type": "text/plain"
+    }
+  }
+}

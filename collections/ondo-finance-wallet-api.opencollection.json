@@ -1,0 +1,218 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Wallet API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Wallet",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Withdraw",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/withdraw",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Submit a withdrawal request. Rate limited per account."
+        },
+        {
+          "info": {
+            "name": "Provision Deposit Address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/provision_address",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provision a new deposit address for a given symbol/chain."
+        },
+        {
+          "info": {
+            "name": "Get Withdrawal Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/get_withdrawal_status",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Get status of one or more withdrawals."
+        },
+        {
+          "info": {
+            "name": "List Deposits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/wallet/deposits"
+          },
+          "docs": "Returns deposit history for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Deposit by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/wallet/deposits/:depositID",
+            "params": [
+              {
+                "name": "depositID",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns a single deposit by transaction ID."
+        },
+        {
+          "info": {
+            "name": "List Withdrawals",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/wallet/withdrawals"
+          },
+          "docs": "Returns withdrawal history for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Withdrawal Limits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/wallet/withdrawals/limit"
+          },
+          "docs": "Returns withdrawal limits for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Withdrawal by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/wallet/withdrawals/:withdrawalID",
+            "params": [
+              {
+                "name": "withdrawalID",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns a single withdrawal by transaction ID."
+        },
+        {
+          "info": {
+            "name": "List Deposit Addresses",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/wallet/deposit_address/list",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns the list of deposit addresses for the account."
+        },
+        {
+          "info": {
+            "name": "Export Deposits CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/wallet/deposits/csv",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Export deposits as CSV for a time range."
+        },
+        {
+          "info": {
+            "name": "Export Withdrawals CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/wallet/withdrawals/csv",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Export withdrawals as CSV for a time range."
+        },
+        {
+          "info": {
+            "name": "Get Address Book",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/wallet/address_book"
+          },
+          "docs": "Returns withdrawal address book entries for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Edit Address Book Entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.gm.ondo.finance/v1/wallet/address_book",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update label for a withdrawal address."
+        },
+        {
+          "info": {
+            "name": "Remove Address Book Entry",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/wallet/address_book",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Remove a withdrawal address from the address book."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

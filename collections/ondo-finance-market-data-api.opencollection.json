@@ -1,0 +1,211 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Market Data API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Market Data",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Trades",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/trades",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Trading market to query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of public trades for a market."
+        },
+        {
+          "info": {
+            "name": "Get Order Book Depth",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/depth",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Trading market to query"
+              },
+              {
+                "name": "depth",
+                "value": "",
+                "type": "query",
+                "description": "Number of price levels to return per side. Defaults to 10."
+              }
+            ]
+          },
+          "docs": "Returns the current order book depth snapshot for a market."
+        },
+        {
+          "info": {
+            "name": "Get Candles",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/candles",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Perps trading market"
+              },
+              {
+                "name": "resolution",
+                "value": "",
+                "type": "query",
+                "description": "Bar resolution in minutes. Common values: 1, 5, 15, 30, 60, 240, 1D."
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start of the requested time range (Unix timestamp in seconds)"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End of the requested time range (Unix timestamp in seconds)"
+              }
+            ]
+          },
+          "docs": "Returns OHLCV candlestick data for a perpetual futures market."
+        },
+        {
+          "info": {
+            "name": "Get Symbol Info (TradingView)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/symbol_info"
+          },
+          "docs": "Returns symbol metadata in TradingView UDF format. See https://www.tradingview.com/rest-api-spec/#operation/getSymbolInfo."
+        },
+        {
+          "info": {
+            "name": "Get Streaming Data (TradingView)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/streaming"
+          },
+          "docs": "Returns a streaming HTTP chunked response with real-time trade data in TradingView UDF streaming format."
+        },
+        {
+          "info": {
+            "name": "Get Price History (TradingView)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/history",
+            "params": [
+              {
+                "name": "symbol",
+                "value": "",
+                "type": "query",
+                "description": "TradingView symbol identifier"
+              },
+              {
+                "name": "resolution",
+                "value": "",
+                "type": "query",
+                "description": "Bar resolution"
+              },
+              {
+                "name": "from",
+                "value": "",
+                "type": "query",
+                "description": "Start Unix timestamp"
+              },
+              {
+                "name": "to",
+                "value": "",
+                "type": "query",
+                "description": "End Unix timestamp"
+              }
+            ]
+          },
+          "docs": "Returns historical bar data in TradingView UDF format."
+        },
+        {
+          "info": {
+            "name": "Get Open Interest",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/open_interest"
+          },
+          "docs": "Get open interest across all perpetual futures markets."
+        },
+        {
+          "info": {
+            "name": "Get Volume",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/volume"
+          },
+          "docs": "Get 24-hour trading volume across all perpetual futures markets."
+        },
+        {
+          "info": {
+            "name": "Get Contracts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/contracts",
+            "params": [
+              {
+                "name": "sparkline",
+                "value": "",
+                "type": "query",
+                "description": "If true, include sparkline price data in the response"
+              }
+            ]
+          },
+          "docs": "Gets a list of perpetual futures contracts and their current market data."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

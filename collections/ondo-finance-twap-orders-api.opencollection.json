@@ -1,0 +1,152 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account TWAP Orders API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "TWAP Orders",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create TWAP Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/perps/twap/order",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new TWAP (Time-Weighted Average Price) order. The order is split into child orders placed at regular intervals over the specified running time. Running time must be between 5 minutes and 24 hours and a multiple of the frequency. The number of child orders (runningTime / frequency) must be between 2 and 200."
+        },
+        {
+          "info": {
+            "name": "Get TWAP Order by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/twap/order/:orderID",
+            "params": [
+              {
+                "name": "orderID",
+                "value": "",
+                "type": "path",
+                "description": "TWAP order ID (prefixed with `twap_`)"
+              }
+            ]
+          },
+          "docs": "Returns a single TWAP order by its ID."
+        },
+        {
+          "info": {
+            "name": "Cancel TWAP Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.gm.ondo.finance/v1/perps/twap/order/:orderID",
+            "params": [
+              {
+                "name": "orderID",
+                "value": "",
+                "type": "path",
+                "description": "TWAP order ID (prefixed with `twap_`)"
+              }
+            ]
+          },
+          "docs": "Cancels a running TWAP order. Child orders already placed are not affected."
+        },
+        {
+          "info": {
+            "name": "Get TWAP Order Fills",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/twap/order/:orderID/fills",
+            "params": [
+              {
+                "name": "orderID",
+                "value": "",
+                "type": "path",
+                "description": "TWAP order ID (prefixed with `twap_`)"
+              }
+            ]
+          },
+          "docs": "Returns all fills for all child orders of a TWAP order."
+        },
+        {
+          "info": {
+            "name": "Get Running TWAP Orders",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/twap/orders/running",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by market"
+              }
+            ]
+          },
+          "docs": "Returns all currently running TWAP orders for the authenticated account. Optionally filter by market."
+        },
+        {
+          "info": {
+            "name": "Get TWAP Order History",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/perps/twap/orders/history",
+            "params": [
+              {
+                "name": "market",
+                "value": "",
+                "type": "query",
+                "description": "Filter by market"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of results to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor"
+              },
+              {
+                "name": "startTime",
+                "value": "",
+                "type": "query",
+                "description": "Start time filter (UTC milliseconds)"
+              },
+              {
+                "name": "endTime",
+                "value": "",
+                "type": "query",
+                "description": "End time filter (UTC milliseconds)"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of completed or cancelled TWAP orders for the authenticated account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

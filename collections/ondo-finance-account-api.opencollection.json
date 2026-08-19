@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Account",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/account"
+          },
+          "docs": "Returns account information for the authenticated user."
+        },
+        {
+          "info": {
+            "name": "Get Notification Preference",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/account/notifications"
+          },
+          "docs": "Returns notification preferences for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Set Notification Preference",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.gm.ondo.finance/v1/account/notifications",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update notification preferences for the authenticated account."
+        },
+        {
+          "info": {
+            "name": "Get Open Order Counts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/counts/orders"
+          },
+          "docs": "Returns open order counts per market/product for the authenticated account."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

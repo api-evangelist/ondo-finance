@@ -1,0 +1,86 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "GM Backend Account Chains API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chains",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Token Balances for a User or Token",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/chains/:chainId/balances",
+            "params": [
+              {
+                "name": "chainId",
+                "value": "",
+                "type": "path",
+                "description": "The chain's identifier including the chain name and chain id."
+              },
+              {
+                "name": "tokenAddress",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a token contract address (optional)."
+              },
+              {
+                "name": "userAddress",
+                "value": "",
+                "type": "query",
+                "description": "Filter by a user wallet address (optional)."
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves all token balances for a GM Chain. Results can be optionally filtered by `tokenAddress`, `userAddress`, or both parameters together. If no filters are provided, all balances on the chain will be returned.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+        },
+        {
+          "info": {
+            "name": "Get Token Info",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.gm.ondo.finance/v1/chains/:chainId/tokens/:tokenAddress/info",
+            "params": [
+              {
+                "name": "chainId",
+                "value": "",
+                "type": "path",
+                "description": "The chain's identifier including the chain name and chain id."
+              },
+              {
+                "name": "tokenAddress",
+                "value": "0x14c3abF95Cb9C93a8b82C1CdCB76D72Cb87b2d4c",
+                "type": "path",
+                "description": "The token contract address"
+              }
+            ],
+            "auth": {
+              "type": "apikey",
+              "key": "x-api-key",
+              "value": "{{x-api-key}}",
+              "placement": "header"
+            }
+          },
+          "docs": "This endpoint retrieves contract information about a token on a GM chain.\n\nFor caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
