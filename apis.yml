@@ -35,6 +35,18 @@ tags:
 - Perpetual Futures
 - Market Data
 - Blockchain
+- Financial-Services
+tags_raw:
+- Company
+- Crypto
+- Tokenization
+- Real World Assets
+- DeFi
+- Stocks
+- Trading
+- Perpetual Futures
+- Market Data
+- Blockchain
 - Financial Services
 maintainers:
 - FN: Kin Lane
@@ -66,6 +78,8 @@ apis:
   humanURL: https://docs.ondo.finance/api-reference/overview
   baseURL: https://api.gm.ondo.finance
   tags:
+  - APIKeys
+  tags_raw:
   - API Keys
   properties:
   - type: OpenAPI
@@ -120,6 +134,8 @@ apis:
   humanURL: https://docs.ondo.finance/api-reference/overview
   baseURL: https://api.gm.ondo.finance
   tags:
+  - Authentication
+  tags_raw:
   - Auth
   properties:
   - type: OpenAPI
@@ -300,6 +316,8 @@ apis:
   humanURL: https://docs.ondo.finance/api-reference/overview
   baseURL: https://api.gm.ondo.finance
   tags:
+  - Order
+  tags_raw:
   - Orders
   properties:
   - type: OpenAPI
@@ -498,6 +516,8 @@ apis:
   humanURL: https://docs.ondo.finance/api-reference/overview
   baseURL: https://api.gm.ondo.finance
   tags:
+  - Wallets
+  tags_raw:
   - Wallet
   properties:
   - type: OpenAPI
