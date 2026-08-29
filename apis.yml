@@ -543,6 +543,9 @@ apis:
   - type: Webhooks
     url: openapi/_original/ondo-finance-perps-ws-openapi-original.json
 common:
+- type: CapabilityMap
+  url: capabilities/ondo-finance-capability-edges.yml
+  name: Ondo Finance Business Capability Map
 - type: Website
   url: https://ondo.finance/
 - type: DeveloperPortal
