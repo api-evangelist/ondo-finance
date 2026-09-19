@@ -131,6 +131,8 @@ apis:
   humanURL: https://docs.ondo.finance/api-reference/overview
   baseURL: https://api.gm.ondo.finance
   tags:
+  - Attestation
+  tags_raw:
   - Attestations
   properties:
   - type: OpenAPI
