@@ -1,6 +1,6 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Chains API
+  title: GM Backend Chains API
   description: An API spec for the Ondo GM Backend API.
   version: 1.0.0
 servers:
@@ -18,9 +18,7 @@ paths:
       description: 'This endpoint retrieves all token balances for a GM Chain. Results can be optionally filtered by `tokenAddress`, `userAddress`, or both parameters together. If no filters are provided, all balances on the chain will be returned.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getBalances
       parameters:
       - name: chainId
@@ -132,9 +130,7 @@ paths:
       description: 'This endpoint retrieves contract information about a token on a GM chain.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getTokenInfo
       parameters:
       - name: chainId
@@ -209,57 +205,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GetTokenInfoResponse:
-      type: object
-      properties:
-        token:
-          $ref: '#/components/schemas/ChainTokenInfo'
-      required:
-      - token
-      example:
-        token:
-          tokenAddress: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
-          tokenName: Apple (Ondo Tokenized)
-          tokenSymbol: AAPLon
-          tokenDecimals: 18
-          tokenSupply:
-            value: '72.428346190773568025'
-    ChainTokenSupply:
-      type: object
-      properties:
-        value:
-          type: string
-          description: The total supply of the token, represented as a string with 18 decimal places.
-      required:
-      - value
-    ChainToken:
-      type: object
-      properties:
-        tokenAddress:
-          type: string
-          description: The contract address of the token on the specified chain.
-        tokenSymbol:
-          type: string
-          description: The symbol of the token on the specified chain.
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChainBalance'
-      required:
-      - tokenAddress
-      - tokenSymbol
-      - balances
-    ChainBalance:
-      type: object
-      properties:
-        holderAddress:
-          $ref: '#/components/schemas/ChainHolderAddress'
-        balance:
-          type: string
-          description: The token balanced, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-      required:
-      - holderAddress
-      - balance
     GMChains:
       type: string
       description: The chain's identifier including the chain name and chain id.
@@ -290,6 +235,25 @@ components:
           description: The address of the holder account.
       required:
       - account
+    ChainBalance:
+      type: object
+      properties:
+        holderAddress:
+          $ref: '#/components/schemas/ChainHolderAddress'
+        balance:
+          type: string
+          description: The token balanced, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+      required:
+      - holderAddress
+      - balance
+    ChainTokenSupply:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The total supply of the token, represented as a string with 18 decimal places.
+      required:
+      - value
     ChainTokenInfo:
       type: object
       properties:
@@ -313,6 +277,38 @@ components:
       - tokenSymbol
       - tokenDecimals
       - tokenSupply
+    GetTokenInfoResponse:
+      type: object
+      properties:
+        token:
+          $ref: '#/components/schemas/ChainTokenInfo'
+      required:
+      - token
+      example:
+        token:
+          tokenAddress: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+          tokenName: Apple (Ondo Tokenized)
+          tokenSymbol: AAPLon
+          tokenDecimals: 18
+          tokenSupply:
+            value: '72.428346190773568025'
+    ChainToken:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+          description: The contract address of the token on the specified chain.
+        tokenSymbol:
+          type: string
+          description: The symbol of the token on the specified chain.
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainBalance'
+      required:
+      - tokenAddress
+      - tokenSymbol
+      - balances
   securitySchemes:
     apiKey:
       type: apiKey

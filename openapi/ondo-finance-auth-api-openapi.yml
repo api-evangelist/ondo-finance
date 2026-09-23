@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Auth API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Auth API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Auth
 paths:
@@ -578,6 +579,48 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
+    AddressBookGetChallengeRequest:
+      type: object
+      required:
+      - walletAddress
+      - chainId
+      - withdrawalAddress
+      properties:
+        walletAddress:
+          type: string
+          description: The wallet address requesting to add a withdrawal address
+          example: '0x505D602729B932959935C1efd350Cea74527d3D1'
+        chainId:
+          type: string
+          description: EVM chain ID (1=Ethereum, 43114=Avalanche)
+          example: '43114'
+          enum:
+          - '1'
+          - '43114'
+        withdrawalAddress:
+          type: string
+          description: The address to add to the withdrawal address book
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     AddressBookCompleteChallengeRequest:
       type: object
       required:
@@ -613,19 +656,6 @@ components:
           enum:
           - '1'
           - '43114'
-    AuthChallengeResult:
-      type: object
-      required:
-      - id
-      - message
-      properties:
-        id:
-          type: string
-          description: Challenge ID
-          example: abc123
-        message:
-          type: string
-          description: Message to be signed by the wallet
     Web2AddressBookRequest:
       type: object
       required:
@@ -658,28 +688,6 @@ components:
           type: string
           description: Optional source identifier
           example: web
-    AddressBookGetChallengeRequest:
-      type: object
-      required:
-      - walletAddress
-      - chainId
-      - withdrawalAddress
-      properties:
-        walletAddress:
-          type: string
-          description: The wallet address requesting to add a withdrawal address
-          example: '0x505D602729B932959935C1efd350Cea74527d3D1'
-        chainId:
-          type: string
-          description: EVM chain ID (1=Ethereum, 43114=Avalanche)
-          example: '43114'
-          enum:
-          - '1'
-          - '43114'
-        withdrawalAddress:
-          type: string
-          description: The address to add to the withdrawal address book
-          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
     AuthToken:
       type: object
       required:
@@ -717,73 +725,20 @@ components:
         newAccount:
           type: boolean
           description: True if a new account was created during this login
-    GenericResponse:
+    AuthChallengeResult:
       type: object
       required:
-      - success
+      - id
+      - message
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        id:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: Challenge ID
+          example: abc123
+        message:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
+          description: Message to be signed by the wallet
   responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -812,6 +767,52 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     InternalServerError:
       description: Internal server error.
       content:
@@ -836,7 +837,11 @@ components:
             error: Description of the error
             error_code: unknown
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

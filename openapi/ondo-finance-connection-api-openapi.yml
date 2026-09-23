@@ -1,11 +1,11 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Connection API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps WebSocket Connection API
+  version: '1.0'
+  description: 'WebSocket API for Ondo Perps: real-time market data, order updates, positions, balance, funding, and more.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: wss://api.ondoperps.xyz
+  description: Production
 tags:
 - name: Connection
 paths:
@@ -204,8 +204,3 @@ components:
         sign:
           type: string
           description: HMAC-SHA256 hex signature
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      name: x-api-key
-      in: header

@@ -1,6 +1,6 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Attestations API
+  title: GM Backend Attestations API
   description: An API spec for the Ondo GM Backend API.
   version: 1.0.0
 servers:
@@ -18,12 +18,10 @@ paths:
       description: 'An attestation is a signed payload that authorizes a user to mint or redeem tokens. Each attestation is only valid for a limited time and is determined by the duration in the request. A user can specify a duration of `short` for a tighter price spread or `long` for an extended validity period.
 
 
-        Note: There are specific user and session limits which can prevent the creation of an attestation. For more information on limits, see the [Get Trading Limits](https://docs.ondo.finance/api-reference/limits/get-trading-limits) endpoint.
+        Note: There are specific user and session limits which can prevent the creation of an attestation. For more information on limits, see the Get Trading Limits endpoint.
 
 
-        See also: [Error Codes](https://docs.ondo.finance/api-reference/error-codes)
-
-        '
+        See also: Error Codes'
       operationId: createAttestation
       requestBody:
         description: Request a mint or redeem attestation.
@@ -146,7 +144,7 @@ paths:
       tags:
       - Attestations
       summary: Request a Soft Attestation Quote
-      description: 'A soft quote provides pricing information for mint or redeem operations without creating an actual attestation. Unlike the [Request a Mint or Redeem Attestation endpoint](https://docs.ondo.finance/api-reference/attestations/request-a-mint-or-redeem-attestation), soft quotes:
+      description: 'A soft quote provides pricing information for mint or redeem operations without creating an actual attestation. Unlike the Request a Mint or Redeem Attestation endpoint, soft quotes:
 
 
         - Are not eligible for on-chain submission
@@ -161,9 +159,7 @@ paths:
         This endpoint can be used to acquire estimated pricing without impacting trading limits or creating binding commitments.
 
 
-        See also: [Error Codes](https://docs.ondo.finance/api-reference/error-codes)
-
-        '
+        See also: Error Codes'
       operationId: createSoftAttestationQuote
       requestBody:
         content:
@@ -269,6 +265,28 @@ paths:
       - apiKey: []
 components:
   schemas:
+    GMChains:
+      type: string
+      description: The chain's identifier including the chain name and chain id.
+      enum:
+      - ethereum-1
+      - bsc-56
+      - solana-900
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
     SoftQuoteByNotionalValueRequest:
       type: object
       description: Request a soft quote to mint or redeem assets equal to the notional value.
@@ -293,12 +311,6 @@ components:
       - symbol
       - side
       - notionalValue
-    AttestationDurationEnum:
-      type: string
-      description: "Specifies the desired validity period for the attestation. Users can specify a duration of 'short' \nfor a tighter price spread or 'long' for an extended validity period.\n"
-      enum:
-      - short
-      - long
     AttestationByTokenAmountRequest:
       type: object
       description: Request to mint or redeem a quantity of assets.
@@ -322,6 +334,42 @@ components:
           type: string
           description: The Solana user address associated with the request. This is only required for Solana attestations.
           example: 7YkSgYQ6x7uBv9E3n2Yh6mF5tQ1rZc8Lp4WsXjKd3Ha2
+      required:
+      - chainId
+      - symbol
+      - side
+      - tokenAmount
+    SideEnum:
+      type: string
+      description: The direction of the trade.
+      enum:
+      - buy
+      - sell
+    AttestationDurationEnum:
+      type: string
+      description: "Specifies the desired validity period for the attestation. Users can specify a duration of 'short' \nfor a tighter price spread or 'long' for an extended validity period.\n"
+      enum:
+      - short
+      - long
+    SoftQuoteByTokenAmountRequest:
+      type: object
+      description: Request a soft quote to mint or redeem a quantity of assets.
+      title: AttestationByTokenAmountRequest
+      properties:
+        chainId:
+          $ref: '#/components/schemas/GMChains'
+        symbol:
+          type: string
+          example: AAPLon
+          description: The GM token symbol.
+        side:
+          $ref: '#/components/schemas/SideEnum'
+        tokenAmount:
+          type: string
+          description: The number of tokens, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '5.000000000000000000'
+        duration:
+          $ref: '#/components/schemas/AttestationDurationEnum'
       required:
       - chainId
       - symbol
@@ -394,6 +442,34 @@ components:
       - expiration
       - signature
       - additionalData
+    AttestationByNotionalValueRequest:
+      type: object
+      description: Request to mint or redeem assets equal to the notional value.
+      title: AttestationByNotionalValueRequest
+      properties:
+        chainId:
+          $ref: '#/components/schemas/GMChains'
+        symbol:
+          type: string
+          example: AAPLon
+          description: The GM token symbol.
+        side:
+          $ref: '#/components/schemas/SideEnum'
+        notionalValue:
+          type: string
+          description: Total value of assets, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '500.000000000000000000'
+        duration:
+          $ref: '#/components/schemas/AttestationDurationEnum'
+        userAddress:
+          type: string
+          description: The Solana user address associated with the request. This is only required for Solana attestations.
+          example: 7YkSgYQ6x7uBv9E3n2Yh6mF5tQ1rZc8Lp4WsXjKd3Ha2
+      required:
+      - chainId
+      - symbol
+      - side
+      - notionalValue
     SoftQuote:
       type: object
       properties:
@@ -435,86 +511,6 @@ components:
       - side
       - tokenAmount
       - price
-    SideEnum:
-      type: string
-      description: The direction of the trade.
-      enum:
-      - buy
-      - sell
-    AttestationByNotionalValueRequest:
-      type: object
-      description: Request to mint or redeem assets equal to the notional value.
-      title: AttestationByNotionalValueRequest
-      properties:
-        chainId:
-          $ref: '#/components/schemas/GMChains'
-        symbol:
-          type: string
-          example: AAPLon
-          description: The GM token symbol.
-        side:
-          $ref: '#/components/schemas/SideEnum'
-        notionalValue:
-          type: string
-          description: Total value of assets, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '500.000000000000000000'
-        duration:
-          $ref: '#/components/schemas/AttestationDurationEnum'
-        userAddress:
-          type: string
-          description: The Solana user address associated with the request. This is only required for Solana attestations.
-          example: 7YkSgYQ6x7uBv9E3n2Yh6mF5tQ1rZc8Lp4WsXjKd3Ha2
-      required:
-      - chainId
-      - symbol
-      - side
-      - notionalValue
-    GMChains:
-      type: string
-      description: The chain's identifier including the chain name and chain id.
-      enum:
-      - ethereum-1
-      - bsc-56
-      - solana-900
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
-    SoftQuoteByTokenAmountRequest:
-      type: object
-      description: Request a soft quote to mint or redeem a quantity of assets.
-      title: AttestationByTokenAmountRequest
-      properties:
-        chainId:
-          $ref: '#/components/schemas/GMChains'
-        symbol:
-          type: string
-          example: AAPLon
-          description: The GM token symbol.
-        side:
-          $ref: '#/components/schemas/SideEnum'
-        tokenAmount:
-          type: string
-          description: The number of tokens, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '5.000000000000000000'
-        duration:
-          $ref: '#/components/schemas/AttestationDurationEnum'
-      required:
-      - chainId
-      - symbol
-      - side
-      - tokenAmount
   securitySchemes:
     apiKey:
       type: apiKey

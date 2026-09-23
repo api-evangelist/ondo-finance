@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Portfolio API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Portfolio API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Portfolio
 paths:
@@ -163,6 +164,34 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   responses:
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:
@@ -209,34 +238,6 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
     InternalServerError:
       description: Internal server error.
       content:
@@ -261,6 +262,26 @@ components:
             error: Description of the error
             error_code: unknown
   schemas:
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     PortfolioSummaryRes:
       type: object
       description: Current portfolio metrics and optional Sharpe ratios
@@ -293,22 +314,6 @@ components:
           $ref: '#/components/schemas/SharpeRatioData'
         sharpeAllTime:
           $ref: '#/components/schemas/SharpeRatioData'
-    SharpeRatioData:
-      type: object
-      description: Calculated Sharpe ratio and related metadata
-      properties:
-        sharpeRatio:
-          type: string
-          description: Annualized Sharpe ratio
-        daysOfData:
-          type: integer
-          description: Number of days of data used in the calculation
-        meanDailyROI:
-          type: string
-          description: Mean daily return
-        stdDevROI:
-          type: string
-          description: Standard deviation of daily returns
     PortfolioGraphPoint:
       type: object
       description: Single time-series point for portfolio graph
@@ -338,28 +343,28 @@ components:
         allTimeWithdrawals:
           type: string
           description: All-time withdrawals at this time
-    GenericResponse:
+    SharpeRatioData:
       type: object
-      required:
-      - success
+      description: Calculated Sharpe ratio and related metadata
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        sharpeRatio:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: Annualized Sharpe ratio
+        daysOfData:
+          type: integer
+          description: Number of days of data used in the calculation
+        meanDailyROI:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
+          description: Mean daily return
+        stdDevROI:
           type: string
-          description: Deprecation notice, if applicable
-          example: ''
+          description: Standard deviation of daily returns
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

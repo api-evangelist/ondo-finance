@@ -1,20 +1,19 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Margin Account API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Margin Account API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Margin Account
 paths:
   /v1/perps/transfers:
     post:
       summary: Create Margin Transfer
-      description: 'Create a margin transfer. Margin transfers must be between the main and margin wallet of the same account, in either direction.
-
-        '
+      description: Create a margin transfer. Margin transfers must be between the main and margin wallet of the same account, in either direction.
       operationId: createMarginTransfer
       tags:
       - Margin Account
@@ -293,9 +292,7 @@ paths:
   /v1/perps/max_order_size:
     get:
       summary: Get Max Order Size
-      description: 'Get a summary of the maximum order size that can be placed given the current state of the order book and available margin.
-
-        '
+      description: Get a summary of the maximum order size that can be placed given the current state of the order book and available margin.
       operationId: getMaxOrderSize
       tags:
       - Margin Account
@@ -487,41 +484,61 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    OrdersSummary:
+    MarketOrdersSummary:
       type: object
       properties:
-        bidsInitialMargin:
+        maxBidQuoteSize:
           type: string
-          description: Initial margin required for all bid (buy) resting orders
-          example: '100.00'
-        asksInitialMargin:
+          description: Maximum buy market order size in quote currency
+          example: '10000.00'
+        maxBidBaseSize:
           type: string
-          description: Initial margin required for all ask (sell) resting orders
-          example: '80.00'
-        bidsOpenLoss:
-          type: string
-          description: Unrealized open loss on the bid side that counts toward margin
+          description: Maximum buy market order size in base currency
           example: '5.00'
-        asksOpenLoss:
+        maxBidPositionLeverage:
           type: string
-          description: Unrealized open loss on the ask side that counts toward margin
-          example: '3.00'
-        bidsBaseSize:
+          description: Maximum leverage available for a buy market order
+          example: '10.0'
+        maxAskQuoteSize:
           type: string
-          description: Total base size of all bid resting orders
-          example: '10.00'
-        asksBaseSize:
+          description: Maximum sell market order size in quote currency
+          example: '10000.00'
+        maxAskBaseSize:
           type: string
-          description: Total base size of all ask resting orders
-          example: '8.00'
-        bidsMaintenanceMargin:
+          description: Maximum sell market order size in base currency
+          example: '5.00'
+        maxAskPositionLeverage:
           type: string
-          description: Maintenance margin required for all bid resting orders
-          example: '50.00'
-        asksMaintenanceMargin:
+          description: Maximum leverage available for a sell market order
+          example: '10.0'
+    AccountWalletKey:
+      type: object
+      required:
+      - id
+      - wallet
+      properties:
+        id:
           type: string
-          description: Maintenance margin required for all ask resting orders
-          example: '40.00'
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
+          type: string
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
     LiquidationEvent:
       type: object
       required:
@@ -590,33 +607,26 @@ components:
           type: boolean
           description: If true, the liquidation only cancelled resting orders to free up margin without closing positions
           example: false
-    MarketOrdersSummary:
+    GenericResponse:
       type: object
+      required:
+      - success
       properties:
-        maxBidQuoteSize:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
           type: string
-          description: Maximum buy market order size in quote currency
-          example: '10000.00'
-        maxBidBaseSize:
+          description: Error message, present only on failure
+          example: ''
+        error_code:
           type: string
-          description: Maximum buy market order size in base currency
-          example: '5.00'
-        maxBidPositionLeverage:
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
           type: string
-          description: Maximum leverage available for a buy market order
-          example: '10.0'
-        maxAskQuoteSize:
-          type: string
-          description: Maximum sell market order size in quote currency
-          example: '10000.00'
-        maxAskBaseSize:
-          type: string
-          description: Maximum sell market order size in base currency
-          example: '5.00'
-        maxAskPositionLeverage:
-          type: string
-          description: Maximum leverage available for a sell market order
-          example: '10.0'
+          description: Deprecation notice, if applicable
+          example: ''
     MaxOrderSizesRes:
       type: object
       required:
@@ -637,6 +647,41 @@ components:
         percent25:
           $ref: '#/components/schemas/OrderSizes'
           description: Bid/Ask sizes that will use 25% of available margin
+    OrdersSummary:
+      type: object
+      properties:
+        bidsInitialMargin:
+          type: string
+          description: Initial margin required for all bid (buy) resting orders
+          example: '100.00'
+        asksInitialMargin:
+          type: string
+          description: Initial margin required for all ask (sell) resting orders
+          example: '80.00'
+        bidsOpenLoss:
+          type: string
+          description: Unrealized open loss on the bid side that counts toward margin
+          example: '5.00'
+        asksOpenLoss:
+          type: string
+          description: Unrealized open loss on the ask side that counts toward margin
+          example: '3.00'
+        bidsBaseSize:
+          type: string
+          description: Total base size of all bid resting orders
+          example: '10.00'
+        asksBaseSize:
+          type: string
+          description: Total base size of all ask resting orders
+          example: '8.00'
+        bidsMaintenanceMargin:
+          type: string
+          description: Maintenance margin required for all bid resting orders
+          example: '50.00'
+        asksMaintenanceMargin:
+          type: string
+          description: Maintenance margin required for all ask resting orders
+          example: '40.00'
     MarginAccountBalanceSummary:
       type: object
       required:
@@ -732,6 +777,20 @@ components:
           type: string
           description: Net amount invested
           example: '1000'
+    OrderSizes:
+      type: object
+      required:
+      - maxBidBaseSize
+      - maxAskBaseSize
+      properties:
+        maxBidBaseSize:
+          type: string
+          description: Allowed buy order size in base asset
+          example: '123.4'
+        maxAskBaseSize:
+          type: string
+          description: Allowed ask order size in base asset
+          example: '123.4'
     GetOrdersSummariesRes:
       type: object
       required:
@@ -750,6 +809,68 @@ components:
         marketOrderSummary:
           $ref: '#/components/schemas/MarketOrdersSummary'
           description: Maximum order sizes available for market orders
+    TransferReq:
+      type: object
+      required:
+      - from
+      - to
+      - amount
+      - symbol
+      properties:
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer pulls funds from
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer sends funds to
+        amount:
+          type: string
+          description: Amount to transfer
+          example: '100'
+        symbol:
+          type: string
+          description: The symbol to transfer
+          example: USDC
+    Transfer:
+      type: object
+      required:
+      - id
+      - from
+      - to
+      - amount
+      - symbol
+      - time
+      - type
+      properties:
+        id:
+          type: string
+          description: ID of the transfer
+          example: '23210984785321024'
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer pulled funds from
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer sent funds to
+        amount:
+          type: string
+          description: The amount transferred
+          example: '100'
+        symbol:
+          type: string
+          description: The symbol transferred
+          example: USDC
+        time:
+          type: string
+          format: date-time
+          description: ISO8601 timestamp of when the transfer was created
+          example: '2024-01-04T16:13:34Z'
+        type:
+          type: integer
+          description: 'The type of transfer. 0 = margin transfer.
+
+            '
+          example: 0
     ApiPosition:
       type: object
       required:
@@ -836,156 +957,7 @@ components:
           type: string
           description: Triggering price for take profit order (optional)
           example: '25000.00'
-    TransferReq:
-      type: object
-      required:
-      - from
-      - to
-      - amount
-      - symbol
-      properties:
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
-          description: The account/wallet the transfer pulls funds from
-        to:
-          $ref: '#/components/schemas/AccountWalletKey'
-          description: The account/wallet the transfer sends funds to
-        amount:
-          type: string
-          description: Amount to transfer
-          example: '100'
-        symbol:
-          type: string
-          description: The symbol to transfer
-          example: USDC
-    AccountWalletKey:
-      type: object
-      required:
-      - id
-      - wallet
-      properties:
-        id:
-          type: string
-          description: The account ID
-          example: '10458932786832481'
-        wallet:
-          type: string
-          description: The wallet type
-          enum:
-          - main
-          - margin
-          example: margin
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
-    OrderSizes:
-      type: object
-      required:
-      - maxBidBaseSize
-      - maxAskBaseSize
-      properties:
-        maxBidBaseSize:
-          type: string
-          description: Allowed buy order size in base asset
-          example: '123.4'
-        maxAskBaseSize:
-          type: string
-          description: Allowed ask order size in base asset
-          example: '123.4'
-    Transfer:
-      type: object
-      required:
-      - id
-      - from
-      - to
-      - amount
-      - symbol
-      - time
-      - type
-      properties:
-        id:
-          type: string
-          description: ID of the transfer
-          example: '23210984785321024'
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
-          description: The account/wallet the transfer pulled funds from
-        to:
-          $ref: '#/components/schemas/AccountWalletKey'
-          description: The account/wallet the transfer sent funds to
-        amount:
-          type: string
-          description: The amount transferred
-          example: '100'
-        symbol:
-          type: string
-          description: The symbol transferred
-          example: USDC
-        time:
-          type: string
-          format: date-time
-          description: ISO8601 timestamp of when the transfer was created
-          example: '2024-01-04T16:13:34Z'
-        type:
-          type: integer
-          description: 'The type of transfer. 0 = margin transfer.
-
-            '
-          example: 0
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
   responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -1035,6 +1007,31 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     InternalServerError:
       description: Internal server error.
       content:
@@ -1059,7 +1056,11 @@ components:
             error: Description of the error
             error_code: unknown
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

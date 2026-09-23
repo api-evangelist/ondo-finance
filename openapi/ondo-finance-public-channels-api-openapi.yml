@@ -1,11 +1,11 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Public Channels API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps WebSocket Public Channels API
+  version: '1.0'
+  description: 'WebSocket API for Ondo Perps: real-time market data, order updates, positions, balance, funding, and more.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: wss://api.ondoperps.xyz
+  description: Production
 tags:
 - name: Public Channels
 paths:
@@ -362,18 +362,37 @@ components:
           type: boolean
           description: Whether this bar is closed
           example: false
-    BookLevel:
+    LiquidationAnnouncement:
       type: object
-      description: A price level in the order book
       properties:
-        price:
+        id:
           type: string
-          description: Price
-          example: '227.50'
-        size:
+        status:
           type: string
-          description: Quantity at this price
-          example: '100.0'
+          enum:
+          - active
+          - resolved
+        nextOffload:
+          type: string
+          format: date-time
+        orders:
+          type: array
+          items:
+            type: object
+            properties:
+              market:
+                type: string
+              side:
+                type: string
+                enum:
+                - buy
+                - sell
+              price:
+                type: string
+              quantity:
+                type: string
+              positionSize:
+                type: string
     PremiumIndexValue:
       type: object
       properties:
@@ -393,6 +412,39 @@ components:
           description: Best ask
         premiumIndex:
           type: string
+    BookSnapshot:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+        asks:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        bids:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        depthLevels:
+          type: string
+          description: Price grouping level (if requested)
+      example:
+        market: AAPL-USD.P
+        time: '2025-03-05T14:30:00Z'
+        asks:
+        - price: '227.60'
+          size: '80.0'
+        - price: '227.70'
+          size: '150.0'
+        bids:
+        - price: '227.40'
+          size: '100.0'
+        - price: '227.30'
+          size: '250.0'
     MarkPrice:
       type: object
       properties:
@@ -402,6 +454,56 @@ components:
         markPrice:
           type: string
           example: '227.50'
+    Trade:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        price:
+          type: string
+          example: '227.50'
+        size:
+          type: string
+          example: '5.00'
+        cost:
+          type: string
+          example: '1137.50'
+        aggressor_side:
+          type: string
+          enum:
+          - buy
+          - sell
+        time:
+          type: string
+          format: date-time
+        id:
+          type: string
+          example: 70a37d8f972f2494837f9dba8364cbb4
+      example:
+        market: AAPL-USD.P
+        price: '227.50'
+        size: '5.00'
+        cost: '1137.50'
+        aggressor_side: buy
+        time: '2025-03-05T14:30:00Z'
+        id: 70a37d8f972f2494837f9dba8364cbb4
+    FundingRate:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        rate:
+          type: string
+          example: '0.0000125'
+        intervalEnds:
+          type: string
+          format: date-time
+        premiums:
+          type: array
+          items:
+            $ref: '#/components/schemas/PremiumIndexValue'
     WebSocketRequest:
       type: object
       required:
@@ -476,71 +578,18 @@ components:
           type: object
           description: Optional context for chat (market, page, etc.)
           additionalProperties: true
-    Trade:
+    BookLevel:
       type: object
+      description: A price level in the order book
       properties:
-        market:
-          type: string
-          example: AAPL-USD.P
         price:
           type: string
+          description: Price
           example: '227.50'
         size:
           type: string
-          example: '5.00'
-        cost:
-          type: string
-          example: '1137.50'
-        aggressor_side:
-          type: string
-          enum:
-          - buy
-          - sell
-        time:
-          type: string
-          format: date-time
-        id:
-          type: string
-          example: 70a37d8f972f2494837f9dba8364cbb4
-      example:
-        market: AAPL-USD.P
-        price: '227.50'
-        size: '5.00'
-        cost: '1137.50'
-        aggressor_side: buy
-        time: '2025-03-05T14:30:00Z'
-        id: 70a37d8f972f2494837f9dba8364cbb4
-    LiquidationAnnouncement:
-      type: object
-      properties:
-        id:
-          type: string
-        status:
-          type: string
-          enum:
-          - active
-          - resolved
-        nextOffload:
-          type: string
-          format: date-time
-        orders:
-          type: array
-          items:
-            type: object
-            properties:
-              market:
-                type: string
-              side:
-                type: string
-                enum:
-                - buy
-                - sell
-              price:
-                type: string
-              quantity:
-                type: string
-              positionSize:
-                type: string
+          description: Quantity at this price
+          example: '100.0'
     LoginArgs:
       type: object
       description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
@@ -557,57 +606,3 @@ components:
         sign:
           type: string
           description: HMAC-SHA256 hex signature
-    FundingRate:
-      type: object
-      properties:
-        market:
-          type: string
-          example: AAPL-USD.P
-        rate:
-          type: string
-          example: '0.0000125'
-        intervalEnds:
-          type: string
-          format: date-time
-        premiums:
-          type: array
-          items:
-            $ref: '#/components/schemas/PremiumIndexValue'
-    BookSnapshot:
-      type: object
-      properties:
-        market:
-          type: string
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-        asks:
-          type: array
-          items:
-            $ref: '#/components/schemas/BookLevel'
-        bids:
-          type: array
-          items:
-            $ref: '#/components/schemas/BookLevel'
-        depthLevels:
-          type: string
-          description: Price grouping level (if requested)
-      example:
-        market: AAPL-USD.P
-        time: '2025-03-05T14:30:00Z'
-        asks:
-        - price: '227.60'
-          size: '80.0'
-        - price: '227.70'
-          size: '150.0'
-        bids:
-        - price: '227.40'
-          size: '100.0'
-        - price: '227.30'
-          size: '250.0'
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      name: x-api-key
-      in: header

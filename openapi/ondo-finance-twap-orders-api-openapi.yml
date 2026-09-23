@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account TWAP Orders API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST TWAP Orders API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: TWAP Orders
 paths:
@@ -494,52 +495,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -568,6 +523,52 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     InternalServerError:
       description: Internal server error.
       content:
@@ -592,6 +593,172 @@ components:
             error: Description of the error
             error_code: unknown
   schemas:
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    CreateTWAPOrderReq:
+      type: object
+      required:
+      - market
+      - side
+      - size
+      - runningTime
+      - frequency
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        side:
+          type: string
+          description: Order side
+          enum:
+          - buy
+          - sell
+          example: buy
+        size:
+          type: string
+          description: Total order size in base currency to execute over the TWAP duration
+          example: '20.30'
+        runningTime:
+          type: integer
+          description: Total duration of the TWAP order in seconds. Must be between 300 (5 minutes) and 86400 (24 hours) and a multiple of `frequency`.
+          example: 3600
+        frequency:
+          type: integer
+          description: Interval between child orders in seconds. runningTime / frequency gives the number of child orders, which must be between 2 and 200.
+          example: 60
+        reduceOnly:
+          type: boolean
+          description: If true, child orders are reduce-only
+          example: false
+        maxPrice:
+          type: string
+          description: Maximum allowed price for child orders. Child orders will not be placed above this price.
+          example: '160.00'
+        minPrice:
+          type: string
+          description: Minimum allowed price for child orders. Child orders will not be placed below this price.
+          example: '140.00'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    ApiFill:
+      type: object
+      required:
+      - id
+      - orderId
+      - market
+      - price
+      - size
+      - side
+      - filledCost
+      - fee
+      - time
+      - isMaker
+      properties:
+        id:
+          type: string
+          description: Fill ID
+          example: 70a37d8f972f2494837f9dba8364cbb4
+        orderId:
+          type: string
+          description: Order ID this fill belongs to
+          example: 197ec08e001658690721be129e7fa595
+        clientOrderId:
+          type: string
+          description: Client order ID (if set on the order)
+          example: order123
+        parentOrderID:
+          type: string
+          description: Parent order ID (e.g. for TWAP child orders)
+          example: ''
+        market:
+          type: string
+          description: Trading market
+          example: AAPL-USD.P
+        price:
+          type: string
+          description: Fill price
+          example: '1.55'
+        size:
+          type: string
+          description: Fill quantity in base currency
+          example: '5.403'
+        side:
+          type: string
+          description: buy or sell
+          enum:
+          - buy
+          - sell
+          example: buy
+        direction:
+          type: string
+          description: 'Trade direction for perps fills. One of: "open long", "open short", "close long", "close short", "flip long to short", "flip short to long"
+
+            '
+          example: openLong
+          enum:
+          - openLong
+          - openShort
+          - closeLong
+          - closeShort
+          - flipLongToShort
+          - flipShortToLong
+        filledCost:
+          type: string
+          description: Total cost of the fill in quote currency
+          example: '8.37465'
+        fee:
+          type: string
+          description: Fees incurred on this fill
+          example: '0.0837'
+        feeRebate:
+          type: string
+          description: Fee rebate earned on this fill (perps only)
+          example: '0.0042'
+        pnl:
+          type: string
+          description: Realized PNL for this fill (perps only)
+          example: '1.2345'
+        time:
+          type: string
+          format: date-time
+          description: Time the fill occurred
+          example: '2022-06-16T12:35:11.123456Z'
+        isMaker:
+          type: boolean
+          description: True if this was a maker (resting) fill
+          example: false
+        isADL:
+          type: boolean
+          description: True if this was an auto-deleveraging fill (perps only)
+          example: false
     TWAPOrderApiResp:
       type: object
       required:
@@ -689,174 +856,12 @@ components:
           type: string
           description: Error code of the last failed child order (only set for running orders, never for historical)
           example: ''
-    CreateTWAPOrderReq:
-      type: object
-      required:
-      - market
-      - side
-      - size
-      - runningTime
-      - frequency
-      properties:
-        market:
-          type: string
-          description: Perps trading market
-          example: AAPL-USD.P
-        side:
-          type: string
-          description: Order side
-          enum:
-          - buy
-          - sell
-          example: buy
-        size:
-          type: string
-          description: Total order size in base currency to execute over the TWAP duration
-          example: '20.30'
-        runningTime:
-          type: integer
-          description: Total duration of the TWAP order in seconds. Must be between 300 (5 minutes) and 86400 (24 hours) and a multiple of `frequency`.
-          example: 3600
-        frequency:
-          type: integer
-          description: Interval between child orders in seconds. runningTime / frequency gives the number of child orders, which must be between 2 and 200.
-          example: 60
-        reduceOnly:
-          type: boolean
-          description: If true, child orders are reduce-only
-          example: false
-        maxPrice:
-          type: string
-          description: Maximum allowed price for child orders. Child orders will not be placed above this price.
-          example: '160.00'
-        minPrice:
-          type: string
-          description: Minimum allowed price for child orders. Child orders will not be placed below this price.
-          example: '140.00'
-    ApiFill:
-      type: object
-      required:
-      - id
-      - orderId
-      - market
-      - price
-      - size
-      - side
-      - filledCost
-      - fee
-      - time
-      - isMaker
-      properties:
-        id:
-          type: string
-          description: Fill ID
-          example: 70a37d8f972f2494837f9dba8364cbb4
-        orderId:
-          type: string
-          description: Order ID this fill belongs to
-          example: 197ec08e001658690721be129e7fa595
-        clientOrderId:
-          type: string
-          description: Client order ID (if set on the order)
-          example: order123
-        parentOrderID:
-          type: string
-          description: Parent order ID (e.g. for TWAP child orders)
-          example: ''
-        market:
-          type: string
-          description: Trading market
-          example: AAPL-USD.P
-        price:
-          type: string
-          description: Fill price
-          example: '1.55'
-        size:
-          type: string
-          description: Fill quantity in base currency
-          example: '5.403'
-        side:
-          type: string
-          description: buy or sell
-          enum:
-          - buy
-          - sell
-          example: buy
-        direction:
-          type: string
-          description: 'Trade direction for perps fills. One of: "open long", "open short", "close long", "close short", "flip long to short", "flip short to long"
-
-            '
-          example: openLong
-          enum:
-          - openLong
-          - openShort
-          - closeLong
-          - closeShort
-          - flipLongToShort
-          - flipShortToLong
-        filledCost:
-          type: string
-          description: Total cost of the fill in quote currency
-          example: '8.37465'
-        fee:
-          type: string
-          description: Fees incurred on this fill
-          example: '0.0837'
-        feeRebate:
-          type: string
-          description: Fee rebate earned on this fill (perps only)
-          example: '0.0042'
-        pnl:
-          type: string
-          description: Realized PNL for this fill (perps only)
-          example: '1.2345'
-        time:
-          type: string
-          format: date-time
-          description: Time the fill occurred
-          example: '2022-06-16T12:35:11.123456Z'
-        isMaker:
-          type: boolean
-          description: True if this was a maker (resting) fill
-          example: false
-        isADL:
-          type: boolean
-          description: True if this was an auto-deleveraging fill (perps only)
-          example: false
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

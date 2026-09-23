@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Account API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Account
 paths:
@@ -189,31 +190,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -263,6 +239,31 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     InternalServerError:
       description: Internal server error.
       content:
@@ -307,15 +308,6 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
-    OpenOrderCounts:
-      type: object
-      properties:
-        perps:
-          type: object
-          properties:
-            open:
-              type: integer
-              description: Number of open perps orders
     DisabledFunctionality:
       type: object
       properties:
@@ -409,6 +401,15 @@ components:
         marketingConsent:
           type: string
           description: Marketing consent value
+    OpenOrderCounts:
+      type: object
+      properties:
+        perps:
+          type: object
+          properties:
+            open:
+              type: integer
+              description: Number of open perps orders
     NotificationPreference:
       type: object
       properties:
@@ -422,7 +423,11 @@ components:
           type: boolean
           description: Notify on order cancellation
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

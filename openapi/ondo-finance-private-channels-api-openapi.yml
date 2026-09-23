@@ -1,11 +1,11 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Private Channels API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps WebSocket Private Channels API
+  version: '1.0'
+  description: 'WebSocket API for Ondo Perps: real-time market data, order updates, positions, balance, funding, and more.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: wss://api.ondoperps.xyz
+  description: Production
 tags:
 - name: Private Channels
 paths:
@@ -434,50 +434,35 @@ paths:
                     $ref: '#/components/schemas/Withdrawal'
 components:
   schemas:
-    OrdersSummary:
+    Deposit:
       type: object
       properties:
-        market:
+        coin:
           type: string
-          example: AAPL-USD.P
-        restingOrdersSummary:
-          type: object
-        positionSummary:
-          type: object
-        marketOrderSummary:
-          type: object
-    LiquidationEvent:
-      type: object
-      properties:
-        id:
+          example: USDC
+        size:
+          type: string
+          example: '1000.00'
+        status:
+          type: string
+          example: confirmed
+        txid:
+          type: string
+        fromAddress:
           type: string
         time:
           type: string
           format: date-time
-        initiatedAt:
-          type: string
-          format: date-time
+        currentConfirmations:
+          type: integer
+        requiredConfirmations:
+          type: integer
         accountId:
           type: string
-        status:
+        chainId:
           type: string
-        insuranceFundUsed:
+        usdValue:
           type: string
-          example: '0.00'
-        adl:
-          type: boolean
-        retryCount:
-          type: integer
-        triggeringPositions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Position'
-        filledQuoteSize:
-          type: string
-        filledQuantity:
-          type: string
-        reclaimOrderMargin:
-          type: boolean
     Position:
       type: object
       properties:
@@ -529,7 +514,82 @@ components:
         returnOnEquity:
           type: string
           example: '0.022'
-    Deposit:
+    AccountWalletKey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Account ID
+        wallet:
+          type: string
+          enum:
+          - main
+          - margin
+          description: Wallet type
+    LiquidationEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        initiatedAt:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        status:
+          type: string
+        insuranceFundUsed:
+          type: string
+          example: '0.00'
+        adl:
+          type: boolean
+        retryCount:
+          type: integer
+        triggeringPositions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Position'
+        filledQuoteSize:
+          type: string
+        filledQuantity:
+          type: string
+        reclaimOrderMargin:
+          type: boolean
+    FundingPayment:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+        markPrice:
+          type: string
+          example: '227.50'
+        positionSize:
+          type: string
+          example: '10.00'
+        positionDirection:
+          type: string
+          enum:
+          - long
+          - short
+        rate:
+          type: string
+          example: '0.0000125'
+        payer:
+          type: string
+          enum:
+          - long
+          - short
+        amount:
+          type: string
+          example: '-0.02844'
+    Withdrawal:
       type: object
       properties:
         coin:
@@ -537,27 +597,256 @@ components:
           example: USDC
         size:
           type: string
-          example: '1000.00'
+          example: '500.00'
         status:
           type: string
           example: confirmed
+        address:
+          type: string
+        withdrawal_id:
+          type: string
         txid:
           type: string
-        fromAddress:
+        customer_withdrawal_id:
           type: string
         time:
           type: string
           format: date-time
-        currentConfirmations:
-          type: integer
-        requiredConfirmations:
-          type: integer
         accountId:
-          type: string
-        chainId:
           type: string
         usdValue:
           type: string
+        usdFee:
+          type: string
+        chainId:
+          type: string
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+    MarginTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+        amount:
+          type: string
+          example: '1000.00'
+        symbol:
+          type: string
+          example: USDC
+        time:
+          type: string
+          format: date-time
+        type:
+          type: integer
+          description: Transfer type
+    OrdersSummary:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        restingOrdersSummary:
+          type: object
+        positionSummary:
+          type: object
+        marketOrderSummary:
+          type: object
+    Balance:
+      type: object
+      properties:
+        walletBalance:
+          type: string
+          example: '5000.00'
+        realizedPnl:
+          type: string
+          example: '250.00'
+        unrealizedPnl:
+          type: string
+          example: '-50.00'
+        marginBalance:
+          type: string
+          example: '4950.00'
+        usedMargin:
+          type: string
+          example: '1125.00'
+        availableMargin:
+          type: string
+          example: '3825.00'
+        withdrawableMargin:
+          type: string
+          example: '3825.00'
+        maintenanceMarginRequirement:
+          type: string
+          example: '112.50'
+        totalMaintenanceMargin:
+          type: string
+          example: '200.00'
+        marginRatio:
+          type: string
+          example: '0.04'
+        leverage:
+          type: string
+          example: '0.46'
+        underLiquidation:
+          type: boolean
+          example: false
+        totalFundingPayments:
+          type: string
+          example: '-5.67'
+        totalTradingFees:
+          type: string
+          example: '12.34'
+        totalPnL:
+          type: string
+          example: '232.00'
+        netInvested:
+          type: string
+          example: '4750.00'
+    WebSocketRequest:
+      type: object
+      required:
+      - op
+      properties:
+        op:
+          type: string
+          enum:
+          - ping
+          - login
+          - subscribe
+          - unsubscribe
+          - sendMessage
+          description: Operation type
+        channel:
+          type: string
+          description: Channel to subscribe/unsubscribe
+          enum:
+          - topOfBooksPerps
+          - depthBooksPerps
+          - tradesPerps
+          - ordersPerps
+          - fillsPerps
+          - cancelAllOrdersAfterPerps
+          - positionsPerps
+          - liquidationPerps
+          - liquidationAnnouncementsPerps
+          - marginTransfersPerps
+          - balancePerps
+          - ordersSummariesPerps
+          - fundingRatesPerps
+          - markPricesPerps
+          - fundingPaymentsPerps
+          - kLinePerps
+          - deposits
+          - withdrawals
+          - chat
+        markets:
+          type: array
+          items:
+            type: string
+          description: Filter by market(s). Required for kLine (exactly one). Optional for most channels.
+        args:
+          $ref: '#/components/schemas/LoginArgs'
+        numPastTrades:
+          type: integer
+          description: Number of historical trades to receive on subscribe (trades channels only)
+        resolution:
+          type: string
+          enum:
+          - '1'
+          - '5'
+          - '15'
+          - 1H
+          - 4H
+          - 1D
+          - 1W
+          description: Kline resolution (required for kLine channels)
+        timeout_seconds:
+          type: integer
+          description: Dead man's switch timeout (required for cancelAllOrdersAfter channels)
+        depthLevels:
+          type: string
+          description: Price grouping level for depth book (depthBooks channels only)
+        limit:
+          type: integer
+          description: Max depth levels to return; 0 for unlimited (depthBooks channels only)
+        message:
+          type: string
+          description: Chat message text (sendMessage only)
+        context:
+          type: object
+          description: Optional context for chat (market, page, etc.)
+          additionalProperties: true
+    Fill:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 70a37d8f972f2494837f9dba8364cbb4
+        orderId:
+          type: string
+          example: 197ec08e001658690721be129e7fa595
+        clientOrderId:
+          type: string
+        parentOrderID:
+          type: string
+        market:
+          type: string
+          example: AAPL-USD.P
+        price:
+          type: string
+          example: '227.50'
+        size:
+          type: string
+          example: '5.00'
+        side:
+          type: string
+          enum:
+          - buy
+          - sell
+        direction:
+          type: string
+          enum:
+          - open long
+          - open short
+          - close long
+          - close short
+          - flip long to short
+          - flip short to long
+        filledCost:
+          type: string
+          example: '1137.50'
+        fee:
+          type: string
+          example: '0.57'
+        feeRebate:
+          type: string
+        pnl:
+          type: string
+        time:
+          type: string
+          format: date-time
+        isADL:
+          type: boolean
+        adlReason:
+          type: string
+        isMaker:
+          type: boolean
+      example:
+        id: 70a37d8f972f2494837f9dba8364cbb4
+        orderId: 197ec08e001658690721be129e7fa595
+        market: AAPL-USD.P
+        price: '227.50'
+        size: '5.00'
+        side: buy
+        direction: open long
+        filledCost: '1137.50'
+        fee: '0.57'
+        time: '2025-03-05T14:30:00Z'
+        isMaker: false
     Order:
       type: object
       properties:
@@ -649,295 +938,6 @@ components:
         createdAt: '2025-03-05T14:30:00Z'
         type: limit
         timeInForce: GTC
-    FundingPayment:
-      type: object
-      properties:
-        market:
-          type: string
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-        markPrice:
-          type: string
-          example: '227.50'
-        positionSize:
-          type: string
-          example: '10.00'
-        positionDirection:
-          type: string
-          enum:
-          - long
-          - short
-        rate:
-          type: string
-          example: '0.0000125'
-        payer:
-          type: string
-          enum:
-          - long
-          - short
-        amount:
-          type: string
-          example: '-0.02844'
-    WebSocketRequest:
-      type: object
-      required:
-      - op
-      properties:
-        op:
-          type: string
-          enum:
-          - ping
-          - login
-          - subscribe
-          - unsubscribe
-          - sendMessage
-          description: Operation type
-        channel:
-          type: string
-          description: Channel to subscribe/unsubscribe
-          enum:
-          - topOfBooksPerps
-          - depthBooksPerps
-          - tradesPerps
-          - ordersPerps
-          - fillsPerps
-          - cancelAllOrdersAfterPerps
-          - positionsPerps
-          - liquidationPerps
-          - liquidationAnnouncementsPerps
-          - marginTransfersPerps
-          - balancePerps
-          - ordersSummariesPerps
-          - fundingRatesPerps
-          - markPricesPerps
-          - fundingPaymentsPerps
-          - kLinePerps
-          - deposits
-          - withdrawals
-          - chat
-        markets:
-          type: array
-          items:
-            type: string
-          description: Filter by market(s). Required for kLine (exactly one). Optional for most channels.
-        args:
-          $ref: '#/components/schemas/LoginArgs'
-        numPastTrades:
-          type: integer
-          description: Number of historical trades to receive on subscribe (trades channels only)
-        resolution:
-          type: string
-          enum:
-          - '1'
-          - '5'
-          - '15'
-          - 1H
-          - 4H
-          - 1D
-          - 1W
-          description: Kline resolution (required for kLine channels)
-        timeout_seconds:
-          type: integer
-          description: Dead man's switch timeout (required for cancelAllOrdersAfter channels)
-        depthLevels:
-          type: string
-          description: Price grouping level for depth book (depthBooks channels only)
-        limit:
-          type: integer
-          description: Max depth levels to return; 0 for unlimited (depthBooks channels only)
-        message:
-          type: string
-          description: Chat message text (sendMessage only)
-        context:
-          type: object
-          description: Optional context for chat (market, page, etc.)
-          additionalProperties: true
-    MarginTransfer:
-      type: object
-      properties:
-        id:
-          type: string
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
-        to:
-          $ref: '#/components/schemas/AccountWalletKey'
-        amount:
-          type: string
-          example: '1000.00'
-        symbol:
-          type: string
-          example: USDC
-        time:
-          type: string
-          format: date-time
-        type:
-          type: integer
-          description: Transfer type
-    Fill:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 70a37d8f972f2494837f9dba8364cbb4
-        orderId:
-          type: string
-          example: 197ec08e001658690721be129e7fa595
-        clientOrderId:
-          type: string
-        parentOrderID:
-          type: string
-        market:
-          type: string
-          example: AAPL-USD.P
-        price:
-          type: string
-          example: '227.50'
-        size:
-          type: string
-          example: '5.00'
-        side:
-          type: string
-          enum:
-          - buy
-          - sell
-        direction:
-          type: string
-          enum:
-          - open long
-          - open short
-          - close long
-          - close short
-          - flip long to short
-          - flip short to long
-        filledCost:
-          type: string
-          example: '1137.50'
-        fee:
-          type: string
-          example: '0.57'
-        feeRebate:
-          type: string
-        pnl:
-          type: string
-        time:
-          type: string
-          format: date-time
-        isADL:
-          type: boolean
-        adlReason:
-          type: string
-        isMaker:
-          type: boolean
-      example:
-        id: 70a37d8f972f2494837f9dba8364cbb4
-        orderId: 197ec08e001658690721be129e7fa595
-        market: AAPL-USD.P
-        price: '227.50'
-        size: '5.00'
-        side: buy
-        direction: open long
-        filledCost: '1137.50'
-        fee: '0.57'
-        time: '2025-03-05T14:30:00Z'
-        isMaker: false
-    AccountWalletKey:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Account ID
-        wallet:
-          type: string
-          enum:
-          - main
-          - margin
-          description: Wallet type
-    Balance:
-      type: object
-      properties:
-        walletBalance:
-          type: string
-          example: '5000.00'
-        realizedPnl:
-          type: string
-          example: '250.00'
-        unrealizedPnl:
-          type: string
-          example: '-50.00'
-        marginBalance:
-          type: string
-          example: '4950.00'
-        usedMargin:
-          type: string
-          example: '1125.00'
-        availableMargin:
-          type: string
-          example: '3825.00'
-        withdrawableMargin:
-          type: string
-          example: '3825.00'
-        maintenanceMarginRequirement:
-          type: string
-          example: '112.50'
-        totalMaintenanceMargin:
-          type: string
-          example: '200.00'
-        marginRatio:
-          type: string
-          example: '0.04'
-        leverage:
-          type: string
-          example: '0.46'
-        underLiquidation:
-          type: boolean
-          example: false
-        totalFundingPayments:
-          type: string
-          example: '-5.67'
-        totalTradingFees:
-          type: string
-          example: '12.34'
-        totalPnL:
-          type: string
-          example: '232.00'
-        netInvested:
-          type: string
-          example: '4750.00'
-    Withdrawal:
-      type: object
-      properties:
-        coin:
-          type: string
-          example: USDC
-        size:
-          type: string
-          example: '500.00'
-        status:
-          type: string
-          example: confirmed
-        address:
-          type: string
-        withdrawal_id:
-          type: string
-        txid:
-          type: string
-        customer_withdrawal_id:
-          type: string
-        time:
-          type: string
-          format: date-time
-        accountId:
-          type: string
-        usdValue:
-          type: string
-        usdFee:
-          type: string
-        chainId:
-          type: string
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
     LoginArgs:
       type: object
       description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
@@ -954,8 +954,3 @@ components:
         sign:
           type: string
           description: HMAC-SHA256 hex signature
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      name: x-api-key
-      in: header

@@ -1,6 +1,6 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Assets API
+  title: GM Backend Assets API
   description: An API spec for the Ondo GM Backend API.
   version: 1.0.0
 servers:
@@ -20,15 +20,13 @@ paths:
         represents the off-chain collateralized stock. Assets can be sorted by price in either ascending or descending order.
 
 
-        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.
+        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the Price Streaming endpoint.
 
 
-        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+        Prices are intended for display only. For real-time trading prices, use the Soft Attestation Quote API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact support@ondo.finance.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAllPrices
       parameters:
       - name: sort
@@ -125,15 +123,13 @@ paths:
         represents the off-chain collateralized stock.
 
 
-        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.
+        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the Price Streaming endpoint.
 
 
-        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+        Prices are intended for display only. For real-time trading prices, use the Soft Attestation Quote API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact support@ondo.finance.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getPrice
       parameters:
       - name: symbol
@@ -220,15 +216,13 @@ paths:
       description: 'This endpoint retrieves the latest prices along with the price change and percentage change in the last 24 hours of open market for all supported assets. Assets can be sorted by price in either ascending or descending order.
 
 
-        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the [Price Streaming](https://docs.ondo.finance/api-reference/price-streaming) endpoint.
+        For real-time price updates as they occur, rather than repeatedly polling this endpoint, use the Price Streaming endpoint.
 
 
-        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+        Prices are intended for display only. For real-time trading prices, use the Soft Attestation Quote API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact support@ondo.finance.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAllAssetEnhancedPrices
       parameters:
       - name: sort
@@ -321,10 +315,10 @@ paths:
       description: 'This endpoint retrieves historical Open, High, Low, Close (OHLC) price data for both the primary market (on-chain token) and underlying market (off-chain stock) for a specified asset.
 
 
-        This endpoint returns historical candles. To receive live, minute-bucketed OHLC updates as they occur, use the [OHLC Streaming](https://docs.ondo.finance/api-reference/ohlc-streaming) endpoint.
+        This endpoint returns historical candles. To receive live, minute-bucketed OHLC updates as they occur, use the OHLC Streaming endpoint.
 
 
-        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+        Prices are intended for display only. For real-time trading prices, use the Soft Attestation Quote API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact support@ondo.finance.
 
 
         The `interval` parameter determines the bucket size for data points, while the `range` parameter determines how far back historically to look for price data. See below for valid interval/range pairs.
@@ -356,9 +350,7 @@ paths:
         **Note on `range=1day` and off-hours-tradable assets:** For assets that are tradable during the off-hours session, the `1day` range returns a plain rolling 24-hour calendar window so weekend and off-hours candles are included. For all other assets, the `1day` range returns a market-hours-aware rolling 24-hour window over open market data.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       parameters:
       - name: symbol
         in: path
@@ -493,15 +485,13 @@ paths:
         This endpoint is useful for dashboard overviews and market analysis across the entire asset portfolio.
 
 
-        The "Tradable Sessions" parameter indicates the tradability for the asset; for example, some assets are available in the regular and extended stock sessions, but not overnight. Learn more about sessions at [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).
+        The "Tradable Sessions" parameter indicates the tradability for the asset; for example, some assets are available in the regular and extended stock sessions, but not overnight. Learn more about sessions at Get Current Market Status.
 
 
-        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+        Prices are intended for display only. For real-time trading prices, use the Soft Attestation Quote API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact support@ondo.finance.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAllMarkets
       responses:
         '200':
@@ -621,15 +611,13 @@ paths:
         This endpoint is useful for dashboard overviews and market analysis across the entire asset portfolio.
 
 
-        The "Tradable Sessions" parameter indicates the tradability for the asset; for example, some assets are available in the regular and extended stock sessions, but not overnight. Learn more about sessions at [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).
+        The "Tradable Sessions" parameter indicates the tradability for the asset; for example, some assets are available in the regular and extended stock sessions, but not overnight. Learn more about sessions at Get Current Market Status.
 
 
-        Prices are intended for display only. For real-time trading prices, use the [Soft Attestation Quote](https://docs.ondo.finance/api-reference/attestations/request-a-soft-attestation-quote) API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact [support@ondo.finance](mailto:support@ondo.finance).
+        Prices are intended for display only. For real-time trading prices, use the Soft Attestation Quote API. We do not recommend using the price feeds as an oracle for these assets. An official oracle is in development and will be documented when available. For questions, contact support@ondo.finance.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getMarket
       parameters:
       - name: symbol
@@ -759,26 +747,24 @@ paths:
         Below outline the day ranges for each payout frequency:
 
 
-        | Frequency         | Average Days Between Dividends |
+        | Frequency | Average Days Between Dividends |
 
         |-------------------|:------------------------------:|
 
-        | **none**          | N/A                            |
+        | **none** | N/A |
 
-        | **monthly**       | 25-35 days                     |
+        | **monthly** | 25-35 days |
 
-        | **quarterly**     | 80-100 days                    |
+        | **quarterly** | 80-100 days |
 
-        | **semi-annually** | 160-200 days                   |
+        | **semi-annually** | 160-200 days |
 
-        | **yearly**        | 345-385 days                   |
+        | **yearly** | 345-385 days |
 
-        | **irregular**     | Outside defined ranges         |
+        | **irregular** | Outside defined ranges |
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getLatestDividend
       parameters:
       - name: symbol
@@ -865,9 +851,7 @@ paths:
       description: 'This endpoint retrieves all contract addresses for all supported assets across different blockchain networks.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAllAssetAddresses
       responses:
         '200':
@@ -942,9 +926,7 @@ paths:
       description: 'This endpoint retrieves all contract addresses for a specific asset across different blockchain networks.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAssetAddresses
       parameters:
       - name: symbol
@@ -1042,9 +1024,7 @@ paths:
       description: 'Returns all metadata for all symbols including identifiers, addresses, and classification tags.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAllAssetMetadata
       responses:
         '200':
@@ -1150,9 +1130,7 @@ paths:
         - all *(all historical data)*
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       parameters:
       - name: symbol
         in: path
@@ -1248,16 +1226,35 @@ paths:
       - apiKey: []
 components:
   schemas:
-    RangeEnum:
+    AssetAddress:
+      type: object
+      properties:
+        networkChainId:
+          $ref: '#/components/schemas/GMChains'
+        address:
+          type: string
+          description: The contract address on the specified chain.
+          example: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+        decimals:
+          type: integer
+          format: int64
+          description: The number of decimals places for the asset.
+          example: 18
+      required:
+      - networkChainId
+      - address
+      - decimals
+    IntervalEnum:
       type: string
-      description: The look back range for historical data. (Note that '1day' will return a rolling 24-hour period of data and 'all' will return all historical data.)
+      description: The time interval between data points.
       enum:
+      - 1min
+      - 5min
+      - 15min
+      - 1hour
+      - 4hour
+      - 12hour
       - 1day
-      - 1month
-      - 3month
-      - 6month
-      - 1year
-      - all
     OHLCDataPoint:
       type: object
       properties:
@@ -1287,6 +1284,13 @@ components:
       - high
       - low
       - close
+    GMChains:
+      type: string
+      description: The chain's identifier including the chain name and chain id.
+      enum:
+      - ethereum-1
+      - bsc-56
+      - solana-900
     ErrorResponse:
       type: object
       properties:
@@ -1302,90 +1306,63 @@ components:
       required:
       - code
       - message
-    SharesMultiplierResponse:
+    RangeEnum:
+      type: string
+      description: The look back range for historical data. (Note that '1day' will return a rolling 24-hour period of data and 'all' will return all historical data.)
+      enum:
+      - 1day
+      - 1month
+      - 3month
+      - 6month
+      - 1year
+      - all
+    AssetPrice:
       type: object
       properties:
-        history:
-          type: array
-          items:
-            $ref: '#/components/schemas/SharesMultiplierDataPoint'
-        timestamp:
-          type: number
-          description: The Unix timestamp in milliseconds when the data point was recorded.
-          example: 1746655938000
-      required:
-      - history
-      - timestamp
-    MetadataEntry:
-      properties:
-        symbol:
-          type: string
-          example: AAPLon
-        ticker:
-          type: string
-          example: AAPL
-        coingeckoId:
-          type: string
-          nullable: true
-          example: apple-ondo-tokenized-stock
-        addresses:
-          type: array
-          description: Contract addresses for various chains.
-          items:
-            $ref: '#/components/schemas/AssetAddress'
-          example:
-          - networkChainId: bsc-56
-            address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
-            decimals: 18
-          - networkChainId: ethereum-1
-            address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
-            decimals: 18
-        tags:
+        primaryMarket:
           type: object
           properties:
-            assetClass:
+            symbol:
               type: string
-              description: High-level category of the asset
-              example: equities
-            instrumentType:
+              description: The GM symbol of the asset.
+              example: AAPLon
+            price:
               type: string
-              description: Instrument type within the asset class
-              example: stock
-            sectorIndustry:
-              type: array
-              items:
-                type: string
-              description: Sector and industry classifications for the asset.
-              example:
-              - Technology
-              - Consumer Electronics
-            typeFactorRiskProfile:
-              type: array
-              items:
-                type: string
-              description: Type, factor, and risk profile classifications.
-              example:
-              - Growth
-              - Large Cap
-            regionMarketExposure:
-              type: array
-              items:
-                type: string
-              description: Region and market exposure classifications.
-              example:
-              - US
-              - Global
-          required:
-          - assetClass
-          - instrumentType
-        coinmarketcapId:
-          type: string
-          nullable: true
-          example: '38037'
+              description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '12.345'
+        underlyingMarket:
+          type: object
+          properties:
+            ticker:
+              type: string
+              description: The stock ticker associated with the asset.
+              example: AAPL
+            price:
+              type: string
+              description: The stock price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+              example: '12.345'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds, representing the time of the price data retrieval.
+          example: 1746655938
       required:
-      - symbol
-      - ticker
-      - tags
+      - primaryMarket
+      - underlyingMarket
+      - timestamp
+    SharesMultiplierDataPoint:
+      type: object
+      properties:
+        sharesMultiplier:
+          type: string
+          description: The number of shares each token is equivalent to, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '1.25'
+        changeTimestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when this `sharesMultiplier` value was first set.
+          example: 1746655938000
+      required:
+      - sharesMultiplier
+      - changeTimestamp
     Market:
       type: object
       properties:
@@ -1448,8 +1425,9 @@ components:
               - overnight
               - offhours
         underlyingMarket:
-          type: object
-          nullable: true
+          type:
+          - object
+          - 'null'
           description: The off-chain stock that backs the token. This is `null` for tokens that represent several underlying assets rather than a single stock; for those, see `constituentTokens`. For a token backed by a single stock, this object is populated as shown.
           properties:
             ticker:
@@ -1506,20 +1484,24 @@ components:
       - underlyingMarket
       - constituentTokens
       - timestamp
-    AssetPrice:
+    OHLCResponse:
       type: object
       properties:
+        interval:
+          $ref: '#/components/schemas/IntervalEnum'
+        range:
+          $ref: '#/components/schemas/RangeEnum'
         primaryMarket:
           type: object
           properties:
             symbol:
               type: string
-              description: The GM symbol of the asset.
+              description: The GM symbol associated with the asset.
               example: AAPLon
-            price:
-              type: string
-              description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-              example: '12.345'
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OHLCDataPoint'
         underlyingMarket:
           type: object
           properties:
@@ -1527,36 +1509,44 @@ components:
               type: string
               description: The stock ticker associated with the asset.
               example: AAPL
-            price:
-              type: string
-              description: The stock price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-              example: '12.345'
-        timestamp:
-          type: number
-          description: The Unix timestamp in milliseconds, representing the time of the price data retrieval.
-          example: 1746655938
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OHLCDataPoint'
       required:
+      - interval
       - primaryMarket
       - underlyingMarket
-      - timestamp
-    AssetAddress:
+      - range
+    AssetEnhancedPrice:
       type: object
       properties:
-        networkChainId:
-          $ref: '#/components/schemas/GMChains'
-        address:
+        symbol:
           type: string
-          description: The contract address on the specified chain.
-          example: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
-        decimals:
-          type: integer
-          format: int64
-          description: The number of decimals places for the asset.
-          example: 18
+          description: The GM symbol of the asset.
+          example: NFLXon
+        price:
+          type: string
+          description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '836.26176'
+        priceChange24h:
+          type: string
+          description: The price change in the last 24 hours of open market.
+          example: '-19.22815'
+        priceChangePct24h:
+          type: string
+          description: The percentage change in price over the last 24 hours of open market.
+          example: '-2.247618560457364132'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data was last updated.
+          example: 1769125830623
       required:
-      - networkChainId
-      - address
-      - decimals
+      - symbol
+      - price
+      - priceChange24h
+      - priceChangePct24h
+      - timestamp
     DividendInfo:
       type: object
       properties:
@@ -1599,76 +1589,20 @@ components:
       - lastCashAmount
       - lastPaymentDate
       - timestamp
-    AssetEnhancedPrice:
+    SharesMultiplierResponse:
       type: object
       properties:
-        symbol:
-          type: string
-          description: The GM symbol of the asset.
-          example: NFLXon
-        price:
-          type: string
-          description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '836.26176'
-        priceChange24h:
-          type: string
-          description: The price change in the last 24 hours of open market.
-          example: '-19.22815'
-        priceChangePct24h:
-          type: string
-          description: The percentage change in price over the last 24 hours of open market.
-          example: '-2.247618560457364132'
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/SharesMultiplierDataPoint'
         timestamp:
           type: number
-          description: The Unix timestamp in milliseconds when the data was last updated.
-          example: 1769125830623
+          description: The Unix timestamp in milliseconds when the data point was recorded.
+          example: 1746655938000
       required:
-      - symbol
-      - price
-      - priceChange24h
-      - priceChangePct24h
+      - history
       - timestamp
-    GMChains:
-      type: string
-      description: The chain's identifier including the chain name and chain id.
-      enum:
-      - ethereum-1
-      - bsc-56
-      - solana-900
-    OHLCResponse:
-      type: object
-      properties:
-        interval:
-          $ref: '#/components/schemas/IntervalEnum'
-        range:
-          $ref: '#/components/schemas/RangeEnum'
-        primaryMarket:
-          type: object
-          properties:
-            symbol:
-              type: string
-              description: The GM symbol associated with the asset.
-              example: AAPLon
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/OHLCDataPoint'
-        underlyingMarket:
-          type: object
-          properties:
-            ticker:
-              type: string
-              description: The stock ticker associated with the asset.
-              example: AAPL
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/OHLCDataPoint'
-      required:
-      - interval
-      - primaryMarket
-      - underlyingMarket
-      - range
     SymbolAssetAddresses:
       type: object
       properties:
@@ -1683,31 +1617,78 @@ components:
       required:
       - symbol
       - addresses
-    IntervalEnum:
-      type: string
-      description: The time interval between data points.
-      enum:
-      - 1min
-      - 5min
-      - 15min
-      - 1hour
-      - 4hour
-      - 12hour
-      - 1day
-    SharesMultiplierDataPoint:
-      type: object
+    MetadataEntry:
       properties:
-        sharesMultiplier:
+        symbol:
           type: string
-          description: The number of shares each token is equivalent to, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '1.25'
-        changeTimestamp:
-          type: number
-          description: The Unix timestamp in milliseconds when this `sharesMultiplier` value was first set.
-          example: 1746655938000
+          example: AAPLon
+        ticker:
+          type: string
+          example: AAPL
+        coingeckoId:
+          type:
+          - string
+          - 'null'
+          example: apple-ondo-tokenized-stock
+        addresses:
+          type: array
+          description: Contract addresses for various chains.
+          items:
+            $ref: '#/components/schemas/AssetAddress'
+          example:
+          - networkChainId: bsc-56
+            address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
+            decimals: 18
+          - networkChainId: ethereum-1
+            address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+            decimals: 18
+        tags:
+          type: object
+          properties:
+            assetClass:
+              type: string
+              description: High-level category of the asset
+              example: equities
+            instrumentType:
+              type: string
+              description: Instrument type within the asset class
+              example: stock
+            sectorIndustry:
+              type: array
+              items:
+                type: string
+              description: Sector and industry classifications for the asset.
+              example:
+              - Technology
+              - Consumer Electronics
+            typeFactorRiskProfile:
+              type: array
+              items:
+                type: string
+              description: Type, factor, and risk profile classifications.
+              example:
+              - Growth
+              - Large Cap
+            regionMarketExposure:
+              type: array
+              items:
+                type: string
+              description: Region and market exposure classifications.
+              example:
+              - US
+              - Global
+          required:
+          - assetClass
+          - instrumentType
+        coinmarketcapId:
+          type:
+          - string
+          - 'null'
+          example: '38037'
       required:
-      - sharesMultiplier
-      - changeTimestamp
+      - symbol
+      - ticker
+      - tags
   securitySchemes:
     apiKey:
       type: apiKey

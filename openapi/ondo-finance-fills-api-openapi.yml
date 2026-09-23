@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Fills API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Fills API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Fills
 paths:
@@ -121,9 +122,7 @@ paths:
   /v1/perps/orders/{orderID}/fills:
     get:
       summary: Get Fills by Order ID
-      description: 'Returns all fills for a given order. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)
-
-        '
+      description: 'Returns all fills for a given order. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)'
       operationId: getFillsByOrderID
       tags:
       - Fills
@@ -266,52 +265,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -340,6 +293,52 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     InternalServerError:
       description: Internal server error.
       content:
@@ -364,6 +363,37 @@ components:
             error: Description of the error
             error_code: unknown
   schemas:
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     ApiFill:
       type: object
       required:
@@ -455,39 +485,12 @@ components:
           type: boolean
           description: True if this was an auto-deleveraging fill (perps only)
           example: false
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

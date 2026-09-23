@@ -1,20 +1,19 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Funding Rate API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Funding Rate API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Funding Rate
 paths:
   /v1/perps/funding_rates:
     get:
       summary: Get Funding Rates
-      description: 'Get an estimate of the current-interval funding rate in a given market, as well as when the next funding is and what premium index measurements make up the funding rate.
-
-        '
+      description: Get an estimate of the current-interval funding rate in a given market, as well as when the next funding is and what premium index measurements make up the funding rate.
       operationId: getFundingRates
       tags:
       - Funding Rate
@@ -316,162 +315,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   schemas:
-    PremiumIndexValue:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date-time
-          description: Time of the premium index measurement
-          example: '2022-06-16T12:00:00Z'
-        premiumIndex:
-          type: string
-          description: The premium index value
-          example: '0.000025'
-    FundingRateValue:
-      type: object
-      required:
-      - market
-      - time
-      - fundingRate
-      properties:
-        market:
-          type: string
-          description: Perps trading market
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-          description: The time funding was paid
-          example: '2022-06-16T12:35:10.123456Z'
-        fundingRate:
-          type: string
-          description: The funding rate as a fraction
-          example: '0.0000125'
-    MarkPrice:
-      type: object
-      required:
-      - pair
-      - price
-      - time
-      properties:
-        pair:
-          type: object
-          description: Currency pair
-          properties:
-            base:
-              type: string
-              example: AAPL
-            quote:
-              type: string
-              example: USD
-        price:
-          type: string
-          description: Current mark price
-          example: '150.25'
-        time:
-          type: string
-          format: date-time
-          description: Time of the mark price measurement
     FundingFeeTransfer:
       type: object
       required:
@@ -527,6 +371,18 @@ components:
 
             '
           example: '-0.16402'
+    PremiumIndexValue:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Time of the premium index measurement
+          example: '2022-06-16T12:00:00Z'
+        premiumIndex:
+          type: string
+          description: The premium index value
+          example: '0.000025'
     PageInfo:
       type: object
       properties:
@@ -538,6 +394,71 @@ components:
           type: string
           description: Cursor value to get the next page of results
           example: NQ5WWO3THN3Q====
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    FundingRateValue:
+      type: object
+      required:
+      - market
+      - time
+      - fundingRate
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: The time funding was paid
+          example: '2022-06-16T12:35:10.123456Z'
+        fundingRate:
+          type: string
+          description: The funding rate as a fraction
+          example: '0.0000125'
+    MarkPrice:
+      type: object
+      required:
+      - pair
+      - price
+      - time
+      properties:
+        pair:
+          type: object
+          description: Currency pair
+          properties:
+            base:
+              type: string
+              example: AAPL
+            quote:
+              type: string
+              example: USD
+        price:
+          type: string
+          description: Current mark price
+          example: '150.25'
+        time:
+          type: string
+          format: date-time
+          description: Time of the mark price measurement
     FundingRate:
       type: object
       required:
@@ -563,28 +484,110 @@ components:
           description: Premium index measurements that make up the funding rate
           items:
             $ref: '#/components/schemas/PremiumIndexValue'
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
+  responses:
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

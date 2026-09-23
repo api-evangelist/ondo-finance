@@ -1,11 +1,11 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Chat API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps WebSocket Chat API
+  version: '1.0'
+  description: 'WebSocket API for Ondo Perps: real-time market data, order updates, positions, balance, funding, and more.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: wss://api.ondoperps.xyz
+  description: Production
 tags:
 - name: Chat
 paths:
@@ -44,6 +44,25 @@ paths:
                     $ref: '#/components/schemas/ChatMessage'
 components:
   schemas:
+    ChatMessage:
+      type: object
+      properties:
+        type:
+          type: string
+          example: message
+        status:
+          type: string
+          example: complete
+        content:
+          type: string
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+        timestamp:
+          type: string
+          format: date-time
     WebSocketRequest:
       type: object
       required:
@@ -118,25 +137,6 @@ components:
           type: object
           description: Optional context for chat (market, page, etc.)
           additionalProperties: true
-    ChatMessage:
-      type: object
-      properties:
-        type:
-          type: string
-          example: message
-        status:
-          type: string
-          example: complete
-        content:
-          type: string
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-        timestamp:
-          type: string
-          format: date-time
     LoginArgs:
       type: object
       description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
@@ -153,8 +153,3 @@ components:
         sign:
           type: string
           description: HMAC-SHA256 hex signature
-  securitySchemes:
-    apiKey:
-      type: apiKey
-      name: x-api-key
-      in: header

@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Market Data API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Market Data API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Market Data
 paths:
@@ -648,78 +649,17 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    BookLevel:
-      type: array
-      description: Price level represented as [price, quantity]
-      items:
-        type: string
-      minItems: 2
-      maxItems: 2
-      example:
-      - '1.55'
-      - '100.0'
-    ApiCandle:
+    PageInfo:
       type: object
-      required:
-      - startTime
-      - open
-      - high
-      - low
-      - close
-      - volume
       properties:
-        startTime:
+        prevCursor:
           type: string
-          format: date-time
-          description: Start time of the candle
-          example: '2024-01-04T16:00:00Z'
-        open:
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
           type: string
-          description: Opening price
-          example: '150.25'
-        high:
-          type: string
-          description: Highest price during the interval
-          example: '152.10'
-        low:
-          type: string
-          description: Lowest price during the interval
-          example: '149.80'
-        close:
-          type: string
-          description: Closing price
-          example: '151.45'
-        volume:
-          type: string
-          description: Trading volume in base currency during the interval
-          example: '1234.56'
-    ApiBookSnapshot:
-      type: object
-      required:
-      - market
-      - time
-      - bids
-      - asks
-      properties:
-        market:
-          type: string
-          description: Trading market
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-          description: Snapshot timestamp
-          example: '2022-06-16T12:35:11.123456Z'
-        bids:
-          type: array
-          description: Best bid price levels, sorted descending by price
-          items:
-            $ref: '#/components/schemas/BookLevel'
-        asks:
-          type: array
-          description: Best ask price levels, sorted ascending by price
-          items:
-            $ref: '#/components/schemas/BookLevel'
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
     Contract:
       type: object
       required:
@@ -830,14 +770,45 @@ components:
         sparkline:
           $ref: '#/components/schemas/Sparkline'
           description: Sparkline price data, included only when sparkline=true is requested
-    Sparkline:
+    GenericResponse:
       type: object
+      required:
+      - success
       properties:
-        price:
-          type: array
-          description: Array of price values for the sparkline
-          items:
-            type: string
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    VolumeRes:
+      type: object
+      required:
+      - market
+      - volume
+      - quoteVolume
+      properties:
+        market:
+          type: string
+          description: Perpetual futures market
+          example: AAPL-USD.P
+        volume:
+          type: string
+          description: 24-hour trading volume in base size
+          example: '2394.2301'
+        quoteVolume:
+          type: string
+          description: 24-hour trading volume in quote currency (last price × base volume)
+          example: '38310297.12'
     ApiTrade:
       type: object
       required:
@@ -900,56 +871,86 @@ components:
           type: string
           description: The notional value of the open interest at the current mark price
           example: '24311.72'
-    VolumeRes:
+    ApiBookSnapshot:
       type: object
       required:
       - market
-      - volume
-      - quoteVolume
+      - time
+      - bids
+      - asks
       properties:
         market:
           type: string
-          description: Perpetual futures market
+          description: Trading market
           example: AAPL-USD.P
-        volume:
+        time:
           type: string
-          description: 24-hour trading volume in base size
-          example: '2394.2301'
-        quoteVolume:
-          type: string
-          description: 24-hour trading volume in quote currency (last price × base volume)
-          example: '38310297.12'
-    PageInfo:
+          format: date-time
+          description: Snapshot timestamp
+          example: '2022-06-16T12:35:11.123456Z'
+        bids:
+          type: array
+          description: Best bid price levels, sorted descending by price
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        asks:
+          type: array
+          description: Best ask price levels, sorted ascending by price
+          items:
+            $ref: '#/components/schemas/BookLevel'
+    BookLevel:
+      type: array
+      description: Price level represented as [price, quantity]
+      items:
+        type: string
+      minItems: 2
+      maxItems: 2
+      example:
+      - '1.55'
+      - '100.0'
+    Sparkline:
       type: object
       properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
-    GenericResponse:
+        price:
+          type: array
+          description: Array of price values for the sparkline
+          items:
+            type: string
+    ApiCandle:
       type: object
       required:
-      - success
+      - startTime
+      - open
+      - high
+      - low
+      - close
+      - volume
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        startTime:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          format: date-time
+          description: Start time of the candle
+          example: '2024-01-04T16:00:00Z'
+        open:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
+          description: Opening price
+          example: '150.25'
+        high:
           type: string
-          description: Deprecation notice, if applicable
-          example: ''
+          description: Highest price during the interval
+          example: '152.10'
+        low:
+          type: string
+          description: Lowest price during the interval
+          example: '149.80'
+        close:
+          type: string
+          description: Closing price
+          example: '151.45'
+        volume:
+          type: string
+          description: Trading volume in base currency during the interval
+          example: '1234.56'
   responses:
     TooManyRequests:
       description: Rate limit exceeded. Slow down request frequency.
@@ -996,7 +997,11 @@ components:
             error: Description of the error
             error_code: unknown
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

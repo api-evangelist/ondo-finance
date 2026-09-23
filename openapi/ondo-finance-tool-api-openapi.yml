@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Tool API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Tool API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Tool
 paths:
@@ -164,33 +165,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  schemas:
-    StatusResult:
-      type: object
-      properties:
-        marketStatus:
-          type: string
-          description: Current market status information
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
   responses:
     InternalServerError:
       description: Internal server error.
@@ -236,8 +210,39 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+  schemas:
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    StatusResult:
+      type: object
+      properties:
+        marketStatus:
+          type: string
+          description: Current market status information
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

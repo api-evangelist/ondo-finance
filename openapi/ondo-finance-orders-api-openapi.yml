@@ -1,20 +1,19 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Orders API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST Orders API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: Orders
 paths:
   /v1/perps/orders:
     post:
       summary: Create Order
-      description: 'Creates a limit or market order. Change the "type" field to switch between order types. If `postOnly` is `true` and an order would match at placement, a 400 is returned with error `post_only_has_match`.
-
-        '
+      description: Creates a limit or market order. Change the "type" field to switch between order types. If `postOnly` is `true` and an order would match at placement, a 400 is returned with error `post_only_has_match`.
       operationId: createOrder
       tags:
       - Orders
@@ -255,9 +254,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     delete:
       summary: Cancel All Orders
-      description: 'Cancels all orders for the authenticated user. Optionally restricted to a single market.
-
-        '
+      description: Cancels all orders for the authenticated user. Optionally restricted to a single market.
       operationId: cancelAllOrders
       tags:
       - Orders
@@ -420,9 +417,7 @@ paths:
   /v1/perps/orders/batch:
     post:
       summary: Create Batched Orders
-      description: 'Creates multiple orders in a single API call. Some orders may succeed while others fail. The response code is 2XX as long as there is no internal server error. Returns 400 with `error_code=batch_order_empty` if the `orders` array is empty. Returns 400 with `error_code=batch_order_too_many_orders` if too many orders are provided (max 20).
-
-        '
+      description: Creates multiple orders in a single API call. Some orders may succeed while others fail. The response code is 2XX as long as there is no internal server error. Returns 400 with `error_code=batch_order_empty` if the `orders` array is empty. Returns 400 with `error_code=batch_order_too_many_orders` if too many orders are provided (max 20).
       operationId: createBatchOrders
       tags:
       - Orders
@@ -533,9 +528,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     delete:
       summary: Batch Cancel Orders
-      description: 'Cancels multiple orders in a single call. Returns results for each order. Provide a comma-separated list of order IDs via the `orderIDs` query parameter. Each entry can be an internal order ID or `client:{clientOrderID}`.
-
-        '
+      description: Cancels multiple orders in a single call. Returns results for each order. Provide a comma-separated list of order IDs via the `orderIDs` query parameter. Each entry can be an internal order ID or `client:{clientOrderID}`.
       operationId: batchCancelOrders
       tags:
       - Orders
@@ -729,9 +722,7 @@ paths:
   /v1/perps/orders/{orderID}:
     get:
       summary: Get Order by ID
-      description: 'Gets an individual order by order ID. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)
-
-        '
+      description: 'Gets an individual order by order ID. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)'
       operationId: getOrderByID
       tags:
       - Orders
@@ -809,9 +800,7 @@ paths:
       summary: Cancel Order by ID
       description: 'Cancels an individual order by order ID. The `orderID` path parameter can be: - An internal order ID (e.g. `197ec08e001658690721be129e7fa595`) - A client order ID prefixed with `client:` (e.g. `client:abc123`)
 
-        Returns 400 with error codes `order_already_canceled`, `order_not_in_cancelable_state`, or `order_already_filled` if the order cannot be cancelled.
-
-        '
+        Returns 400 with error codes `order_already_canceled`, `order_not_in_cancelable_state`, or `order_already_filled` if the order cannot be cancelled.'
       operationId: cancelOrderByID
       tags:
       - Orders
@@ -964,104 +953,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
   schemas:
     AddOrderReq:
       type: object
@@ -1132,6 +1023,101 @@ components:
         stopLoss:
           $ref: '#/components/schemas/StopOrderReq'
           description: Optional stop loss order attached to this order
+    BatchAddOrderRes:
+      type: object
+      properties:
+        addedOrders:
+          type: array
+          description: Orders that were successfully added
+          items:
+            $ref: '#/components/schemas/ApiOrder'
+        failedOrders:
+          type: array
+          description: Orders that were not added and the reason why
+          items:
+            $ref: '#/components/schemas/ErroredAddOrderReq'
+    CancelError:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: Order ID that failed to cancel
+          example: 70a37d8f972f2494837f9dba8364cbb4
+        error:
+          type: string
+          description: Error message explaining why the cancel failed
+          example: order_already_canceled
+        errorCode:
+          type: string
+          description: Semantic error code (empty if not a semantic error)
+          example: order_already_canceled
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    BatchAddOrderReq:
+      type: object
+      required:
+      - orders
+      properties:
+        orders:
+          type: array
+          description: 'Array of order requests. Must have at least 1 element and at most 20.
+
+            '
+          minItems: 1
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/AddOrderReq'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    StopOrderReq:
+      type: object
+      required:
+      - triggerPrice
+      properties:
+        triggerPrice:
+          type: string
+          description: Trigger price for the stop order
+          example: '18000.00'
+    BatchCancelResult:
+      type: object
+      properties:
+        successfulCancels:
+          type: array
+          description: Orders that were successfully cancelled
+          items:
+            $ref: '#/components/schemas/ApiOrder'
+        failedCancels:
+          type: array
+          description: Cancel attempts that failed
+          items:
+            $ref: '#/components/schemas/CancelError'
     ErroredAddOrderReq:
       type: object
       properties:
@@ -1300,103 +1286,110 @@ components:
           type: string
           description: Trigger price for stop orders
           example: ''
-    StopOrderReq:
-      type: object
-      required:
-      - triggerPrice
-      properties:
-        triggerPrice:
-          type: string
-          description: Trigger price for the stop order
-          example: '18000.00'
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
-    CancelError:
-      type: object
-      properties:
-        orderId:
-          type: string
-          description: Order ID that failed to cancel
-          example: 70a37d8f972f2494837f9dba8364cbb4
-        error:
-          type: string
-          description: Error message explaining why the cancel failed
-          example: order_already_canceled
-        errorCode:
-          type: string
-          description: Semantic error code (empty if not a semantic error)
-          example: order_already_canceled
-    BatchAddOrderRes:
-      type: object
-      properties:
-        addedOrders:
-          type: array
-          description: Orders that were successfully added
-          items:
-            $ref: '#/components/schemas/ApiOrder'
-        failedOrders:
-          type: array
-          description: Orders that were not added and the reason why
-          items:
-            $ref: '#/components/schemas/ErroredAddOrderReq'
-    BatchCancelResult:
-      type: object
-      properties:
-        successfulCancels:
-          type: array
-          description: Orders that were successfully cancelled
-          items:
-            $ref: '#/components/schemas/ApiOrder'
-        failedCancels:
-          type: array
-          description: Cancel attempts that failed
-          items:
-            $ref: '#/components/schemas/CancelError'
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    BatchAddOrderReq:
-      type: object
-      required:
-      - orders
-      properties:
-        orders:
-          type: array
-          description: 'Array of order requests. Must have at least 1 element and at most 20.
-
-            '
-          minItems: 1
-          maxItems: 20
-          items:
-            $ref: '#/components/schemas/AddOrderReq'
+  responses:
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID

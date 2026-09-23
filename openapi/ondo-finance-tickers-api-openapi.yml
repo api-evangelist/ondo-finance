@@ -1,6 +1,6 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Tickers API
+  title: GM Backend Tickers API
   description: An API spec for the Ondo GM Backend API.
   version: 1.0.0
 servers:
@@ -18,9 +18,7 @@ paths:
       description: 'This endpoint retrieves the latest price and volume data for all supported tickers. A ticker represents a specific asset in the market.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getAllTickers
       responses:
         '200':
@@ -85,6 +83,21 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
     TickerResponse:
       type: object
       properties:
@@ -119,21 +132,6 @@ components:
       - lastPrice
       - baseVolume
       - targetVolume
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
   securitySchemes:
     apiKey:
       type: apiKey

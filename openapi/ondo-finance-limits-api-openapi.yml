@@ -1,6 +1,6 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account Limits API
+  title: GM Backend Limits API
   description: An API spec for the Ondo GM Backend API.
   version: 1.0.0
 servers:
@@ -25,7 +25,7 @@ paths:
         - The "Remaining Attestations" limits the number of non-expired, non-executed attestations. For example if the limit is 50, and a user has 50 outstanding attestations, they must wait for one to execute or expire before requesting another.
 
 
-        If the market is closed or paused, the response will indicate that trading is not allowed and provide the reason. For more information on market hours, see [Get Current Market Status](https://docs.ondo.finance/api-reference/status/get-current-market-status).
+        If the market is closed or paused, the response will indicate that trading is not allowed and provide the reason. For more information on market hours, see Get Current Market Status.
 
 
         **Trading Limits Reason Codes**
@@ -39,7 +39,7 @@ paths:
 
         - `ASSET_PAUSED`: Specific asset is paused.
 
-        - `ASSET_CLOSED_FOR_SESSION`: The asset is not tradable in this session (e.g., not available overnight; see [Get Market Data](https://docs.ondo.finance/api-reference/assets/get-market-data-for-all-supported-assets))
+        - `ASSET_CLOSED_FOR_SESSION`: The asset is not tradable in this session (e.g., not available overnight; see Get Market Data)
 
         - `ASSET_LIMITED`: Asset can be traded, but order size is more limited than usual.
 
@@ -50,9 +50,7 @@ paths:
         - `OFFHOURS_EXPOSURE_LIMIT_REACHED`: The off-hours exposure limit has been reached for the asset during the current off-hours session.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getTradingLimits
       parameters:
       - name: symbol
@@ -150,7 +148,7 @@ paths:
       tags:
       - Limits
       summary: Get Session Limits
-      description: 'Provides theoretical maximum asset-specific trading limits for each trading session. These limits are per-user, not global. This API reflects Ondo''s statically defined limits; for dynamic, real-time values, see [Get Trading Limits](https://docs.ondo.finance/api-reference/limits/get-trading-limits).
+      description: 'Provides theoretical maximum asset-specific trading limits for each trading session. These limits are per-user, not global. This API reflects Ondo''s statically defined limits; for dynamic, real-time values, see Get Trading Limits.
 
 
         Limits are returned for each session: `premarket`, `regular`, `postmarket`, `overnight`, and `offhours`. The `offhours` block describes the limits that apply when the US equities market is closed for the day (for example, on weekends and holidays). For most assets, off-hours trading is disabled (`tradable: false`).
@@ -163,9 +161,7 @@ paths:
         - The "Max Active Notional Value" limit is based on the dollar value of outstanding attestations. That is, if a user has a limit of \$1,000,000, and has 30 non-expired, non-filled attestations at a value of \$999,000, they will not be able to request another attestation for \$1000.
 
 
-        For caching details on this endpoint, please see: [Endpoint Caching](https://docs.ondo.finance/api-reference/endpoint-caching).
-
-        '
+        For caching details on this endpoint, please see: Endpoint Caching.'
       operationId: getSessionLimits
       parameters:
       - name: symbol
@@ -270,6 +266,35 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ReasonBase:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The human-readable message describing the reason
+          example: Weekend/Holiday
+        documentation:
+          type: string
+          description: Additional documentation or reference
+          example: https://docs.ondo.finance/
+      required:
+      - message
+      - documentation
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
     SessionLimits:
       type: object
       properties:
@@ -292,32 +317,6 @@ components:
       - tradable
       - maxAttestationCount
       - maxActiveNotionalValue
-    TradingLimitsReasonCode:
-      type: string
-      enum:
-      - MARKET_CLOSED
-      - MARKET_PAUSED
-      - ASSET_PAUSED
-      - ASSET_CLOSED_FOR_SESSION
-      - ASSET_LIMITED
-      - MAX_LIMIT_REACHED
-      - MAX_ATTESTATIONS
-      - OFFHOURS_EXPOSURE_LIMIT_REACHED
-      description: The code indicating why trading is not allowed.
-    ReasonBase:
-      type: object
-      properties:
-        message:
-          type: string
-          description: The human-readable message describing the reason
-          example: Weekend/Holiday
-        documentation:
-          type: string
-          description: Additional documentation or reference
-          example: https://docs.ondo.finance/
-      required:
-      - message
-      - documentation
     SessionLimitsResponse:
       type: object
       properties:
@@ -338,56 +337,6 @@ components:
       enum:
       - buy
       - sell
-    TradingLimitsReason:
-      description: Reason why trading is restricted for the given asset and user.
-      allOf:
-      - $ref: '#/components/schemas/ReasonBase'
-      - type: object
-        properties:
-          code:
-            $ref: '#/components/schemas/TradingLimitsReasonCode'
-        required:
-        - code
-    AssetLimits:
-      type: object
-      properties:
-        symbol:
-          type: string
-          description: The GM token symbol.
-          example: AAPLon
-        premarket:
-          $ref: '#/components/schemas/SessionLimits'
-        regular:
-          $ref: '#/components/schemas/SessionLimits'
-        postmarket:
-          $ref: '#/components/schemas/SessionLimits'
-        overnight:
-          $ref: '#/components/schemas/SessionLimits'
-        offhours:
-          $ref: '#/components/schemas/SessionLimits'
-          description: Trading limits that apply when the US equities market is closed for the day (e.g., weekends and holidays).
-      required:
-      - symbol
-      - premarket
-      - regular
-      - postmarket
-      - overnight
-      - offhours
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
     TradingLimitsResponse:
       type: object
       properties:
@@ -427,6 +376,53 @@ components:
       - maxNotionalValue
       - remainingAttestations
       - isAssetTradingOpen
+    TradingLimitsReasonCode:
+      type: string
+      enum:
+      - MARKET_CLOSED
+      - MARKET_PAUSED
+      - ASSET_PAUSED
+      - ASSET_CLOSED_FOR_SESSION
+      - ASSET_LIMITED
+      - MAX_LIMIT_REACHED
+      - MAX_ATTESTATIONS
+      - OFFHOURS_EXPOSURE_LIMIT_REACHED
+      description: The code indicating why trading is not allowed.
+    TradingLimitsReason:
+      description: Reason why trading is restricted for the given asset and user.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/TradingLimitsReasonCode'
+        required:
+        - code
+    AssetLimits:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM token symbol.
+          example: AAPLon
+        premarket:
+          $ref: '#/components/schemas/SessionLimits'
+        regular:
+          $ref: '#/components/schemas/SessionLimits'
+        postmarket:
+          $ref: '#/components/schemas/SessionLimits'
+        overnight:
+          $ref: '#/components/schemas/SessionLimits'
+        offhours:
+          $ref: '#/components/schemas/SessionLimits'
+          description: Trading limits that apply when the US equities market is closed for the day (e.g., weekends and holidays).
+      required:
+      - symbol
+      - premarket
+      - regular
+      - postmarket
+      - overnight
+      - offhours
   securitySchemes:
     apiKey:
       type: apiKey

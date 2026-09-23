@@ -1,11 +1,12 @@
-openapi: 3.0.4
+openapi: 3.2.0
 info:
-  title: GM Backend Account API Keys API
-  description: An API spec for the Ondo GM Backend API.
-  version: 1.0.0
+  title: Ondo Perps REST API Keys API
+  version: '1.0'
+  description: 'REST API for Ondo Perps: account, wallet, deposits/withdrawals, API keys, and perpetual futures trading.'
 servers:
-- url: https://api.gm.ondo.finance
-  description: GM Backend API
+- url: https://api.ondoperps.xyz
+security:
+- BearerAuth: []
 tags:
 - name: API Keys
 paths:
@@ -299,132 +300,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  responses:
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   schemas:
-    ApiKeyCreateResult:
-      type: object
-      required:
-      - keyId
-      - name
-      - createdAt
-      - scopes
-      - secretKey
-      properties:
-        keyId:
-          type: string
-          description: API key ID
-        name:
-          type: string
-          description: Key name
-        createdAt:
-          type: string
-          format: date-time
-          description: When the key was created
-        scopes:
-          type: array
-          items:
-            type: string
-          description: Permitted scopes
-        secretKey:
-          type: string
-          description: API secret key. Only returned once at creation time.
     ApiKeysCreateRequest:
       type: object
       required:
@@ -443,6 +319,26 @@ components:
           example:
           - read_only
           - transfer
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     ApiKeyWhitelistRequest:
       type: object
       required:
@@ -480,28 +376,137 @@ components:
           items:
             type: string
           description: Whitelisted IP addresses
-    GenericResponse:
+    ApiKeyCreateResult:
       type: object
       required:
-      - success
+      - keyId
+      - name
+      - createdAt
+      - scopes
+      - secretKey
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        keyId:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: API key ID
+        name:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
+          description: Key name
+        createdAt:
           type: string
-          description: Deprecation notice, if applicable
-          example: ''
+          format: date-time
+          description: When the key was created
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Permitted scopes
+        secretKey:
+          type: string
+          description: API secret key. Only returned once at creation time.
+  responses:
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
   securitySchemes:
-    apiKey:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
       type: apiKey
-      name: x-api-key
       in: header
+      name: X-API-KEY-ID
