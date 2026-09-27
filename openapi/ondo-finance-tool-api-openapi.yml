@@ -211,6 +211,12 @@ components:
             error: Description of the error
             error_code: too_many_requests
   schemas:
+    StatusResult:
+      type: object
+      properties:
+        marketStatus:
+          type: string
+          description: Current market status information
     GenericResponse:
       type: object
       required:
@@ -231,12 +237,6 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
-    StatusResult:
-      type: object
-      properties:
-        marketStatus:
-          type: string
-          description: Current market status information
   securitySchemes:
     BearerAuth:
       type: http

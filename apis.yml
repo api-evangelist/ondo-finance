@@ -50,7 +50,7 @@ tags:
 - Perpetual Futures
 - Market Data
 - Blockchain
-- Financial-Services
+- Financial Services
 tags_raw:
 - Company
 - Crypto
@@ -63,6 +63,7 @@ tags_raw:
 - Market Data
 - Blockchain
 - Financial Services
+- Financial-Services
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

@@ -83,21 +83,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
     TickerResponse:
       type: object
       properties:
@@ -132,6 +117,21 @@ components:
       - lastPrice
       - baseVolume
       - targetVolume
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
   securitySchemes:
     apiKey:
       type: apiKey

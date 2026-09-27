@@ -649,17 +649,179 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    PageInfo:
+    GenericResponse:
       type: object
+      required:
+      - success
       properties:
-        prevCursor:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
           type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
+          description: Error message, present only on failure
+          example: ''
+        error_code:
           type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    BookLevel:
+      type: array
+      description: Price level represented as [price, quantity]
+      items:
+        type: string
+      minItems: 2
+      maxItems: 2
+      example:
+      - '1.55'
+      - '100.0'
+    VolumeRes:
+      type: object
+      required:
+      - market
+      - volume
+      - quoteVolume
+      properties:
+        market:
+          type: string
+          description: Perpetual futures market
+          example: AAPL-USD.P
+        volume:
+          type: string
+          description: 24-hour trading volume in base size
+          example: '2394.2301'
+        quoteVolume:
+          type: string
+          description: 24-hour trading volume in quote currency (last price × base volume)
+          example: '38310297.12'
+    ApiCandle:
+      type: object
+      required:
+      - startTime
+      - open
+      - high
+      - low
+      - close
+      - volume
+      properties:
+        startTime:
+          type: string
+          format: date-time
+          description: Start time of the candle
+          example: '2024-01-04T16:00:00Z'
+        open:
+          type: string
+          description: Opening price
+          example: '150.25'
+        high:
+          type: string
+          description: Highest price during the interval
+          example: '152.10'
+        low:
+          type: string
+          description: Lowest price during the interval
+          example: '149.80'
+        close:
+          type: string
+          description: Closing price
+          example: '151.45'
+        volume:
+          type: string
+          description: Trading volume in base currency during the interval
+          example: '1234.56'
+    ApiTrade:
+      type: object
+      required:
+      - market
+      - price
+      - size
+      - cost
+      - aggressor_side
+      - time
+      - id
+      properties:
+        market:
+          type: string
+          description: Trading market
+          example: AAPL-USD.P
+        price:
+          type: string
+          description: Trade price
+          example: '1.55'
+        size:
+          type: string
+          description: Trade size in base currency
+          example: '5.403'
+        cost:
+          type: string
+          description: Trade cost in quote currency
+          example: '8.37465'
+        aggressor_side:
+          type: string
+          description: Side of the aggressing (taker) order
+          enum:
+          - buy
+          - sell
+          example: buy
+        time:
+          type: string
+          format: date-time
+          description: Time the trade occurred
+          example: '2022-06-16T12:35:11.123456Z'
+        id:
+          type: string
+          description: Trade/fill ID
+          example: 70a37d8f972f2494837f9dba8364cbb4
+    ApiBookSnapshot:
+      type: object
+      required:
+      - market
+      - time
+      - bids
+      - asks
+      properties:
+        market:
+          type: string
+          description: Trading market
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: Snapshot timestamp
+          example: '2022-06-16T12:35:11.123456Z'
+        bids:
+          type: array
+          description: Best bid price levels, sorted descending by price
+          items:
+            $ref: '#/components/schemas/BookLevel'
+        asks:
+          type: array
+          description: Best ask price levels, sorted ascending by price
+          items:
+            $ref: '#/components/schemas/BookLevel'
+    OpenInterestRes:
+      type: object
+      required:
+      - market
+      - openInterest
+      - notionalValue
+      properties:
+        market:
+          type: string
+          description: Perpetual futures market
+          example: AAPL-USD.P
+        openInterest:
+          type: string
+          description: The open interest in base size
+          example: '2394.2301'
+        notionalValue:
+          type: string
+          description: The notional value of the open interest at the current mark price
+          example: '24311.72'
     Contract:
       type: object
       required:
@@ -770,144 +932,17 @@ components:
         sparkline:
           $ref: '#/components/schemas/Sparkline'
           description: Sparkline price data, included only when sparkline=true is requested
-    GenericResponse:
+    PageInfo:
       type: object
-      required:
-      - success
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        prevCursor:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    VolumeRes:
-      type: object
-      required:
-      - market
-      - volume
-      - quoteVolume
-      properties:
-        market:
-          type: string
-          description: Perpetual futures market
-          example: AAPL-USD.P
-        volume:
-          type: string
-          description: 24-hour trading volume in base size
-          example: '2394.2301'
-        quoteVolume:
-          type: string
-          description: 24-hour trading volume in quote currency (last price × base volume)
-          example: '38310297.12'
-    ApiTrade:
-      type: object
-      required:
-      - market
-      - price
-      - size
-      - cost
-      - aggressor_side
-      - time
-      - id
-      properties:
-        market:
-          type: string
-          description: Trading market
-          example: AAPL-USD.P
-        price:
-          type: string
-          description: Trade price
-          example: '1.55'
-        size:
-          type: string
-          description: Trade size in base currency
-          example: '5.403'
-        cost:
-          type: string
-          description: Trade cost in quote currency
-          example: '8.37465'
-        aggressor_side:
-          type: string
-          description: Side of the aggressing (taker) order
-          enum:
-          - buy
-          - sell
-          example: buy
-        time:
-          type: string
-          format: date-time
-          description: Time the trade occurred
-          example: '2022-06-16T12:35:11.123456Z'
-        id:
-          type: string
-          description: Trade/fill ID
-          example: 70a37d8f972f2494837f9dba8364cbb4
-    OpenInterestRes:
-      type: object
-      required:
-      - market
-      - openInterest
-      - notionalValue
-      properties:
-        market:
-          type: string
-          description: Perpetual futures market
-          example: AAPL-USD.P
-        openInterest:
-          type: string
-          description: The open interest in base size
-          example: '2394.2301'
-        notionalValue:
-          type: string
-          description: The notional value of the open interest at the current mark price
-          example: '24311.72'
-    ApiBookSnapshot:
-      type: object
-      required:
-      - market
-      - time
-      - bids
-      - asks
-      properties:
-        market:
-          type: string
-          description: Trading market
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-          description: Snapshot timestamp
-          example: '2022-06-16T12:35:11.123456Z'
-        bids:
-          type: array
-          description: Best bid price levels, sorted descending by price
-          items:
-            $ref: '#/components/schemas/BookLevel'
-        asks:
-          type: array
-          description: Best ask price levels, sorted ascending by price
-          items:
-            $ref: '#/components/schemas/BookLevel'
-    BookLevel:
-      type: array
-      description: Price level represented as [price, quantity]
-      items:
-        type: string
-      minItems: 2
-      maxItems: 2
-      example:
-      - '1.55'
-      - '100.0'
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
     Sparkline:
       type: object
       properties:
@@ -916,63 +951,7 @@ components:
           description: Array of price values for the sparkline
           items:
             type: string
-    ApiCandle:
-      type: object
-      required:
-      - startTime
-      - open
-      - high
-      - low
-      - close
-      - volume
-      properties:
-        startTime:
-          type: string
-          format: date-time
-          description: Start time of the candle
-          example: '2024-01-04T16:00:00Z'
-        open:
-          type: string
-          description: Opening price
-          example: '150.25'
-        high:
-          type: string
-          description: Highest price during the interval
-          example: '152.10'
-        low:
-          type: string
-          description: Lowest price during the interval
-          example: '149.80'
-        close:
-          type: string
-          description: Closing price
-          example: '151.45'
-        volume:
-          type: string
-          description: Trading volume in base currency during the interval
-          example: '1234.56'
   responses:
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
     InternalServerError:
       description: Internal server error.
       content:
@@ -996,6 +975,27 @@ components:
             success: false
             error: Description of the error
             error_code: unknown
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
   securitySchemes:
     BearerAuth:
       type: http

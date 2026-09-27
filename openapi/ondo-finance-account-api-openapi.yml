@@ -189,125 +189,7 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  responses:
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   schemas:
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
     DisabledFunctionality:
       type: object
       properties:
@@ -325,25 +207,6 @@ components:
           type: boolean
         disableWalletLogins:
           type: boolean
-    NotificationPreferenceRequest:
-      type: object
-      required:
-      - orderFills
-      - orderPlaced
-      - orderCancelled
-      properties:
-        orderFills:
-          type: boolean
-          description: Receive notifications for order fills
-          example: true
-        orderPlaced:
-          type: boolean
-          description: Receive notifications for orders placed
-          example: false
-        orderCancelled:
-          type: boolean
-          description: Receive notifications for order cancellations
-          example: true
     AccountInfo:
       type: object
       required:
@@ -401,6 +264,26 @@ components:
         marketingConsent:
           type: string
           description: Marketing consent value
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     OpenOrderCounts:
       type: object
       properties:
@@ -422,6 +305,123 @@ components:
         orderCancelled:
           type: boolean
           description: Notify on order cancellation
+    NotificationPreferenceRequest:
+      type: object
+      required:
+      - orderFills
+      - orderPlaced
+      - orderCancelled
+      properties:
+        orderFills:
+          type: boolean
+          description: Receive notifications for order fills
+          example: true
+        orderPlaced:
+          type: boolean
+          description: Receive notifications for orders placed
+          example: false
+        orderCancelled:
+          type: boolean
+          description: Receive notifications for order cancellations
+          example: true
+  responses:
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

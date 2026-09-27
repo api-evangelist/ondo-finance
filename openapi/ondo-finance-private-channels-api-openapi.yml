@@ -434,278 +434,6 @@ paths:
                     $ref: '#/components/schemas/Withdrawal'
 components:
   schemas:
-    Deposit:
-      type: object
-      properties:
-        coin:
-          type: string
-          example: USDC
-        size:
-          type: string
-          example: '1000.00'
-        status:
-          type: string
-          example: confirmed
-        txid:
-          type: string
-        fromAddress:
-          type: string
-        time:
-          type: string
-          format: date-time
-        currentConfirmations:
-          type: integer
-        requiredConfirmations:
-          type: integer
-        accountId:
-          type: string
-        chainId:
-          type: string
-        usdValue:
-          type: string
-    Position:
-      type: object
-      properties:
-        market:
-          type: string
-          example: AAPL-USD.P
-        direction:
-          type: string
-          enum:
-          - long
-          - short
-        netQuantity:
-          type: string
-          example: '10.00'
-        averageEntryPrice:
-          type: string
-          example: '225.00'
-        usedMargin:
-          type: string
-          example: '1125.00'
-        unrealizedPnl:
-          type: string
-          example: '25.00'
-        markPrice:
-          type: string
-          example: '227.50'
-        liquidationPrice:
-          type: string
-          example: '180.00'
-        bankruptcyPrice:
-          type: string
-          example: '170.00'
-        maintenanceMargin:
-          type: string
-          example: '112.50'
-        notionalValue:
-          type: string
-          example: '2275.00'
-        leverage:
-          type: string
-          example: '2.0'
-        netFundingSinceNeutral:
-          type: string
-          example: '-1.23'
-        stopLossTriggerPrice:
-          type: string
-        takeProfitTriggerPrice:
-          type: string
-        returnOnEquity:
-          type: string
-          example: '0.022'
-    AccountWalletKey:
-      type: object
-      properties:
-        id:
-          type: string
-          description: Account ID
-        wallet:
-          type: string
-          enum:
-          - main
-          - margin
-          description: Wallet type
-    LiquidationEvent:
-      type: object
-      properties:
-        id:
-          type: string
-        time:
-          type: string
-          format: date-time
-        initiatedAt:
-          type: string
-          format: date-time
-        accountId:
-          type: string
-        status:
-          type: string
-        insuranceFundUsed:
-          type: string
-          example: '0.00'
-        adl:
-          type: boolean
-        retryCount:
-          type: integer
-        triggeringPositions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Position'
-        filledQuoteSize:
-          type: string
-        filledQuantity:
-          type: string
-        reclaimOrderMargin:
-          type: boolean
-    FundingPayment:
-      type: object
-      properties:
-        market:
-          type: string
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-        markPrice:
-          type: string
-          example: '227.50'
-        positionSize:
-          type: string
-          example: '10.00'
-        positionDirection:
-          type: string
-          enum:
-          - long
-          - short
-        rate:
-          type: string
-          example: '0.0000125'
-        payer:
-          type: string
-          enum:
-          - long
-          - short
-        amount:
-          type: string
-          example: '-0.02844'
-    Withdrawal:
-      type: object
-      properties:
-        coin:
-          type: string
-          example: USDC
-        size:
-          type: string
-          example: '500.00'
-        status:
-          type: string
-          example: confirmed
-        address:
-          type: string
-        withdrawal_id:
-          type: string
-        txid:
-          type: string
-        customer_withdrawal_id:
-          type: string
-        time:
-          type: string
-          format: date-time
-        accountId:
-          type: string
-        usdValue:
-          type: string
-        usdFee:
-          type: string
-        chainId:
-          type: string
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
-    MarginTransfer:
-      type: object
-      properties:
-        id:
-          type: string
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
-        to:
-          $ref: '#/components/schemas/AccountWalletKey'
-        amount:
-          type: string
-          example: '1000.00'
-        symbol:
-          type: string
-          example: USDC
-        time:
-          type: string
-          format: date-time
-        type:
-          type: integer
-          description: Transfer type
-    OrdersSummary:
-      type: object
-      properties:
-        market:
-          type: string
-          example: AAPL-USD.P
-        restingOrdersSummary:
-          type: object
-        positionSummary:
-          type: object
-        marketOrderSummary:
-          type: object
-    Balance:
-      type: object
-      properties:
-        walletBalance:
-          type: string
-          example: '5000.00'
-        realizedPnl:
-          type: string
-          example: '250.00'
-        unrealizedPnl:
-          type: string
-          example: '-50.00'
-        marginBalance:
-          type: string
-          example: '4950.00'
-        usedMargin:
-          type: string
-          example: '1125.00'
-        availableMargin:
-          type: string
-          example: '3825.00'
-        withdrawableMargin:
-          type: string
-          example: '3825.00'
-        maintenanceMarginRequirement:
-          type: string
-          example: '112.50'
-        totalMaintenanceMargin:
-          type: string
-          example: '200.00'
-        marginRatio:
-          type: string
-          example: '0.04'
-        leverage:
-          type: string
-          example: '0.46'
-        underLiquidation:
-          type: boolean
-          example: false
-        totalFundingPayments:
-          type: string
-          example: '-5.67'
-        totalTradingFees:
-          type: string
-          example: '12.34'
-        totalPnL:
-          type: string
-          example: '232.00'
-        netInvested:
-          type: string
-          example: '4750.00'
     WebSocketRequest:
       type: object
       required:
@@ -780,6 +508,35 @@ components:
           type: object
           description: Optional context for chat (market, page, etc.)
           additionalProperties: true
+    Deposit:
+      type: object
+      properties:
+        coin:
+          type: string
+          example: USDC
+        size:
+          type: string
+          example: '1000.00'
+        status:
+          type: string
+          example: confirmed
+        txid:
+          type: string
+        fromAddress:
+          type: string
+        time:
+          type: string
+          format: date-time
+        currentConfirmations:
+          type: integer
+        requiredConfirmations:
+          type: integer
+        accountId:
+          type: string
+        chainId:
+          type: string
+        usdValue:
+          type: string
     Fill:
       type: object
       properties:
@@ -847,6 +604,214 @@ components:
         fee: '0.57'
         time: '2025-03-05T14:30:00Z'
         isMaker: false
+    AccountWalletKey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Account ID
+        wallet:
+          type: string
+          enum:
+          - main
+          - margin
+          description: Wallet type
+    MarginTransfer:
+      type: object
+      properties:
+        id:
+          type: string
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+        amount:
+          type: string
+          example: '1000.00'
+        symbol:
+          type: string
+          example: USDC
+        time:
+          type: string
+          format: date-time
+        type:
+          type: integer
+          description: Transfer type
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
+    FundingPayment:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+        markPrice:
+          type: string
+          example: '227.50'
+        positionSize:
+          type: string
+          example: '10.00'
+        positionDirection:
+          type: string
+          enum:
+          - long
+          - short
+        rate:
+          type: string
+          example: '0.0000125'
+        payer:
+          type: string
+          enum:
+          - long
+          - short
+        amount:
+          type: string
+          example: '-0.02844'
+    OrdersSummary:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        restingOrdersSummary:
+          type: object
+        positionSummary:
+          type: object
+        marketOrderSummary:
+          type: object
+    Withdrawal:
+      type: object
+      properties:
+        coin:
+          type: string
+          example: USDC
+        size:
+          type: string
+          example: '500.00'
+        status:
+          type: string
+          example: confirmed
+        address:
+          type: string
+        withdrawal_id:
+          type: string
+        txid:
+          type: string
+        customer_withdrawal_id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        usdValue:
+          type: string
+        usdFee:
+          type: string
+        chainId:
+          type: string
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+    LiquidationEvent:
+      type: object
+      properties:
+        id:
+          type: string
+        time:
+          type: string
+          format: date-time
+        initiatedAt:
+          type: string
+          format: date-time
+        accountId:
+          type: string
+        status:
+          type: string
+        insuranceFundUsed:
+          type: string
+          example: '0.00'
+        adl:
+          type: boolean
+        retryCount:
+          type: integer
+        triggeringPositions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Position'
+        filledQuoteSize:
+          type: string
+        filledQuantity:
+          type: string
+        reclaimOrderMargin:
+          type: boolean
+    Position:
+      type: object
+      properties:
+        market:
+          type: string
+          example: AAPL-USD.P
+        direction:
+          type: string
+          enum:
+          - long
+          - short
+        netQuantity:
+          type: string
+          example: '10.00'
+        averageEntryPrice:
+          type: string
+          example: '225.00'
+        usedMargin:
+          type: string
+          example: '1125.00'
+        unrealizedPnl:
+          type: string
+          example: '25.00'
+        markPrice:
+          type: string
+          example: '227.50'
+        liquidationPrice:
+          type: string
+          example: '180.00'
+        bankruptcyPrice:
+          type: string
+          example: '170.00'
+        maintenanceMargin:
+          type: string
+          example: '112.50'
+        notionalValue:
+          type: string
+          example: '2275.00'
+        leverage:
+          type: string
+          example: '2.0'
+        netFundingSinceNeutral:
+          type: string
+          example: '-1.23'
+        stopLossTriggerPrice:
+          type: string
+        takeProfitTriggerPrice:
+          type: string
+        returnOnEquity:
+          type: string
+          example: '0.022'
     Order:
       type: object
       properties:
@@ -938,19 +903,54 @@ components:
         createdAt: '2025-03-05T14:30:00Z'
         type: limit
         timeInForce: GTC
-    LoginArgs:
+    Balance:
       type: object
-      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
       properties:
-        token:
+        walletBalance:
           type: string
-          description: JWT token
-        key:
+          example: '5000.00'
+        realizedPnl:
           type: string
-          description: API key ID
-        time:
+          example: '250.00'
+        unrealizedPnl:
           type: string
-          description: Unix timestamp in milliseconds
-        sign:
+          example: '-50.00'
+        marginBalance:
           type: string
-          description: HMAC-SHA256 hex signature
+          example: '4950.00'
+        usedMargin:
+          type: string
+          example: '1125.00'
+        availableMargin:
+          type: string
+          example: '3825.00'
+        withdrawableMargin:
+          type: string
+          example: '3825.00'
+        maintenanceMarginRequirement:
+          type: string
+          example: '112.50'
+        totalMaintenanceMargin:
+          type: string
+          example: '200.00'
+        marginRatio:
+          type: string
+          example: '0.04'
+        leverage:
+          type: string
+          example: '0.46'
+        underLiquidation:
+          type: boolean
+          example: false
+        totalFundingPayments:
+          type: string
+          example: '-5.67'
+        totalTradingFees:
+          type: string
+          example: '12.34'
+        totalPnL:
+          type: string
+          example: '232.00'
+        netInvested:
+          type: string
+          example: '4750.00'

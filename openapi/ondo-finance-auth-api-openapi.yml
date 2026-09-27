@@ -579,28 +579,24 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    AddressBookGetChallengeRequest:
+    AddressBookCompleteChallengeRequest:
       type: object
       required:
-      - walletAddress
-      - chainId
-      - withdrawalAddress
+      - id
+      - signature
       properties:
-        walletAddress:
+        id:
           type: string
-          description: The wallet address requesting to add a withdrawal address
-          example: '0x505D602729B932959935C1efd350Cea74527d3D1'
-        chainId:
+          description: The ID of the challenge
+          example: chg_ab12cd34ef56
+        signature:
           type: string
-          description: EVM chain ID (1=Ethereum, 43114=Avalanche)
-          example: '43114'
-          enum:
-          - '1'
-          - '43114'
-        withdrawalAddress:
+          description: The signed challenge proving wallet ownership
+          example: d5ee68784479z8n5utzebecfbd6926a89d7e24e9z5nut313611186z0da4206be4e57b809cbb3372d52b865bda7f372ea0808286009e572a66c8ab717cf85cdbc1b
+        addressLabel:
           type: string
-          description: The address to add to the withdrawal address book
-          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+          description: Optional label for the withdrawal address
+          example: My Ledger Nano X
     GenericResponse:
       type: object
       required:
@@ -621,23 +617,32 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
-    AddressBookCompleteChallengeRequest:
+    AuthChallengeResult:
       type: object
       required:
       - id
-      - signature
+      - message
       properties:
         id:
           type: string
-          description: The ID of the challenge
-          example: chg_ab12cd34ef56
-        signature:
+          description: Challenge ID
+          example: abc123
+        message:
           type: string
-          description: The signed challenge proving wallet ownership
-          example: d5ee68784479z8n5utzebecfbd6926a89d7e24e9z5nut313611186z0da4206be4e57b809cbb3372d52b865bda7f372ea0808286009e572a66c8ab717cf85cdbc1b
+          description: Message to be signed by the wallet
+    Web2AddressBookRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      - addressLabel
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to add
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
         addressLabel:
           type: string
-          description: Optional label for the withdrawal address
+          description: Label for the withdrawal address
           example: My Ledger Nano X
     LoginGetChallengeRequest:
       type: object
@@ -656,38 +661,6 @@ components:
           enum:
           - '1'
           - '43114'
-    Web2AddressBookRequest:
-      type: object
-      required:
-      - withdrawalAddress
-      - addressLabel
-      properties:
-        withdrawalAddress:
-          type: string
-          description: The withdrawal address to add
-          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
-        addressLabel:
-          type: string
-          description: Label for the withdrawal address
-          example: My Ledger Nano X
-    LoginCompleteChallengeRequest:
-      type: object
-      required:
-      - id
-      - signature
-      properties:
-        id:
-          type: string
-          description: The ID of the login challenge
-          example: ub6EabCuCiw9HvYyhsZhWzv8mntMgZ-vDGzZKvvCi_o=
-        signature:
-          type: string
-          description: The signed challenge proving wallet ownership
-          example: 8650fc18ca35d1e3c358b566ff786783978dc16519c055ba2085a2345bed89f46719876e3e01cf3bbf94c50f6b5524c3df3d9881386f11910ddb3a15bfade5f21c
-        source:
-          type: string
-          description: Optional source identifier
-          example: web
     AuthToken:
       type: object
       required:
@@ -725,19 +698,46 @@ components:
         newAccount:
           type: boolean
           description: True if a new account was created during this login
-    AuthChallengeResult:
+    AddressBookGetChallengeRequest:
+      type: object
+      required:
+      - walletAddress
+      - chainId
+      - withdrawalAddress
+      properties:
+        walletAddress:
+          type: string
+          description: The wallet address requesting to add a withdrawal address
+          example: '0x505D602729B932959935C1efd350Cea74527d3D1'
+        chainId:
+          type: string
+          description: EVM chain ID (1=Ethereum, 43114=Avalanche)
+          example: '43114'
+          enum:
+          - '1'
+          - '43114'
+        withdrawalAddress:
+          type: string
+          description: The address to add to the withdrawal address book
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+    LoginCompleteChallengeRequest:
       type: object
       required:
       - id
-      - message
+      - signature
       properties:
         id:
           type: string
-          description: Challenge ID
-          example: abc123
-        message:
+          description: The ID of the login challenge
+          example: ub6EabCuCiw9HvYyhsZhWzv8mntMgZ-vDGzZKvvCi_o=
+        signature:
           type: string
-          description: Message to be signed by the wallet
+          description: The signed challenge proving wallet ownership
+          example: 8650fc18ca35d1e3c358b566ff786783978dc16519c055ba2085a2345bed89f46719876e3e01cf3bbf94c50f6b5524c3df3d9881386f11910ddb3a15bfade5f21c
+        source:
+          type: string
+          description: Optional source identifier
+          example: web
   responses:
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
@@ -788,6 +788,29 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:
@@ -813,29 +836,6 @@ components:
             success: false
             error: Description of the error
             error_code: account_not_allowed
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   securitySchemes:
     BearerAuth:
       type: http

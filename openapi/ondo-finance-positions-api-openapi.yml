@@ -162,7 +162,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    ApiLeverage:
+    SetLeverageReq:
       type: object
       required:
       - market
@@ -170,11 +170,11 @@ components:
       properties:
         market:
           type: string
-          description: Perps market
+          description: Perps market to set leverage for
           example: AAPL-USD.P
         leverage:
           type: string
-          description: Current leverage setting for this market
+          description: New leverage value. Must be a positive integer not exceeding the market maximum.
           example: '10'
     GenericResponse:
       type: object
@@ -282,7 +282,7 @@ components:
           type: string
           description: Triggering price for take profit order (optional)
           example: '25000.00'
-    SetLeverageReq:
+    ApiLeverage:
       type: object
       required:
       - market
@@ -290,11 +290,11 @@ components:
       properties:
         market:
           type: string
-          description: Perps market to set leverage for
+          description: Perps market
           example: AAPL-USD.P
         leverage:
           type: string
-          description: New leverage value. Must be a positive integer not exceeding the market maximum.
+          description: Current leverage setting for this market
           example: '10'
   responses:
     Unauthorized:
@@ -325,31 +325,6 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
     TooManyRequests:
       description: Rate limit exceeded. Slow down request frequency.
       content:
@@ -394,6 +369,31 @@ components:
             success: false
             error: Description of the error
             error_code: unknown
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

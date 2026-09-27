@@ -301,53 +301,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    ApiKeysCreateRequest:
-      type: object
-      required:
-      - name
-      - scopes
-      properties:
-        name:
-          type: string
-          description: Human-readable name for the API key
-          example: Trading Bot
-        scopes:
-          type: array
-          items:
-            type: string
-          description: Permission scopes for the API key
-          example:
-          - read_only
-          - transfer
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    ApiKeyWhitelistRequest:
-      type: object
-      required:
-      - ip
-      properties:
-        ip:
-          type: string
-          description: IP address to whitelist
-          example: 192.168.1.1
     ApiKeyInfo:
       type: object
       required:
@@ -376,6 +329,44 @@ components:
           items:
             type: string
           description: Whitelisted IP addresses
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    ApiKeysCreateRequest:
+      type: object
+      required:
+      - name
+      - scopes
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the API key
+          example: Trading Bot
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Permission scopes for the API key
+          example:
+          - read_only
+          - transfer
     ApiKeyCreateResult:
       type: object
       required:
@@ -403,6 +394,15 @@ components:
         secretKey:
           type: string
           description: API secret key. Only returned once at creation time.
+    ApiKeyWhitelistRequest:
+      type: object
+      required:
+      - ip
+      properties:
+        ip:
+          type: string
+          description: IP address to whitelist
+          example: 192.168.1.1
   responses:
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
@@ -453,6 +453,29 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:
@@ -478,29 +501,6 @@ components:
             success: false
             error: Description of the error
             error_code: account_not_allowed
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   securitySchemes:
     BearerAuth:
       type: http

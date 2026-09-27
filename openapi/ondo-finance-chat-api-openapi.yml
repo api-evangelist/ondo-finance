@@ -44,25 +44,22 @@ paths:
                     $ref: '#/components/schemas/ChatMessage'
 components:
   schemas:
-    ChatMessage:
+    LoginArgs:
       type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
       properties:
-        type:
+        token:
           type: string
-          example: message
-        status:
+          description: JWT token
+        key:
           type: string
-          example: complete
-        content:
+          description: API key ID
+        time:
           type: string
-        role:
+          description: Unix timestamp in milliseconds
+        sign:
           type: string
-          enum:
-          - user
-          - assistant
-        timestamp:
-          type: string
-          format: date-time
+          description: HMAC-SHA256 hex signature
     WebSocketRequest:
       type: object
       required:
@@ -137,19 +134,22 @@ components:
           type: object
           description: Optional context for chat (market, page, etc.)
           additionalProperties: true
-    LoginArgs:
+    ChatMessage:
       type: object
-      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
       properties:
-        token:
+        type:
           type: string
-          description: JWT token
-        key:
+          example: message
+        status:
           type: string
-          description: API key ID
-        time:
+          example: complete
+        content:
           type: string
-          description: Unix timestamp in milliseconds
-        sign:
+        role:
           type: string
-          description: HMAC-SHA256 hex signature
+          enum:
+          - user
+          - assistant
+        timestamp:
+          type: string
+          format: date-time

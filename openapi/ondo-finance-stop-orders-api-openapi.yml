@@ -203,36 +203,26 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    SetStopOrderReq:
+    GenericResponse:
       type: object
       required:
-      - market
-      - positionDirection
-      - type
-      - triggerPrice
+      - success
       properties:
-        market:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
           type: string
-          description: Perps market
-          example: AAPL-USD.P
-        positionDirection:
+          description: Error message, present only on failure
+          example: ''
+        error_code:
           type: string
-          description: Position direction this stop order watches
-          enum:
-          - long
-          - short
-          example: long
-        type:
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
           type: string
-          description: The type of stop order to set
-          enum:
-          - stopLoss
-          - takeProfit
-          example: stopLoss
-        triggerPrice:
-          type: string
-          description: The trigger price
-          example: '9.00'
+          description: Deprecation notice, if applicable
+          example: ''
     ApiStopOrders:
       type: object
       required:
@@ -263,26 +253,36 @@ components:
           - 'null'
           description: Take profit trigger price, if set
           example: null
-    GenericResponse:
+    SetStopOrderReq:
       type: object
       required:
-      - success
+      - market
+      - positionDirection
+      - type
+      - triggerPrice
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        market:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: Perps market
+          example: AAPL-USD.P
+        positionDirection:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
+          description: Position direction this stop order watches
+          enum:
+          - long
+          - short
+          example: long
+        type:
           type: string
-          description: Deprecation notice, if applicable
-          example: ''
+          description: The type of stop order to set
+          enum:
+          - stopLoss
+          - takeProfit
+          example: stopLoss
+        triggerPrice:
+          type: string
+          description: The trigger price
+          example: '9.00'
   responses:
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
@@ -333,6 +333,29 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:
@@ -358,29 +381,6 @@ components:
             success: false
             error: Description of the error
             error_code: account_not_allowed
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   securitySchemes:
     BearerAuth:
       type: http

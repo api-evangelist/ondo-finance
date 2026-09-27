@@ -316,6 +316,18 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
+    PremiumIndexValue:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Time of the premium index measurement
+          example: '2022-06-16T12:00:00Z'
+        premiumIndex:
+          type: string
+          description: The premium index value
+          example: '0.000025'
     FundingFeeTransfer:
       type: object
       required:
@@ -371,29 +383,6 @@ components:
 
             '
           example: '-0.16402'
-    PremiumIndexValue:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date-time
-          description: Time of the premium index measurement
-          example: '2022-06-16T12:00:00Z'
-        premiumIndex:
-          type: string
-          description: The premium index value
-          example: '0.000025'
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
     GenericResponse:
       type: object
       required:
@@ -414,26 +403,6 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
-    FundingRateValue:
-      type: object
-      required:
-      - market
-      - time
-      - fundingRate
-      properties:
-        market:
-          type: string
-          description: Perps trading market
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-          description: The time funding was paid
-          example: '2022-06-16T12:35:10.123456Z'
-        fundingRate:
-          type: string
-          description: The funding rate as a fraction
-          example: '0.0000125'
     MarkPrice:
       type: object
       required:
@@ -484,6 +453,37 @@ components:
           description: Premium index measurements that make up the funding rate
           items:
             $ref: '#/components/schemas/PremiumIndexValue'
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    FundingRateValue:
+      type: object
+      required:
+      - market
+      - time
+      - fundingRate
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: The time funding was paid
+          example: '2022-06-16T12:35:10.123456Z'
+        fundingRate:
+          type: string
+          description: The funding rate as a fraction
+          example: '0.0000125'
   responses:
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
@@ -513,6 +513,50 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:
@@ -538,50 +582,6 @@ components:
             success: false
             error: Description of the error
             error_code: account_not_allowed
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   securitySchemes:
     BearerAuth:
       type: http

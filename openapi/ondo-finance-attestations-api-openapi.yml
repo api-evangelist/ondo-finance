@@ -272,24 +272,56 @@ components:
       - ethereum-1
       - bsc-56
       - solana-900
-    ErrorResponse:
+    AttestationDurationEnum:
+      type: string
+      description: "Specifies the desired validity period for the attestation. Users can specify a duration of 'short' \nfor a tighter price spread or 'long' for an extended validity period.\n"
+      enum:
+      - short
+      - long
+    SoftQuote:
       type: object
       properties:
-        message:
+        chainId:
           type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
+          description: The chain's identifier, only including the chain id.
+          example: '1'
+        symbol:
           type: string
-          description: A URL to the relevant documentation for this error.
-        code:
+          description: The GM token symbol.
+          example: AAPLon
+        ticker:
           type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+          description: The stock ticker associated with this attestation.
+          example: AAPL
+        assetAddress:
+          type: string
+          description: The contract address of the symbol.
+          example: '0x96F6eF951840721AdBF46Ac996b59E0235CB985C'
+        side:
+          type: string
+          enum:
+          - '0'
+          - '1'
+          description: The direction of the trade (0 for buy, 1 for sell).
+        tokenAmount:
+          type: string
+          description: The number of tokens to mint/redeem represented as a string with 18 decimal places.
+          example: '5000000000000000000'
+        price:
+          type: string
+          description: The price per asset in USDon, represented as a string with 18 decimal places.
+          example: '225273151158540753535'
       required:
-      - code
-      - message
-    SoftQuoteByNotionalValueRequest:
+      - chainId
+      - symbol
+      - ticker
+      - assetAddress
+      - side
+      - tokenAmount
+      - price
+    AttestationByNotionalValueRequest:
       type: object
-      description: Request a soft quote to mint or redeem assets equal to the notional value.
+      description: Request to mint or redeem assets equal to the notional value.
       title: AttestationByNotionalValueRequest
       properties:
         chainId:
@@ -306,6 +338,10 @@ components:
           example: '500.000000000000000000'
         duration:
           $ref: '#/components/schemas/AttestationDurationEnum'
+        userAddress:
+          type: string
+          description: The Solana user address associated with the request. This is only required for Solana attestations.
+          example: 7YkSgYQ6x7uBv9E3n2Yh6mF5tQ1rZc8Lp4WsXjKd3Ha2
       required:
       - chainId
       - symbol
@@ -345,16 +381,10 @@ components:
       enum:
       - buy
       - sell
-    AttestationDurationEnum:
-      type: string
-      description: "Specifies the desired validity period for the attestation. Users can specify a duration of 'short' \nfor a tighter price spread or 'long' for an extended validity period.\n"
-      enum:
-      - short
-      - long
-    SoftQuoteByTokenAmountRequest:
+    SoftQuoteByNotionalValueRequest:
       type: object
-      description: Request a soft quote to mint or redeem a quantity of assets.
-      title: AttestationByTokenAmountRequest
+      description: Request a soft quote to mint or redeem assets equal to the notional value.
+      title: AttestationByNotionalValueRequest
       properties:
         chainId:
           $ref: '#/components/schemas/GMChains'
@@ -364,17 +394,17 @@ components:
           description: The GM token symbol.
         side:
           $ref: '#/components/schemas/SideEnum'
-        tokenAmount:
+        notionalValue:
           type: string
-          description: The number of tokens, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '5.000000000000000000'
+          description: Total value of assets, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '500.000000000000000000'
         duration:
           $ref: '#/components/schemas/AttestationDurationEnum'
       required:
       - chainId
       - symbol
       - side
-      - tokenAmount
+      - notionalValue
     Attestation:
       type: object
       properties:
@@ -442,10 +472,10 @@ components:
       - expiration
       - signature
       - additionalData
-    AttestationByNotionalValueRequest:
+    SoftQuoteByTokenAmountRequest:
       type: object
-      description: Request to mint or redeem assets equal to the notional value.
-      title: AttestationByNotionalValueRequest
+      description: Request a soft quote to mint or redeem a quantity of assets.
+      title: AttestationByTokenAmountRequest
       properties:
         chainId:
           $ref: '#/components/schemas/GMChains'
@@ -455,62 +485,32 @@ components:
           description: The GM token symbol.
         side:
           $ref: '#/components/schemas/SideEnum'
-        notionalValue:
-          type: string
-          description: Total value of assets, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '500.000000000000000000'
-        duration:
-          $ref: '#/components/schemas/AttestationDurationEnum'
-        userAddress:
-          type: string
-          description: The Solana user address associated with the request. This is only required for Solana attestations.
-          example: 7YkSgYQ6x7uBv9E3n2Yh6mF5tQ1rZc8Lp4WsXjKd3Ha2
-      required:
-      - chainId
-      - symbol
-      - side
-      - notionalValue
-    SoftQuote:
-      type: object
-      properties:
-        chainId:
-          type: string
-          description: The chain's identifier, only including the chain id.
-          example: '1'
-        symbol:
-          type: string
-          description: The GM token symbol.
-          example: AAPLon
-        ticker:
-          type: string
-          description: The stock ticker associated with this attestation.
-          example: AAPL
-        assetAddress:
-          type: string
-          description: The contract address of the symbol.
-          example: '0x96F6eF951840721AdBF46Ac996b59E0235CB985C'
-        side:
-          type: string
-          enum:
-          - '0'
-          - '1'
-          description: The direction of the trade (0 for buy, 1 for sell).
         tokenAmount:
           type: string
-          description: The number of tokens to mint/redeem represented as a string with 18 decimal places.
-          example: '5000000000000000000'
-        price:
-          type: string
-          description: The price per asset in USDon, represented as a string with 18 decimal places.
-          example: '225273151158540753535'
+          description: The number of tokens, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '5.000000000000000000'
+        duration:
+          $ref: '#/components/schemas/AttestationDurationEnum'
       required:
       - chainId
       - symbol
-      - ticker
-      - assetAddress
       - side
       - tokenAmount
-      - price
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
   securitySchemes:
     apiKey:
       type: apiKey
