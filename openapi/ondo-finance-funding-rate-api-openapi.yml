@@ -316,18 +316,17 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    PremiumIndexValue:
+    PageInfo:
       type: object
       properties:
-        time:
+        prevCursor:
           type: string
-          format: date-time
-          description: Time of the premium index measurement
-          example: '2022-06-16T12:00:00Z'
-        premiumIndex:
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
           type: string
-          description: The premium index value
-          example: '0.000025'
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
     FundingFeeTransfer:
       type: object
       required:
@@ -383,26 +382,6 @@ components:
 
             '
           example: '-0.16402'
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
     MarkPrice:
       type: object
       required:
@@ -453,17 +432,26 @@ components:
           description: Premium index measurements that make up the funding rate
           items:
             $ref: '#/components/schemas/PremiumIndexValue'
-    PageInfo:
+    GenericResponse:
       type: object
+      required:
+      - success
       properties:
-        prevCursor:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
           type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
+          description: Error message, present only on failure
+          example: ''
+        error_code:
           type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     FundingRateValue:
       type: object
       required:
@@ -484,7 +472,67 @@ components:
           type: string
           description: The funding rate as a fraction
           example: '0.0000125'
+    PremiumIndexValue:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Time of the premium index measurement
+          example: '2022-06-16T12:00:00Z'
+        premiumIndex:
+          type: string
+          description: The premium index value
+          example: '0.000025'
   responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -513,29 +561,6 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
     TooManyRequests:
       description: Rate limit exceeded. Slow down request frequency.
       content:
@@ -557,31 +582,6 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

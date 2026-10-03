@@ -50,6 +50,51 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
   schemas:
     GenericResponse:
       type: object
@@ -71,6 +116,23 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
+    MarketsResult:
+      type: object
+      properties:
+        perps:
+          type: object
+          description: Perpetual futures markets
+          properties:
+            tradingPairs:
+              type: array
+              items:
+                type: object
+              description: Available perps trading pairs and their configuration
+        tokenConfig:
+          type: array
+          description: Token configuration for supported assets
+          items:
+            $ref: '#/components/schemas/TokenConfig'
     TokenConfig:
       type: object
       properties:
@@ -109,68 +171,6 @@ components:
           type: string
         description:
           type: string
-    MarketsResult:
-      type: object
-      properties:
-        perps:
-          type: object
-          description: Perpetual futures markets
-          properties:
-            tradingPairs:
-              type: array
-              items:
-                type: object
-              description: Available perps trading pairs and their configuration
-        tokenConfig:
-          type: array
-          description: Token configuration for supported assets
-          items:
-            $ref: '#/components/schemas/TokenConfig'
-  responses:
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
   securitySchemes:
     BearerAuth:
       type: http

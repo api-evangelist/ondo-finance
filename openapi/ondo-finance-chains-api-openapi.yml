@@ -205,13 +205,65 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GMChains:
-      type: string
-      description: The chain's identifier including the chain name and chain id.
-      enum:
-      - ethereum-1
-      - bsc-56
-      - solana-900
+    ChainBalance:
+      type: object
+      properties:
+        holderAddress:
+          $ref: '#/components/schemas/ChainHolderAddress'
+        balance:
+          type: string
+          description: The token balanced, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+      required:
+      - holderAddress
+      - balance
+    ChainToken:
+      type: object
+      properties:
+        tokenAddress:
+          type: string
+          description: The contract address of the token on the specified chain.
+        tokenSymbol:
+          type: string
+          description: The symbol of the token on the specified chain.
+        balances:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChainBalance'
+      required:
+      - tokenAddress
+      - tokenSymbol
+      - balances
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    ChainTokenSupply:
+      type: object
+      properties:
+        value:
+          type: string
+          description: The total supply of the token, represented as a string with 18 decimal places.
+      required:
+      - value
+    ChainHolderAddress:
+      type: object
+      properties:
+        account:
+          type: string
+          description: The address of the holder account.
+      required:
+      - account
     GetTokenInfoResponse:
       type: object
       properties:
@@ -227,33 +279,13 @@ components:
           tokenDecimals: 18
           tokenSupply:
             value: '72.428346190773568025'
-    ChainHolderAddress:
-      type: object
-      properties:
-        account:
-          type: string
-          description: The address of the holder account.
-      required:
-      - account
-    ChainTokenSupply:
-      type: object
-      properties:
-        value:
-          type: string
-          description: The total supply of the token, represented as a string with 18 decimal places.
-      required:
-      - value
-    ChainBalance:
-      type: object
-      properties:
-        holderAddress:
-          $ref: '#/components/schemas/ChainHolderAddress'
-        balance:
-          type: string
-          description: The token balanced, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-      required:
-      - holderAddress
-      - balance
+    GMChains:
+      type: string
+      description: The chain's identifier including the chain name and chain id.
+      enum:
+      - ethereum-1
+      - bsc-56
+      - solana-900
     ChainTokenInfo:
       type: object
       properties:
@@ -277,38 +309,6 @@ components:
       - tokenSymbol
       - tokenDecimals
       - tokenSupply
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
-    ChainToken:
-      type: object
-      properties:
-        tokenAddress:
-          type: string
-          description: The contract address of the token on the specified chain.
-        tokenSymbol:
-          type: string
-          description: The symbol of the token on the specified chain.
-        balances:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChainBalance'
-      required:
-      - tokenAddress
-      - tokenSymbol
-      - balances
   securitySchemes:
     apiKey:
       type: apiKey

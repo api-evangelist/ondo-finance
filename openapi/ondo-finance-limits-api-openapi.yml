@@ -266,6 +266,67 @@ paths:
       - apiKey: []
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    SessionLimits:
+      type: object
+      properties:
+        tradable:
+          type: boolean
+          description: A flag indicating whether trading is enabled during the session.
+          enum:
+          - true
+          - false
+          example: true
+        maxAttestationCount:
+          type: string
+          description: The maximum number of active attestations allowed during the session.
+          example: '1000'
+        maxActiveNotionalValue:
+          type: string
+          description: The maximum active notional value available to trade during the session, represented as a string-encoded integer.
+          example: '1000000'
+      required:
+      - tradable
+      - maxAttestationCount
+      - maxActiveNotionalValue
+    SessionLimitsResponse:
+      type: object
+      properties:
+        limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetLimits'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the trading limits were last updated.
+          example: 1769116067536
+      required:
+      - limits
+      - timestamp
+    TradingLimitsReason:
+      description: Reason why trading is restricted for the given asset and user.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/TradingLimitsReasonCode'
+        required:
+        - code
     ReasonBase:
       type: object
       properties:
@@ -286,20 +347,18 @@ components:
       enum:
       - buy
       - sell
-    SessionLimitsResponse:
-      type: object
-      properties:
-        limits:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetLimits'
-        timestamp:
-          type: number
-          description: The Unix timestamp in milliseconds when the trading limits were last updated.
-          example: 1769116067536
-      required:
-      - limits
-      - timestamp
+    TradingLimitsReasonCode:
+      type: string
+      enum:
+      - MARKET_CLOSED
+      - MARKET_PAUSED
+      - ASSET_PAUSED
+      - ASSET_CLOSED_FOR_SESSION
+      - ASSET_LIMITED
+      - MAX_LIMIT_REACHED
+      - MAX_ATTESTATIONS
+      - OFFHOURS_EXPOSURE_LIMIT_REACHED
+      description: The code indicating why trading is not allowed.
     TradingLimitsResponse:
       type: object
       properties:
@@ -339,28 +398,6 @@ components:
       - maxNotionalValue
       - remainingAttestations
       - isAssetTradingOpen
-    TradingLimitsReasonCode:
-      type: string
-      enum:
-      - MARKET_CLOSED
-      - MARKET_PAUSED
-      - ASSET_PAUSED
-      - ASSET_CLOSED_FOR_SESSION
-      - ASSET_LIMITED
-      - MAX_LIMIT_REACHED
-      - MAX_ATTESTATIONS
-      - OFFHOURS_EXPOSURE_LIMIT_REACHED
-      description: The code indicating why trading is not allowed.
-    TradingLimitsReason:
-      description: Reason why trading is restricted for the given asset and user.
-      allOf:
-      - $ref: '#/components/schemas/ReasonBase'
-      - type: object
-        properties:
-          code:
-            $ref: '#/components/schemas/TradingLimitsReasonCode'
-        required:
-        - code
     AssetLimits:
       type: object
       properties:
@@ -386,43 +423,6 @@ components:
       - postmarket
       - overnight
       - offhours
-    SessionLimits:
-      type: object
-      properties:
-        tradable:
-          type: boolean
-          description: A flag indicating whether trading is enabled during the session.
-          enum:
-          - true
-          - false
-          example: true
-        maxAttestationCount:
-          type: string
-          description: The maximum number of active attestations allowed during the session.
-          example: '1000'
-        maxActiveNotionalValue:
-          type: string
-          description: The maximum active notional value available to trade during the session, represented as a string-encoded integer.
-          example: '1000000'
-      required:
-      - tradable
-      - maxAttestationCount
-      - maxActiveNotionalValue
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
   securitySchemes:
     apiKey:
       type: apiKey

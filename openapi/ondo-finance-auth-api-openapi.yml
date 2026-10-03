@@ -579,71 +579,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    AddressBookCompleteChallengeRequest:
-      type: object
-      required:
-      - id
-      - signature
-      properties:
-        id:
-          type: string
-          description: The ID of the challenge
-          example: chg_ab12cd34ef56
-        signature:
-          type: string
-          description: The signed challenge proving wallet ownership
-          example: d5ee68784479z8n5utzebecfbd6926a89d7e24e9z5nut313611186z0da4206be4e57b809cbb3372d52b865bda7f372ea0808286009e572a66c8ab717cf85cdbc1b
-        addressLabel:
-          type: string
-          description: Optional label for the withdrawal address
-          example: My Ledger Nano X
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    AuthChallengeResult:
-      type: object
-      required:
-      - id
-      - message
-      properties:
-        id:
-          type: string
-          description: Challenge ID
-          example: abc123
-        message:
-          type: string
-          description: Message to be signed by the wallet
-    Web2AddressBookRequest:
-      type: object
-      required:
-      - withdrawalAddress
-      - addressLabel
-      properties:
-        withdrawalAddress:
-          type: string
-          description: The withdrawal address to add
-          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
-        addressLabel:
-          type: string
-          description: Label for the withdrawal address
-          example: My Ledger Nano X
     LoginGetChallengeRequest:
       type: object
       required:
@@ -661,6 +596,38 @@ components:
           enum:
           - '1'
           - '43114'
+    Web2AddressBookRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      - addressLabel
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to add
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+        addressLabel:
+          type: string
+          description: Label for the withdrawal address
+          example: My Ledger Nano X
+    LoginCompleteChallengeRequest:
+      type: object
+      required:
+      - id
+      - signature
+      properties:
+        id:
+          type: string
+          description: The ID of the login challenge
+          example: ub6EabCuCiw9HvYyhsZhWzv8mntMgZ-vDGzZKvvCi_o=
+        signature:
+          type: string
+          description: The signed challenge proving wallet ownership
+          example: 8650fc18ca35d1e3c358b566ff786783978dc16519c055ba2085a2345bed89f46719876e3e01cf3bbf94c50f6b5524c3df3d9881386f11910ddb3a15bfade5f21c
+        source:
+          type: string
+          description: Optional source identifier
+          example: web
     AuthToken:
       type: object
       required:
@@ -698,6 +665,26 @@ components:
         newAccount:
           type: boolean
           description: True if a new account was created during this login
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     AddressBookGetChallengeRequest:
       type: object
       required:
@@ -720,7 +707,20 @@ components:
           type: string
           description: The address to add to the withdrawal address book
           example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
-    LoginCompleteChallengeRequest:
+    AuthChallengeResult:
+      type: object
+      required:
+      - id
+      - message
+      properties:
+        id:
+          type: string
+          description: Challenge ID
+          example: abc123
+        message:
+          type: string
+          description: Message to be signed by the wallet
+    AddressBookCompleteChallengeRequest:
       type: object
       required:
       - id
@@ -728,17 +728,65 @@ components:
       properties:
         id:
           type: string
-          description: The ID of the login challenge
-          example: ub6EabCuCiw9HvYyhsZhWzv8mntMgZ-vDGzZKvvCi_o=
+          description: The ID of the challenge
+          example: chg_ab12cd34ef56
         signature:
           type: string
           description: The signed challenge proving wallet ownership
-          example: 8650fc18ca35d1e3c358b566ff786783978dc16519c055ba2085a2345bed89f46719876e3e01cf3bbf94c50f6b5524c3df3d9881386f11910ddb3a15bfade5f21c
-        source:
+          example: d5ee68784479z8n5utzebecfbd6926a89d7e24e9z5nut313611186z0da4206be4e57b809cbb3372d52b865bda7f372ea0808286009e572a66c8ab717cf85cdbc1b
+        addressLabel:
           type: string
-          description: Optional source identifier
-          example: web
+          description: Optional label for the withdrawal address
+          example: My Ledger Nano X
   responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -788,54 +836,6 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

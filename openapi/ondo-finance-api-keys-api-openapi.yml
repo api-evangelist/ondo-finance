@@ -301,6 +301,42 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
+    ApiKeyCreateResult:
+      type: object
+      required:
+      - keyId
+      - name
+      - createdAt
+      - scopes
+      - secretKey
+      properties:
+        keyId:
+          type: string
+          description: API key ID
+        name:
+          type: string
+          description: Key name
+        createdAt:
+          type: string
+          format: date-time
+          description: When the key was created
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Permitted scopes
+        secretKey:
+          type: string
+          description: API secret key. Only returned once at creation time.
+    ApiKeyWhitelistRequest:
+      type: object
+      required:
+      - ip
+      properties:
+        ip:
+          type: string
+          description: IP address to whitelist
+          example: 192.168.1.1
     ApiKeyInfo:
       type: object
       required:
@@ -367,43 +403,55 @@ components:
           example:
           - read_only
           - transfer
-    ApiKeyCreateResult:
-      type: object
-      required:
-      - keyId
-      - name
-      - createdAt
-      - scopes
-      - secretKey
-      properties:
-        keyId:
-          type: string
-          description: API key ID
-        name:
-          type: string
-          description: Key name
-        createdAt:
-          type: string
-          format: date-time
-          description: When the key was created
-        scopes:
-          type: array
-          items:
-            type: string
-          description: Permitted scopes
-        secretKey:
-          type: string
-          description: API secret key. Only returned once at creation time.
-    ApiKeyWhitelistRequest:
-      type: object
-      required:
-      - ip
-      properties:
-        ip:
-          type: string
-          description: IP address to whitelist
-          example: 192.168.1.1
   responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -453,54 +501,6 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

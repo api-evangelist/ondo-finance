@@ -154,43 +154,28 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    GenericResponse:
+    SandboxWithdrawalRequest:
       type: object
       required:
-      - success
+      - customer_withdrawal_id
+      - symbol
+      - amount
+      - from
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        customer_withdrawal_id:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: User-specified withdrawal identifier
+          example: my-withdrawal-001
+        symbol:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
+          description: Token symbol
+          example: USDC
+        amount:
           type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    AccountWalletKey:
-      type: object
-      required:
-      - id
-      - wallet
-      properties:
-        id:
-          type: string
-          description: The account ID
-          example: '10458932786832481'
-        wallet:
-          type: string
-          description: The wallet type
-          enum:
-          - main
-          - margin
-          example: margin
+          description: Withdrawal amount as a decimal string
+          example: '500.00'
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
     WithdrawalResult:
       type: object
       required:
@@ -217,6 +202,26 @@ components:
         hash:
           type: string
           description: On-chain transaction hash (when available)
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
     SandboxDepositRequest:
       type: object
       required:
@@ -250,28 +255,23 @@ components:
           - sol-testnet
           - bsc-mainnet
           - bsc-testnet
-    SandboxWithdrawalRequest:
+    AccountWalletKey:
       type: object
       required:
-      - customer_withdrawal_id
-      - symbol
-      - amount
-      - from
+      - id
+      - wallet
       properties:
-        customer_withdrawal_id:
+        id:
           type: string
-          description: User-specified withdrawal identifier
-          example: my-withdrawal-001
-        symbol:
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
           type: string
-          description: Token symbol
-          example: USDC
-        amount:
-          type: string
-          description: Withdrawal amount as a decimal string
-          example: '500.00'
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
     SandboxDepositResult:
       type: object
       properties:
@@ -282,55 +282,6 @@ components:
           type: string
           description: Transaction hash of the sandbox deposit
   responses:
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
     InternalServerError:
       description: Internal server error.
       content:
@@ -379,6 +330,55 @@ components:
             success: false
             error: Description of the error
             error_code: account_not_allowed
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
   securitySchemes:
     BearerAuth:
       type: http

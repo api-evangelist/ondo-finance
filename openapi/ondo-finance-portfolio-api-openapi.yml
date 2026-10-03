@@ -163,105 +163,55 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  schemas:
-    PortfolioGraphPoint:
-      type: object
-      description: Single time-series point for portfolio graph
-      properties:
-        time:
-          type: string
-          format: date-time
-          description: Timestamp of the snapshot
-        marginBalance:
-          type: string
-          description: Margin balance at this time
-        totalPnL:
-          type: string
-          description: Total PnL at this time
-        realizedPnl:
-          type: string
-          description: Realized PnL at this time
-        netInvested:
-          type: string
-          description: Net invested at this time
-        fillVolume:
-          type: string
-          description: Cumulative fill volume at this time
-        allTimeDeposits:
-          type: string
-          description: All-time deposits at this time
-        allTimeWithdrawals:
-          type: string
-          description: All-time withdrawals at this time
-    SharpeRatioData:
-      type: object
-      description: Calculated Sharpe ratio and related metadata
-      properties:
-        sharpeRatio:
-          type: string
-          description: Annualized Sharpe ratio
-        daysOfData:
-          type: integer
-          description: Number of days of data used in the calculation
-        meanDailyROI:
-          type: string
-          description: Mean daily return
-        stdDevROI:
-          type: string
-          description: Standard deviation of daily returns
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    PortfolioSummaryRes:
-      type: object
-      description: Current portfolio metrics and optional Sharpe ratios
-      properties:
-        marginBalance:
-          type: string
-          description: Current margin account balance
-        netInvested:
-          type: string
-          description: Net invested amount
-        totalPnL:
-          type: string
-          description: Total unrealized + realized PnL
-        realizedPnl:
-          type: string
-          description: Realized PnL
-        volume7d:
-          type: string
-          description: Trading volume over last 7 days
-        volume30d:
-          type: string
-          description: Trading volume over last 30 days
-        volumeAllTime:
-          type: string
-          description: All-time trading volume
-        points:
-          type: integer
-          description: Number of snapshot points used
-        sharpe30d:
-          $ref: '#/components/schemas/SharpeRatioData'
-        sharpeAllTime:
-          $ref: '#/components/schemas/SharpeRatioData'
   responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -311,54 +261,104 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
+  schemas:
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    PortfolioGraphPoint:
+      type: object
+      description: Single time-series point for portfolio graph
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Timestamp of the snapshot
+        marginBalance:
+          type: string
+          description: Margin balance at this time
+        totalPnL:
+          type: string
+          description: Total PnL at this time
+        realizedPnl:
+          type: string
+          description: Realized PnL at this time
+        netInvested:
+          type: string
+          description: Net invested at this time
+        fillVolume:
+          type: string
+          description: Cumulative fill volume at this time
+        allTimeDeposits:
+          type: string
+          description: All-time deposits at this time
+        allTimeWithdrawals:
+          type: string
+          description: All-time withdrawals at this time
+    SharpeRatioData:
+      type: object
+      description: Calculated Sharpe ratio and related metadata
+      properties:
+        sharpeRatio:
+          type: string
+          description: Annualized Sharpe ratio
+        daysOfData:
+          type: integer
+          description: Number of days of data used in the calculation
+        meanDailyROI:
+          type: string
+          description: Mean daily return
+        stdDevROI:
+          type: string
+          description: Standard deviation of daily returns
+    PortfolioSummaryRes:
+      type: object
+      description: Current portfolio metrics and optional Sharpe ratios
+      properties:
+        marginBalance:
+          type: string
+          description: Current margin account balance
+        netInvested:
+          type: string
+          description: Net invested amount
+        totalPnL:
+          type: string
+          description: Total unrealized + realized PnL
+        realizedPnl:
+          type: string
+          description: Realized PnL
+        volume7d:
+          type: string
+          description: Trading volume over last 7 days
+        volume30d:
+          type: string
+          description: Trading volume over last 30 days
+        volumeAllTime:
+          type: string
+          description: All-time trading volume
+        points:
+          type: integer
+          description: Number of snapshot points used
+        sharpe30d:
+          $ref: '#/components/schemas/SharpeRatioData'
+        sharpeAllTime:
+          $ref: '#/components/schemas/SharpeRatioData'
   securitySchemes:
     BearerAuth:
       type: http

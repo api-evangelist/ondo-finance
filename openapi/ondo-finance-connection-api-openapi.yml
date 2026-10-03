@@ -114,6 +114,22 @@ paths:
                     - account already has too many connections
 components:
   schemas:
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
     WebSocketRequest:
       type: object
       required:
@@ -188,19 +204,3 @@ components:
           type: object
           description: Optional context for chat (market, page, etc.)
           additionalProperties: true
-    LoginArgs:
-      type: object
-      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
-      properties:
-        token:
-          type: string
-          description: JWT token
-        key:
-          type: string
-          description: API key ID
-        time:
-          type: string
-          description: Unix timestamp in milliseconds
-        sign:
-          type: string
-          description: HMAC-SHA256 hex signature

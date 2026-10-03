@@ -270,20 +270,27 @@ paths:
       - apiKey: []
 components:
   schemas:
-    GetAssetStatusesResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/AssetPause'
-    MarketStatusReason:
-      description: Reason for market closure or pause.
-      allOf:
-      - $ref: '#/components/schemas/ReasonBase'
-      - type: object
-        properties:
-          code:
-            $ref: '#/components/schemas/MarketStatusReasonCode'
-        required:
-        - code
+    AssetStatusReasonCode:
+      type: string
+      enum:
+      - ASSET_PAUSED
+      - ASSET_LIMITED
+      description: The code indicating the reason for the asset status.
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
     ReasonBase:
       type: object
       properties:
@@ -298,20 +305,14 @@ components:
       required:
       - message
       - documentation
-    AssetStatusReasonCode:
-      type: string
-      enum:
-      - ASSET_PAUSED
-      - ASSET_LIMITED
-      description: The code indicating the reason for the asset status.
-    AssetStatusReason:
-      description: Reason for an asset trading restriction.
+    MarketStatusReason:
+      description: Reason for market closure or pause.
       allOf:
       - $ref: '#/components/schemas/ReasonBase'
       - type: object
         properties:
           code:
-            $ref: '#/components/schemas/AssetStatusReasonCode'
+            $ref: '#/components/schemas/MarketStatusReasonCode'
         required:
         - code
     AssetPause:
@@ -365,6 +366,20 @@ components:
       - symbol
       - status
       - type
+    AssetStatusReason:
+      description: Reason for an asset trading restriction.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/AssetStatusReasonCode'
+        required:
+        - code
+    GetAssetStatusesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AssetPause'
     OffhoursStatus:
       type: object
       description: 'Status of the off-hours trading window, surfaced as a parallel track alongside the conventional session fields. The off-hours window is reported independently of the conventional sessions: `marketStatus` and `isOpen` reflect only the four conventional sessions (regular, premarket, postmarket, overnight), while this object reports off-hours tradability separately.'
@@ -444,21 +459,6 @@ components:
       - marketStatus
       - nextOpenSession
       - offhours
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
   securitySchemes:
     apiKey:
       type: apiKey

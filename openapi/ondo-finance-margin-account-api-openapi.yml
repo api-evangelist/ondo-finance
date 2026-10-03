@@ -483,7 +483,282 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  responses:
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
   schemas:
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
+    MaxOrderSizesRes:
+      type: object
+      required:
+      - percent100
+      - percent75
+      - percent50
+      - percent25
+      properties:
+        percent100:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 100% of available margin
+        percent75:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 75% of available margin
+        percent50:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 50% of available margin
+        percent25:
+          $ref: '#/components/schemas/OrderSizes'
+          description: Bid/Ask sizes that will use 25% of available margin
+    GetOrdersSummariesRes:
+      type: object
+      required:
+      - market
+      properties:
+        market:
+          type: string
+          description: Perps market
+          example: AAPL-USD.P
+        restingOrdersSummary:
+          $ref: '#/components/schemas/OrdersSummary'
+          description: Margin summary for resting (open) orders
+        positionSummary:
+          $ref: '#/components/schemas/OrdersSummary'
+          description: Margin summary for the open position
+        marketOrderSummary:
+          $ref: '#/components/schemas/MarketOrdersSummary'
+          description: Maximum order sizes available for market orders
+    ApiPosition:
+      type: object
+      required:
+      - market
+      - direction
+      - netQuantity
+      - averageEntryPrice
+      - usedMargin
+      - unrealizedPnl
+      - markPrice
+      - liquidationPrice
+      - bankruptcyPrice
+      - maintenanceMargin
+      - notionalValue
+      - leverage
+      - netFundingSinceNeutral
+      - returnOnEquity
+      properties:
+        market:
+          type: string
+          description: Perps market
+          example: AAPL-USD.P
+        direction:
+          type: string
+          description: Position direction
+          enum:
+          - long
+          - short
+          - neutral
+          example: short
+        netQuantity:
+          type: string
+          description: Size of the position in base currency
+          example: '1.5489'
+        averageEntryPrice:
+          type: string
+          description: Average entry price
+          example: '20566.84'
+        usedMargin:
+          type: string
+          description: Margin used for the position
+          example: '2566.84'
+        unrealizedPnl:
+          type: string
+          description: Unrealized PNL relative to the mark price. Positive is profit, negative is loss.
+          example: '-900.54'
+        markPrice:
+          type: string
+          description: Current mark price
+          example: '20000.54'
+        liquidationPrice:
+          type: string
+          description: Price at which the position will be liquidated
+          example: '9000.87'
+        bankruptcyPrice:
+          type: string
+          description: Price at which bankruptcy occurs during liquidation
+          example: '6000.11'
+        maintenanceMargin:
+          type: string
+          description: Maintenance margin required for this position
+          example: '1500.22'
+        notionalValue:
+          type: string
+          description: Notional value of the position
+          example: '30000.00'
+        leverage:
+          type: string
+          description: Current effective leverage for this position
+          example: '10.0'
+        netFundingSinceNeutral:
+          type: string
+          description: Net funding payments since the position was opened
+          example: '-12.34'
+        returnOnEquity:
+          type: string
+          description: Return on equity for this position
+          example: '-0.35'
+        stopLossTriggerPrice:
+          type: string
+          description: Triggering price for stop loss order (optional)
+          example: '18000.00'
+        takeProfitTriggerPrice:
+          type: string
+          description: Triggering price for take profit order (optional)
+          example: '25000.00'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    TransferReq:
+      type: object
+      required:
+      - from
+      - to
+      - amount
+      - symbol
+      properties:
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer pulls funds from
+        to:
+          $ref: '#/components/schemas/AccountWalletKey'
+          description: The account/wallet the transfer sends funds to
+        amount:
+          type: string
+          description: Amount to transfer
+          example: '100'
+        symbol:
+          type: string
+          description: The symbol to transfer
+          example: USDC
     OrderSizes:
       type: object
       required:
@@ -538,92 +813,6 @@ components:
 
             '
           example: 0
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    TransferReq:
-      type: object
-      required:
-      - from
-      - to
-      - amount
-      - symbol
-      properties:
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
-          description: The account/wallet the transfer pulls funds from
-        to:
-          $ref: '#/components/schemas/AccountWalletKey'
-          description: The account/wallet the transfer sends funds to
-        amount:
-          type: string
-          description: Amount to transfer
-          example: '100'
-        symbol:
-          type: string
-          description: The symbol to transfer
-          example: USDC
-    AccountWalletKey:
-      type: object
-      required:
-      - id
-      - wallet
-      properties:
-        id:
-          type: string
-          description: The account ID
-          example: '10458932786832481'
-        wallet:
-          type: string
-          description: The wallet type
-          enum:
-          - main
-          - margin
-          example: margin
-    MarketOrdersSummary:
-      type: object
-      properties:
-        maxBidQuoteSize:
-          type: string
-          description: Maximum buy market order size in quote currency
-          example: '10000.00'
-        maxBidBaseSize:
-          type: string
-          description: Maximum buy market order size in base currency
-          example: '5.00'
-        maxBidPositionLeverage:
-          type: string
-          description: Maximum leverage available for a buy market order
-          example: '10.0'
-        maxAskQuoteSize:
-          type: string
-          description: Maximum sell market order size in quote currency
-          example: '10000.00'
-        maxAskBaseSize:
-          type: string
-          description: Maximum sell market order size in base currency
-          example: '5.00'
-        maxAskPositionLeverage:
-          type: string
-          description: Maximum leverage available for a sell market order
-          example: '10.0'
     MarginAccountBalanceSummary:
       type: object
       required:
@@ -719,26 +908,6 @@ components:
           type: string
           description: Net amount invested
           example: '1000'
-    MaxOrderSizesRes:
-      type: object
-      required:
-      - percent100
-      - percent75
-      - percent50
-      - percent25
-      properties:
-        percent100:
-          $ref: '#/components/schemas/OrderSizes'
-          description: Bid/Ask sizes that will use 100% of available margin
-        percent75:
-          $ref: '#/components/schemas/OrderSizes'
-          description: Bid/Ask sizes that will use 75% of available margin
-        percent50:
-          $ref: '#/components/schemas/OrderSizes'
-          description: Bid/Ask sizes that will use 50% of available margin
-        percent25:
-          $ref: '#/components/schemas/OrderSizes'
-          description: Bid/Ask sizes that will use 25% of available margin
     OrdersSummary:
       type: object
       properties:
@@ -774,24 +943,23 @@ components:
           type: string
           description: Maintenance margin required for all ask resting orders
           example: '40.00'
-    GetOrdersSummariesRes:
+    AccountWalletKey:
       type: object
       required:
-      - market
+      - id
+      - wallet
       properties:
-        market:
+        id:
           type: string
-          description: Perps market
-          example: AAPL-USD.P
-        restingOrdersSummary:
-          $ref: '#/components/schemas/OrdersSummary'
-          description: Margin summary for resting (open) orders
-        positionSummary:
-          $ref: '#/components/schemas/OrdersSummary'
-          description: Margin summary for the open position
-        marketOrderSummary:
-          $ref: '#/components/schemas/MarketOrdersSummary'
-          description: Maximum order sizes available for market orders
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
+          type: string
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
     LiquidationEvent:
       type: object
       required:
@@ -860,201 +1028,33 @@ components:
           type: boolean
           description: If true, the liquidation only cancelled resting orders to free up margin without closing positions
           example: false
-    ApiPosition:
+    MarketOrdersSummary:
       type: object
-      required:
-      - market
-      - direction
-      - netQuantity
-      - averageEntryPrice
-      - usedMargin
-      - unrealizedPnl
-      - markPrice
-      - liquidationPrice
-      - bankruptcyPrice
-      - maintenanceMargin
-      - notionalValue
-      - leverage
-      - netFundingSinceNeutral
-      - returnOnEquity
       properties:
-        market:
+        maxBidQuoteSize:
           type: string
-          description: Perps market
-          example: AAPL-USD.P
-        direction:
+          description: Maximum buy market order size in quote currency
+          example: '10000.00'
+        maxBidBaseSize:
           type: string
-          description: Position direction
-          enum:
-          - long
-          - short
-          - neutral
-          example: short
-        netQuantity:
+          description: Maximum buy market order size in base currency
+          example: '5.00'
+        maxBidPositionLeverage:
           type: string
-          description: Size of the position in base currency
-          example: '1.5489'
-        averageEntryPrice:
-          type: string
-          description: Average entry price
-          example: '20566.84'
-        usedMargin:
-          type: string
-          description: Margin used for the position
-          example: '2566.84'
-        unrealizedPnl:
-          type: string
-          description: Unrealized PNL relative to the mark price. Positive is profit, negative is loss.
-          example: '-900.54'
-        markPrice:
-          type: string
-          description: Current mark price
-          example: '20000.54'
-        liquidationPrice:
-          type: string
-          description: Price at which the position will be liquidated
-          example: '9000.87'
-        bankruptcyPrice:
-          type: string
-          description: Price at which bankruptcy occurs during liquidation
-          example: '6000.11'
-        maintenanceMargin:
-          type: string
-          description: Maintenance margin required for this position
-          example: '1500.22'
-        notionalValue:
-          type: string
-          description: Notional value of the position
-          example: '30000.00'
-        leverage:
-          type: string
-          description: Current effective leverage for this position
+          description: Maximum leverage available for a buy market order
           example: '10.0'
-        netFundingSinceNeutral:
+        maxAskQuoteSize:
           type: string
-          description: Net funding payments since the position was opened
-          example: '-12.34'
-        returnOnEquity:
+          description: Maximum sell market order size in quote currency
+          example: '10000.00'
+        maxAskBaseSize:
           type: string
-          description: Return on equity for this position
-          example: '-0.35'
-        stopLossTriggerPrice:
+          description: Maximum sell market order size in base currency
+          example: '5.00'
+        maxAskPositionLeverage:
           type: string
-          description: Triggering price for stop loss order (optional)
-          example: '18000.00'
-        takeProfitTriggerPrice:
-          type: string
-          description: Triggering price for take profit order (optional)
-          example: '25000.00'
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
-  responses:
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
+          description: Maximum leverage available for a sell market order
+          example: '10.0'
   securitySchemes:
     BearerAuth:
       type: http
