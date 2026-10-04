@@ -162,6 +162,29 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -190,8 +213,8 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
-    InternalServerError:
-      description: Internal server error.
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
       content:
         application/json:
           schema:
@@ -206,13 +229,11 @@ components:
               error_code:
                 type: string
                 enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
+                - too_many_requests
           example:
             success: false
             error: Description of the error
-            error_code: unknown
+            error_code: too_many_requests
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:
@@ -238,28 +259,35 @@ components:
             success: false
             error: Description of the error
             error_code: account_not_allowed
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
   schemas:
+    SetLeverageReq:
+      type: object
+      required:
+      - market
+      - leverage
+      properties:
+        market:
+          type: string
+          description: Perps market to set leverage for
+          example: AAPL-USD.P
+        leverage:
+          type: string
+          description: New leverage value. Must be a positive integer not exceeding the market maximum.
+          example: '10'
+    ApiLeverage:
+      type: object
+      required:
+      - market
+      - leverage
+      properties:
+        market:
+          type: string
+          description: Perps market
+          example: AAPL-USD.P
+        leverage:
+          type: string
+          description: Current leverage setting for this market
+          example: '10'
     ApiPosition:
       type: object
       required:
@@ -366,34 +394,6 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
-    SetLeverageReq:
-      type: object
-      required:
-      - market
-      - leverage
-      properties:
-        market:
-          type: string
-          description: Perps market to set leverage for
-          example: AAPL-USD.P
-        leverage:
-          type: string
-          description: New leverage value. Must be a positive integer not exceeding the market maximum.
-          example: '10'
-    ApiLeverage:
-      type: object
-      required:
-      - market
-      - leverage
-      properties:
-        market:
-          type: string
-          description: Perps market
-          example: AAPL-USD.P
-        leverage:
-          type: string
-          description: Current leverage setting for this market
-          example: '10'
   securitySchemes:
     BearerAuth:
       type: http

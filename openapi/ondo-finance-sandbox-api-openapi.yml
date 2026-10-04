@@ -154,28 +154,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    SandboxWithdrawalRequest:
-      type: object
-      required:
-      - customer_withdrawal_id
-      - symbol
-      - amount
-      - from
-      properties:
-        customer_withdrawal_id:
-          type: string
-          description: User-specified withdrawal identifier
-          example: my-withdrawal-001
-        symbol:
-          type: string
-          description: Token symbol
-          example: USDC
-        amount:
-          type: string
-          description: Withdrawal amount as a decimal string
-          example: '500.00'
-        from:
-          $ref: '#/components/schemas/AccountWalletKey'
     WithdrawalResult:
       type: object
       required:
@@ -202,26 +180,45 @@ components:
         hash:
           type: string
           description: On-chain transaction hash (when available)
-    GenericResponse:
+    AccountWalletKey:
       type: object
       required:
-      - success
+      - id
+      - wallet
       properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
+        id:
           type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
           type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
+    SandboxWithdrawalRequest:
+      type: object
+      required:
+      - customer_withdrawal_id
+      - symbol
+      - amount
+      - from
+      properties:
+        customer_withdrawal_id:
           type: string
-          description: Deprecation notice, if applicable
-          example: ''
+          description: User-specified withdrawal identifier
+          example: my-withdrawal-001
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        amount:
+          type: string
+          description: Withdrawal amount as a decimal string
+          example: '500.00'
+        from:
+          $ref: '#/components/schemas/AccountWalletKey'
     SandboxDepositRequest:
       type: object
       required:
@@ -255,23 +252,6 @@ components:
           - sol-testnet
           - bsc-mainnet
           - bsc-testnet
-    AccountWalletKey:
-      type: object
-      required:
-      - id
-      - wallet
-      properties:
-        id:
-          type: string
-          description: The account ID
-          example: '10458932786832481'
-        wallet:
-          type: string
-          description: The wallet type
-          enum:
-          - main
-          - margin
-          example: margin
     SandboxDepositResult:
       type: object
       properties:
@@ -281,6 +261,26 @@ components:
         txn_hash:
           type: string
           description: Transaction hash of the sandbox deposit
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
   responses:
     InternalServerError:
       description: Internal server error.
@@ -305,31 +305,6 @@ components:
             success: false
             error: Description of the error
             error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -379,6 +354,31 @@ components:
             success: false
             error: Description of the error
             error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

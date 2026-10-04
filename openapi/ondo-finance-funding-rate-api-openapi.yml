@@ -315,7 +315,155 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
   schemas:
+    FundingRate:
+      type: object
+      required:
+      - market
+      - rate
+      - intervalEnds
+      properties:
+        market:
+          type: string
+          description: The market the funding rate applies to
+          example: AAPL-USD.P
+        rate:
+          type: string
+          description: The current estimated funding rate
+          example: '0.0000125'
+        intervalEnds:
+          type: string
+          format: date-time
+          description: The time the current funding interval ends and the funding rate will be paid
+          example: '2022-06-16T12:35:10.123456Z'
+        premiums:
+          type: array
+          description: Premium index measurements that make up the funding rate
+          items:
+            $ref: '#/components/schemas/PremiumIndexValue'
+    MarkPrice:
+      type: object
+      required:
+      - pair
+      - price
+      - time
+      properties:
+        pair:
+          type: object
+          description: Currency pair
+          properties:
+            base:
+              type: string
+              example: AAPL
+            quote:
+              type: string
+              example: USD
+        price:
+          type: string
+          description: Current mark price
+          example: '150.25'
+        time:
+          type: string
+          format: date-time
+          description: Time of the mark price measurement
     PageInfo:
       type: object
       properties:
@@ -327,6 +475,38 @@ components:
           type: string
           description: Cursor value to get the next page of results
           example: NQ5WWO3THN3Q====
+    FundingRateValue:
+      type: object
+      required:
+      - market
+      - time
+      - fundingRate
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        time:
+          type: string
+          format: date-time
+          description: The time funding was paid
+          example: '2022-06-16T12:35:10.123456Z'
+        fundingRate:
+          type: string
+          description: The funding rate as a fraction
+          example: '0.0000125'
+    PremiumIndexValue:
+      type: object
+      properties:
+        time:
+          type: string
+          format: date-time
+          description: Time of the premium index measurement
+          example: '2022-06-16T12:00:00Z'
+        premiumIndex:
+          type: string
+          description: The premium index value
+          example: '0.000025'
     FundingFeeTransfer:
       type: object
       required:
@@ -382,56 +562,6 @@ components:
 
             '
           example: '-0.16402'
-    MarkPrice:
-      type: object
-      required:
-      - pair
-      - price
-      - time
-      properties:
-        pair:
-          type: object
-          description: Currency pair
-          properties:
-            base:
-              type: string
-              example: AAPL
-            quote:
-              type: string
-              example: USD
-        price:
-          type: string
-          description: Current mark price
-          example: '150.25'
-        time:
-          type: string
-          format: date-time
-          description: Time of the mark price measurement
-    FundingRate:
-      type: object
-      required:
-      - market
-      - rate
-      - intervalEnds
-      properties:
-        market:
-          type: string
-          description: The market the funding rate applies to
-          example: AAPL-USD.P
-        rate:
-          type: string
-          description: The current estimated funding rate
-          example: '0.0000125'
-        intervalEnds:
-          type: string
-          format: date-time
-          description: The time the current funding interval ends and the funding rate will be paid
-          example: '2022-06-16T12:35:10.123456Z'
-        premiums:
-          type: array
-          description: Premium index measurements that make up the funding rate
-          items:
-            $ref: '#/components/schemas/PremiumIndexValue'
     GenericResponse:
       type: object
       required:
@@ -452,136 +582,6 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
-    FundingRateValue:
-      type: object
-      required:
-      - market
-      - time
-      - fundingRate
-      properties:
-        market:
-          type: string
-          description: Perps trading market
-          example: AAPL-USD.P
-        time:
-          type: string
-          format: date-time
-          description: The time funding was paid
-          example: '2022-06-16T12:35:10.123456Z'
-        fundingRate:
-          type: string
-          description: The funding rate as a fraction
-          example: '0.0000125'
-    PremiumIndexValue:
-      type: object
-      properties:
-        time:
-          type: string
-          format: date-time
-          description: Time of the premium index measurement
-          example: '2022-06-16T12:00:00Z'
-        premiumIndex:
-          type: string
-          description: The premium index value
-          example: '0.000025'
-  responses:
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
   securitySchemes:
     BearerAuth:
       type: http

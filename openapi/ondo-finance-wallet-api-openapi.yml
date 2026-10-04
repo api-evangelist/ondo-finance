@@ -788,353 +788,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    AddressBookResult:
-      type: object
-      properties:
-        addressBook:
-          type: array
-          description: List of withdrawal addresses
-          items:
-            $ref: '#/components/schemas/AddressBookEntry'
-    EditWithdrawalAddressRequest:
-      type: object
-      required:
-      - withdrawalAddress
-      properties:
-        withdrawalAddress:
-          type: string
-          description: The withdrawal address to edit
-          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
-        addressLabel:
-          type: string
-          description: Updated label for the address
-          example: My Ledger Nano X
-    AddressBookEntry:
-      type: object
-      required:
-      - withdrawalAddress
-      - label
-      - lastUpdated
-      properties:
-        withdrawalAddress:
-          type: string
-          description: Withdrawal address
-        label:
-          type: string
-          description: User-defined label for the address
-        lastUpdated:
-          type: string
-          format: date-time
-          description: When the entry was last updated
-    ProvisionAddressResult:
-      type: object
-      required:
-      - chain
-      - accountId
-      - symbol
-      - address
-      properties:
-        chain:
-          type: string
-          description: Blockchain network
-          example: ethereum
-        accountId:
-          type: string
-          description: Account ID
-        symbol:
-          type: string
-          description: Token symbol
-          example: USDC
-        address:
-          type: string
-          description: Provisioned deposit address
-    WithdrawalStatusResult:
-      type: object
-      required:
-      - original_request
-      - withdrawal_id
-      - txid
-      - confirmation_number
-      - withdrawal_status
-      properties:
-        original_request:
-          type: object
-          description: The original withdrawal request
-          properties:
-            account_id:
-              type: string
-            customer_withdrawal_id:
-              type: string
-            symbol:
-              type: string
-            amount:
-              type: string
-            address:
-              type: string
-            network:
-              type: string
-              enum:
-              - avalanche
-              - ethereum
-              - solana
-              - bitcoin
-            from:
-              $ref: '#/components/schemas/AccountWalletKey'
-        withdrawal_id:
-          type: string
-          description: Internal withdrawal ID
-        txid:
-          type: string
-          description: On-chain transaction ID
-        confirmation_number:
-          type: integer
-          description: Number of confirmations
-        withdrawal_status:
-          type: string
-          description: Current withdrawal status
-          enum:
-          - WITHDRAWAL_SUCCESS
-          - WITHDRAWAL_FAILURE
-          - WITHDRAWAL_PENDING
-          - WITHDRAWAL_CANCELLED
-          - WITHDRAWAL_UNKNOWN
-    GetWithdrawalStatusRequest:
-      type: object
-      description: Provide exactly one of withdrawal_id or customer_withdrawal_id
-      properties:
-        withdrawal_id:
-          type: string
-          description: The platform-assigned withdrawal ID
-          example: w_9f8e7d6c5b4a3210
-        customer_withdrawal_id:
-          type: string
-          description: The user-specified withdrawal ID
-          example: my-withdrawal-001
-    WithdrawalResult:
-      type: object
-      required:
-      - withdrawal_status
-      - withdrawal_id
-      - customer_withdrawal_id
-      properties:
-        withdrawal_status:
-          type: string
-          description: Status of the withdrawal
-          example: WITHDRAWAL_PENDING
-          enum:
-          - WITHDRAWAL_SUCCESS
-          - WITHDRAWAL_FAILURE
-          - WITHDRAWAL_PENDING
-          - WITHDRAWAL_CANCELLED
-          - WITHDRAWAL_UNKNOWN
-        withdrawal_id:
-          type: string
-          description: Internal withdrawal ID
-        customer_withdrawal_id:
-          type: string
-          description: Customer-provided withdrawal ID
-        hash:
-          type: string
-          description: On-chain transaction hash (when available)
-    DeleteWithdrawalAddressRequest:
-      type: object
-      required:
-      - withdrawalAddress
-      properties:
-        withdrawalAddress:
-          type: string
-          description: The withdrawal address to remove
-          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
-    WalletDeposit:
-      type: object
-      required:
-      - coin
-      - size
-      - status
-      - txid
-      - fromAddress
-      - time
-      - chainId
-      - usdValue
-      properties:
-        coin:
-          type: string
-          description: Token symbol
-          example: USDC
-        size:
-          type: string
-          description: Deposit amount
-          example: '100.00'
-        status:
-          type: string
-          description: Deposit status
-          enum:
-          - pending
-          - confirmed
-          example: confirmed
-        txid:
-          type: string
-          description: On-chain transaction ID
-        fromAddress:
-          type: string
-          description: Sender address
-        time:
-          type: string
-          format: date-time
-          description: Deposit time
-        currentConfirmations:
-          type: integer
-          description: Current number of confirmations
-        requiredConfirmations:
-          type: integer
-          description: Required confirmations for finality
-        accountId:
-          type: string
-          description: Account ID
-        chainId:
-          type: string
-          description: Chain ID
-          enum:
-          - avax-c-chain
-          - avax-fuji-c-chain
-          - eth-mainnet
-          - eth-sepolia
-          - btc-mainnet
-          - btc-testnet
-          - sol-mainnet
-          - sol-testnet
-          - bsc-mainnet
-          - bsc-testnet
-          example: eth-mainnet
-        usdValue:
-          type: string
-          description: USD value of the deposit
-        logIndex:
-          type: string
-          description: Log index in the transaction
-    WithdrawalLimits:
-      type: object
-      required:
-      - currentWithdrawalsUsd
-      - withdrawalLimitUsd
-      properties:
-        currentWithdrawalsUsd:
-          type: string
-          description: Current withdrawal amount used in this period (USD)
-          example: '500.00'
-        withdrawalLimitUsd:
-          type: string
-          description: Maximum withdrawal amount allowed in this period (USD)
-          example: '50000.00'
-    DepositAddressListRequest:
-      type: object
-      required:
-      - coins
-      properties:
-        coins:
-          type: array
-          items:
-            type: string
-          description: List of token symbols to retrieve deposit addresses for
-          example:
-          - USDC
-        network:
-          type: string
-          description: Filter by network; omit to list all networks
-          example: ethereum
-          enum:
-          - avalanche
-          - ethereum
-          - solana
-          - bitcoin
-        depositDestination:
-          description: Filter by destination wallet; omit to list all destinations
-          $ref: '#/components/schemas/AccountWalletKey'
-    ProvisionAddressRequest:
-      type: object
-      required:
-      - network
-      - symbol
-      - deposit_destination
-      properties:
-        network:
-          type: string
-          description: Blockchain network
-          example: ethereum
-          enum:
-          - avalanche
-          - ethereum
-          - solana
-          - bitcoin
-        symbol:
-          type: string
-          description: Token symbol
-          example: USDC
-        deposit_destination:
-          $ref: '#/components/schemas/AccountWalletKey'
-    DepositAddress:
-      type: object
-      required:
-      - coin
-      - network
-      - address
-      - depositDestination
-      properties:
-        coin:
-          type: string
-          description: Token symbol
-          example: USDC
-        network:
-          type: string
-          description: Blockchain network
-          example: ethereum
-          enum:
-          - avalanche
-          - ethereum
-          - solana
-          - bitcoin
-        address:
-          type: string
-          description: Deposit address
-        depositDestination:
-          $ref: '#/components/schemas/AccountWalletKey'
-    AccountWalletKey:
-      type: object
-      required:
-      - id
-      - wallet
-      properties:
-        id:
-          type: string
-          description: The account ID
-          example: '10458932786832481'
-        wallet:
-          type: string
-          description: The wallet type
-          enum:
-          - main
-          - margin
-          example: margin
     WalletWithdrawal:
       type: object
       required:
@@ -1208,6 +861,200 @@ components:
           example: eth-mainnet
         from:
           $ref: '#/components/schemas/AccountWalletKey'
+    WalletDeposit:
+      type: object
+      required:
+      - coin
+      - size
+      - status
+      - txid
+      - fromAddress
+      - time
+      - chainId
+      - usdValue
+      properties:
+        coin:
+          type: string
+          description: Token symbol
+          example: USDC
+        size:
+          type: string
+          description: Deposit amount
+          example: '100.00'
+        status:
+          type: string
+          description: Deposit status
+          enum:
+          - pending
+          - confirmed
+          example: confirmed
+        txid:
+          type: string
+          description: On-chain transaction ID
+        fromAddress:
+          type: string
+          description: Sender address
+        time:
+          type: string
+          format: date-time
+          description: Deposit time
+        currentConfirmations:
+          type: integer
+          description: Current number of confirmations
+        requiredConfirmations:
+          type: integer
+          description: Required confirmations for finality
+        accountId:
+          type: string
+          description: Account ID
+        chainId:
+          type: string
+          description: Chain ID
+          enum:
+          - avax-c-chain
+          - avax-fuji-c-chain
+          - eth-mainnet
+          - eth-sepolia
+          - btc-mainnet
+          - btc-testnet
+          - sol-mainnet
+          - sol-testnet
+          - bsc-mainnet
+          - bsc-testnet
+          example: eth-mainnet
+        usdValue:
+          type: string
+          description: USD value of the deposit
+        logIndex:
+          type: string
+          description: Log index in the transaction
+    GetWithdrawalStatusRequest:
+      type: object
+      description: Provide exactly one of withdrawal_id or customer_withdrawal_id
+      properties:
+        withdrawal_id:
+          type: string
+          description: The platform-assigned withdrawal ID
+          example: w_9f8e7d6c5b4a3210
+        customer_withdrawal_id:
+          type: string
+          description: The user-specified withdrawal ID
+          example: my-withdrawal-001
+    EditWithdrawalAddressRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to edit
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+        addressLabel:
+          type: string
+          description: Updated label for the address
+          example: My Ledger Nano X
+    DepositAddress:
+      type: object
+      required:
+      - coin
+      - network
+      - address
+      - depositDestination
+      properties:
+        coin:
+          type: string
+          description: Token symbol
+          example: USDC
+        network:
+          type: string
+          description: Blockchain network
+          example: ethereum
+          enum:
+          - avalanche
+          - ethereum
+          - solana
+          - bitcoin
+        address:
+          type: string
+          description: Deposit address
+        depositDestination:
+          $ref: '#/components/schemas/AccountWalletKey'
+    AccountWalletKey:
+      type: object
+      required:
+      - id
+      - wallet
+      properties:
+        id:
+          type: string
+          description: The account ID
+          example: '10458932786832481'
+        wallet:
+          type: string
+          description: The wallet type
+          enum:
+          - main
+          - margin
+          example: margin
+    DepositAddressListRequest:
+      type: object
+      required:
+      - coins
+      properties:
+        coins:
+          type: array
+          items:
+            type: string
+          description: List of token symbols to retrieve deposit addresses for
+          example:
+          - USDC
+        network:
+          type: string
+          description: Filter by network; omit to list all networks
+          example: ethereum
+          enum:
+          - avalanche
+          - ethereum
+          - solana
+          - bitcoin
+        depositDestination:
+          description: Filter by destination wallet; omit to list all destinations
+          $ref: '#/components/schemas/AccountWalletKey'
+    DeleteWithdrawalAddressRequest:
+      type: object
+      required:
+      - withdrawalAddress
+      properties:
+        withdrawalAddress:
+          type: string
+          description: The withdrawal address to remove
+          example: '0x054A94b753CBf65D1Bc484F6D41897b48251fbfF'
+    WithdrawalResult:
+      type: object
+      required:
+      - withdrawal_status
+      - withdrawal_id
+      - customer_withdrawal_id
+      properties:
+        withdrawal_status:
+          type: string
+          description: Status of the withdrawal
+          example: WITHDRAWAL_PENDING
+          enum:
+          - WITHDRAWAL_SUCCESS
+          - WITHDRAWAL_FAILURE
+          - WITHDRAWAL_PENDING
+          - WITHDRAWAL_CANCELLED
+          - WITHDRAWAL_UNKNOWN
+        withdrawal_id:
+          type: string
+          description: Internal withdrawal ID
+        customer_withdrawal_id:
+          type: string
+          description: Customer-provided withdrawal ID
+        hash:
+          type: string
+          description: On-chain transaction hash (when available)
     UnixTimeRangeRequest:
       type: object
       properties:
@@ -1221,7 +1068,183 @@ components:
           format: int64
           description: End time as Unix timestamp in seconds
           example: 1709734800
+    ProvisionAddressRequest:
+      type: object
+      required:
+      - network
+      - symbol
+      - deposit_destination
+      properties:
+        network:
+          type: string
+          description: Blockchain network
+          example: ethereum
+          enum:
+          - avalanche
+          - ethereum
+          - solana
+          - bitcoin
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        deposit_destination:
+          $ref: '#/components/schemas/AccountWalletKey'
+    WithdrawalLimits:
+      type: object
+      required:
+      - currentWithdrawalsUsd
+      - withdrawalLimitUsd
+      properties:
+        currentWithdrawalsUsd:
+          type: string
+          description: Current withdrawal amount used in this period (USD)
+          example: '500.00'
+        withdrawalLimitUsd:
+          type: string
+          description: Maximum withdrawal amount allowed in this period (USD)
+          example: '50000.00'
+    WithdrawalStatusResult:
+      type: object
+      required:
+      - original_request
+      - withdrawal_id
+      - txid
+      - confirmation_number
+      - withdrawal_status
+      properties:
+        original_request:
+          type: object
+          description: The original withdrawal request
+          properties:
+            account_id:
+              type: string
+            customer_withdrawal_id:
+              type: string
+            symbol:
+              type: string
+            amount:
+              type: string
+            address:
+              type: string
+            network:
+              type: string
+              enum:
+              - avalanche
+              - ethereum
+              - solana
+              - bitcoin
+            from:
+              $ref: '#/components/schemas/AccountWalletKey'
+        withdrawal_id:
+          type: string
+          description: Internal withdrawal ID
+        txid:
+          type: string
+          description: On-chain transaction ID
+        confirmation_number:
+          type: integer
+          description: Number of confirmations
+        withdrawal_status:
+          type: string
+          description: Current withdrawal status
+          enum:
+          - WITHDRAWAL_SUCCESS
+          - WITHDRAWAL_FAILURE
+          - WITHDRAWAL_PENDING
+          - WITHDRAWAL_CANCELLED
+          - WITHDRAWAL_UNKNOWN
+    ProvisionAddressResult:
+      type: object
+      required:
+      - chain
+      - accountId
+      - symbol
+      - address
+      properties:
+        chain:
+          type: string
+          description: Blockchain network
+          example: ethereum
+        accountId:
+          type: string
+          description: Account ID
+        symbol:
+          type: string
+          description: Token symbol
+          example: USDC
+        address:
+          type: string
+          description: Provisioned deposit address
+    AddressBookEntry:
+      type: object
+      required:
+      - withdrawalAddress
+      - label
+      - lastUpdated
+      properties:
+        withdrawalAddress:
+          type: string
+          description: Withdrawal address
+        label:
+          type: string
+          description: User-defined label for the address
+        lastUpdated:
+          type: string
+          format: date-time
+          description: When the entry was last updated
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
+    AddressBookResult:
+      type: object
+      properties:
+        addressBook:
+          type: array
+          description: List of withdrawal addresses
+          items:
+            $ref: '#/components/schemas/AddressBookEntry'
   responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
     TooManyRequests:
       description: Rate limit exceeded. Slow down request frequency.
       content:
@@ -1271,29 +1294,6 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
     Forbidden:
       description: Access denied. The authenticated account does not have permission.
       content:

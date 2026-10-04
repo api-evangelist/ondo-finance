@@ -44,41 +44,6 @@ paths:
                     $ref: '#/components/schemas/ChatMessage'
 components:
   schemas:
-    ChatMessage:
-      type: object
-      properties:
-        type:
-          type: string
-          example: message
-        status:
-          type: string
-          example: complete
-        content:
-          type: string
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-        timestamp:
-          type: string
-          format: date-time
-    LoginArgs:
-      type: object
-      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
-      properties:
-        token:
-          type: string
-          description: JWT token
-        key:
-          type: string
-          description: API key ID
-        time:
-          type: string
-          description: Unix timestamp in milliseconds
-        sign:
-          type: string
-          description: HMAC-SHA256 hex signature
     WebSocketRequest:
       type: object
       required:
@@ -153,3 +118,38 @@ components:
           type: object
           description: Optional context for chat (market, page, etc.)
           additionalProperties: true
+    LoginArgs:
+      type: object
+      description: Authentication arguments. Use either JWT (token) or API key (key + time + sign).
+      properties:
+        token:
+          type: string
+          description: JWT token
+        key:
+          type: string
+          description: API key ID
+        time:
+          type: string
+          description: Unix timestamp in milliseconds
+        sign:
+          type: string
+          description: HMAC-SHA256 hex signature
+    ChatMessage:
+      type: object
+      properties:
+        type:
+          type: string
+          example: message
+        status:
+          type: string
+          example: complete
+        content:
+          type: string
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+        timestamp:
+          type: string
+          format: date-time

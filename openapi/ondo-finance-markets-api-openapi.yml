@@ -96,43 +96,6 @@ components:
             error: Description of the error
             error_code: too_many_requests
   schemas:
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    MarketsResult:
-      type: object
-      properties:
-        perps:
-          type: object
-          description: Perpetual futures markets
-          properties:
-            tradingPairs:
-              type: array
-              items:
-                type: object
-              description: Available perps trading pairs and their configuration
-        tokenConfig:
-          type: array
-          description: Token configuration for supported assets
-          items:
-            $ref: '#/components/schemas/TokenConfig'
     TokenConfig:
       type: object
       properties:
@@ -171,6 +134,43 @@ components:
           type: string
         description:
           type: string
+    MarketsResult:
+      type: object
+      properties:
+        perps:
+          type: object
+          description: Perpetual futures markets
+          properties:
+            tradingPairs:
+              type: array
+              items:
+                type: object
+              description: Available perps trading pairs and their configuration
+        tokenConfig:
+          type: array
+          description: Token configuration for supported assets
+          items:
+            $ref: '#/components/schemas/TokenConfig'
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
   securitySchemes:
     BearerAuth:
       type: http

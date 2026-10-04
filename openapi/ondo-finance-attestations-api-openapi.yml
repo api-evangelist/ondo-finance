@@ -280,6 +280,71 @@ components:
       required:
       - code
       - message
+    SoftQuote:
+      type: object
+      properties:
+        chainId:
+          type: string
+          description: The chain's identifier, only including the chain id.
+          example: '1'
+        symbol:
+          type: string
+          description: The GM token symbol.
+          example: AAPLon
+        ticker:
+          type: string
+          description: The stock ticker associated with this attestation.
+          example: AAPL
+        assetAddress:
+          type: string
+          description: The contract address of the symbol.
+          example: '0x96F6eF951840721AdBF46Ac996b59E0235CB985C'
+        side:
+          type: string
+          enum:
+          - '0'
+          - '1'
+          description: The direction of the trade (0 for buy, 1 for sell).
+        tokenAmount:
+          type: string
+          description: The number of tokens to mint/redeem represented as a string with 18 decimal places.
+          example: '5000000000000000000'
+        price:
+          type: string
+          description: The price per asset in USDon, represented as a string with 18 decimal places.
+          example: '225273151158540753535'
+      required:
+      - chainId
+      - symbol
+      - ticker
+      - assetAddress
+      - side
+      - tokenAmount
+      - price
+    SoftQuoteByTokenAmountRequest:
+      type: object
+      description: Request a soft quote to mint or redeem a quantity of assets.
+      title: AttestationByTokenAmountRequest
+      properties:
+        chainId:
+          $ref: '#/components/schemas/GMChains'
+        symbol:
+          type: string
+          example: AAPLon
+          description: The GM token symbol.
+        side:
+          $ref: '#/components/schemas/SideEnum'
+        tokenAmount:
+          type: string
+          description: The number of tokens, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '5.000000000000000000'
+        duration:
+          $ref: '#/components/schemas/AttestationDurationEnum'
+      required:
+      - chainId
+      - symbol
+      - side
+      - tokenAmount
     Attestation:
       type: object
       properties:
@@ -375,77 +440,6 @@ components:
       - symbol
       - side
       - notionalValue
-    SideEnum:
-      type: string
-      description: The direction of the trade.
-      enum:
-      - buy
-      - sell
-    SoftQuoteByTokenAmountRequest:
-      type: object
-      description: Request a soft quote to mint or redeem a quantity of assets.
-      title: AttestationByTokenAmountRequest
-      properties:
-        chainId:
-          $ref: '#/components/schemas/GMChains'
-        symbol:
-          type: string
-          example: AAPLon
-          description: The GM token symbol.
-        side:
-          $ref: '#/components/schemas/SideEnum'
-        tokenAmount:
-          type: string
-          description: The number of tokens, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '5.000000000000000000'
-        duration:
-          $ref: '#/components/schemas/AttestationDurationEnum'
-      required:
-      - chainId
-      - symbol
-      - side
-      - tokenAmount
-    SoftQuote:
-      type: object
-      properties:
-        chainId:
-          type: string
-          description: The chain's identifier, only including the chain id.
-          example: '1'
-        symbol:
-          type: string
-          description: The GM token symbol.
-          example: AAPLon
-        ticker:
-          type: string
-          description: The stock ticker associated with this attestation.
-          example: AAPL
-        assetAddress:
-          type: string
-          description: The contract address of the symbol.
-          example: '0x96F6eF951840721AdBF46Ac996b59E0235CB985C'
-        side:
-          type: string
-          enum:
-          - '0'
-          - '1'
-          description: The direction of the trade (0 for buy, 1 for sell).
-        tokenAmount:
-          type: string
-          description: The number of tokens to mint/redeem represented as a string with 18 decimal places.
-          example: '5000000000000000000'
-        price:
-          type: string
-          description: The price per asset in USDon, represented as a string with 18 decimal places.
-          example: '225273151158540753535'
-      required:
-      - chainId
-      - symbol
-      - ticker
-      - assetAddress
-      - side
-      - tokenAmount
-      - price
     AttestationByTokenAmountRequest:
       type: object
       description: Request to mint or redeem a quantity of assets.
@@ -474,12 +468,6 @@ components:
       - symbol
       - side
       - tokenAmount
-    AttestationDurationEnum:
-      type: string
-      description: "Specifies the desired validity period for the attestation. Users can specify a duration of 'short' \nfor a tighter price spread or 'long' for an extended validity period.\n"
-      enum:
-      - short
-      - long
     SoftQuoteByNotionalValueRequest:
       type: object
       description: Request a soft quote to mint or redeem assets equal to the notional value.
@@ -504,6 +492,18 @@ components:
       - symbol
       - side
       - notionalValue
+    AttestationDurationEnum:
+      type: string
+      description: "Specifies the desired validity period for the attestation. Users can specify a duration of 'short' \nfor a tighter price spread or 'long' for an extended validity period.\n"
+      enum:
+      - short
+      - long
+    SideEnum:
+      type: string
+      description: The direction of the trade.
+      enum:
+      - buy
+      - sell
     GMChains:
       type: string
       description: The chain's identifier including the chain name and chain id.

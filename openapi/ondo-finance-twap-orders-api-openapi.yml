@@ -494,7 +494,149 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
+  responses:
+    InternalServerError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - server_is_busy
+                - service_unavailable
+                - unknown
+          example:
+            success: false
+            error: Description of the error
+            error_code: unknown
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - too_many_requests
+          example:
+            success: false
+            error: Description of the error
+            error_code: too_many_requests
+    Unauthorized:
+      description: Authentication required. Provide a valid JWT or API key.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - api_key_not_found
+                - auth_expired
+                - auth_invalid
+                - auth_missing
+                - failed_to_decode_hex_signature
+                - failed_to_parse_timestamp
+                - signature_mismatch
+                - timestamp_too_far
+          example:
+            success: false
+            error: Description of the error
+            error_code: auth_missing
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: string
+                description: Human-readable error message
+              error_code:
+                type: string
+                enum:
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
+          example:
+            success: false
+            error: Description of the error
+            error_code: account_not_allowed
   schemas:
+    CreateTWAPOrderReq:
+      type: object
+      required:
+      - market
+      - side
+      - size
+      - runningTime
+      - frequency
+      properties:
+        market:
+          type: string
+          description: Perps trading market
+          example: AAPL-USD.P
+        side:
+          type: string
+          description: Order side
+          enum:
+          - buy
+          - sell
+          example: buy
+        size:
+          type: string
+          description: Total order size in base currency to execute over the TWAP duration
+          example: '20.30'
+        runningTime:
+          type: integer
+          description: Total duration of the TWAP order in seconds. Must be between 300 (5 minutes) and 86400 (24 hours) and a multiple of `frequency`.
+          example: 3600
+        frequency:
+          type: integer
+          description: Interval between child orders in seconds. runningTime / frequency gives the number of child orders, which must be between 2 and 200.
+          example: 60
+        reduceOnly:
+          type: boolean
+          description: If true, child orders are reduce-only
+          example: false
+        maxPrice:
+          type: string
+          description: Maximum allowed price for child orders. Child orders will not be placed above this price.
+          example: '160.00'
+        minPrice:
+          type: string
+          description: Minimum allowed price for child orders. Child orders will not be placed below this price.
+          example: '140.00'
     PageInfo:
       type: object
       properties:
@@ -603,70 +745,6 @@ components:
           type: string
           description: Error code of the last failed child order (only set for running orders, never for historical)
           example: ''
-    CreateTWAPOrderReq:
-      type: object
-      required:
-      - market
-      - side
-      - size
-      - runningTime
-      - frequency
-      properties:
-        market:
-          type: string
-          description: Perps trading market
-          example: AAPL-USD.P
-        side:
-          type: string
-          description: Order side
-          enum:
-          - buy
-          - sell
-          example: buy
-        size:
-          type: string
-          description: Total order size in base currency to execute over the TWAP duration
-          example: '20.30'
-        runningTime:
-          type: integer
-          description: Total duration of the TWAP order in seconds. Must be between 300 (5 minutes) and 86400 (24 hours) and a multiple of `frequency`.
-          example: 3600
-        frequency:
-          type: integer
-          description: Interval between child orders in seconds. runningTime / frequency gives the number of child orders, which must be between 2 and 200.
-          example: 60
-        reduceOnly:
-          type: boolean
-          description: If true, child orders are reduce-only
-          example: false
-        maxPrice:
-          type: string
-          description: Maximum allowed price for child orders. Child orders will not be placed above this price.
-          example: '160.00'
-        minPrice:
-          type: string
-          description: Minimum allowed price for child orders. Child orders will not be placed below this price.
-          example: '140.00'
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
     ApiFill:
       type: object
       required:
@@ -758,104 +836,26 @@ components:
           type: boolean
           description: True if this was an auto-deleveraging fill (perps only)
           example: false
-  responses:
-    InternalServerError:
-      description: Internal server error.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - server_is_busy
-                - service_unavailable
-                - unknown
-          example:
-            success: false
-            error: Description of the error
-            error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
-          example:
-            success: false
-            error: Description of the error
-            error_code: account_not_allowed
-    Unauthorized:
-      description: Authentication required. Provide a valid JWT or API key.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - api_key_not_found
-                - auth_expired
-                - auth_invalid
-                - auth_missing
-                - failed_to_decode_hex_signature
-                - failed_to_parse_timestamp
-                - signature_mismatch
-                - timestamp_too_far
-          example:
-            success: false
-            error: Description of the error
-            error_code: auth_missing
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              error:
-                type: string
-                description: Human-readable error message
-              error_code:
-                type: string
-                enum:
-                - too_many_requests
-          example:
-            success: false
-            error: Description of the error
-            error_code: too_many_requests
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
   securitySchemes:
     BearerAuth:
       type: http

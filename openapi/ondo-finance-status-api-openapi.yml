@@ -270,142 +270,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    AssetStatusReasonCode:
-      type: string
-      enum:
-      - ASSET_PAUSED
-      - ASSET_LIMITED
-      description: The code indicating the reason for the asset status.
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
-    ReasonBase:
-      type: object
-      properties:
-        message:
-          type: string
-          description: The human-readable message describing the reason
-          example: Weekend/Holiday
-        documentation:
-          type: string
-          description: Additional documentation or reference
-          example: https://docs.ondo.finance/
-      required:
-      - message
-      - documentation
-    MarketStatusReason:
-      description: Reason for market closure or pause.
-      allOf:
-      - $ref: '#/components/schemas/ReasonBase'
-      - type: object
-        properties:
-          code:
-            $ref: '#/components/schemas/MarketStatusReasonCode'
-        required:
-        - code
-    AssetPause:
-      type: object
-      properties:
-        symbol:
-          type: string
-          description: The GM token symbol.
-          example: AAPLon
-        status:
-          type: string
-          description: The current status of the pause. ('active' indicates the pause is live, 'upcoming' indicates it is scheduled for the future)
-          enum:
-          - active
-          - upcoming
-          example: active
-        type:
-          type: string
-          description: The type of pause. ('scheduled' indicates a planned pause for events such as dividends, 'unscheduled' indicates an unplanned pause such as emergency maintenance)
-          enum:
-          - scheduled
-          - unscheduled
-          example: unscheduled
-        reason:
-          allOf:
-          - $ref: '#/components/schemas/AssetStatusReason'
-          - example:
-              code: ASSET_PAUSED
-              message: Maintenance
-              documentation: https://docs.ondo.finance/
-        start:
-          type: string
-          description: The start time of the pause. ('unscheduled' pauses may not provide a start time.)
-          example: '2025-08-05T10:30:00Z'
-        end:
-          type: string
-          description: The end time of the pause. ('unscheduled' pauses may not provide an end time.)
-          example: '2025-08-05T10:45:00Z'
-        eventId:
-          type: string
-          description: The unique id associated with the pause. (Might be empty if the sharesMultiplier will not be updated for the asset during the pause.)
-          example: 94fe2f8f-e69c-45a5-9e48-dd8226dd8e67
-        updateSharesMultiplier:
-          type: boolean
-          description: A boolean flag that indicates whether the sharesMultiplier value will be updated for the asset during this pause or not.
-          enum:
-          - true
-          - false
-          example: true
-      required:
-      - symbol
-      - status
-      - type
-    AssetStatusReason:
-      description: Reason for an asset trading restriction.
-      allOf:
-      - $ref: '#/components/schemas/ReasonBase'
-      - type: object
-        properties:
-          code:
-            $ref: '#/components/schemas/AssetStatusReasonCode'
-        required:
-        - code
-    GetAssetStatusesResponse:
-      type: array
-      items:
-        $ref: '#/components/schemas/AssetPause'
-    OffhoursStatus:
-      type: object
-      description: 'Status of the off-hours trading window, surfaced as a parallel track alongside the conventional session fields. The off-hours window is reported independently of the conventional sessions: `marketStatus` and `isOpen` reflect only the four conventional sessions (regular, premarket, postmarket, overnight), while this object reports off-hours tradability separately.'
-      properties:
-        isOpen:
-          type: boolean
-          description: Indicates whether off-hours trading is currently open. This is true only while the off-hours window is tradable and the off-hours global switch is on.
-          example: false
-        nextOpen:
-          type: string
-          description: The next off-hours window open time in ISO 8601 format (UTC). Reported regardless of the off-hours global switch.
-          example: '2026-06-19T00:05:00Z'
-        nextClose:
-          type: string
-          description: The next off-hours window close time in ISO 8601 format (UTC). Reported regardless of the off-hours global switch.
-          example: '2026-06-21T23:55:00Z'
-      required:
-      - isOpen
-      - nextOpen
-      - nextClose
-    MarketStatusReasonCode:
-      type: string
-      enum:
-      - MARKET_CLOSED
-      - MARKET_PAUSED
-      description: The code indicating the reason for the market status.
     GetMarketStatusResponse:
       type: object
       properties:
@@ -459,6 +323,142 @@ components:
       - marketStatus
       - nextOpenSession
       - offhours
+    AssetPause:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM token symbol.
+          example: AAPLon
+        status:
+          type: string
+          description: The current status of the pause. ('active' indicates the pause is live, 'upcoming' indicates it is scheduled for the future)
+          enum:
+          - active
+          - upcoming
+          example: active
+        type:
+          type: string
+          description: The type of pause. ('scheduled' indicates a planned pause for events such as dividends, 'unscheduled' indicates an unplanned pause such as emergency maintenance)
+          enum:
+          - scheduled
+          - unscheduled
+          example: unscheduled
+        reason:
+          allOf:
+          - $ref: '#/components/schemas/AssetStatusReason'
+          - example:
+              code: ASSET_PAUSED
+              message: Maintenance
+              documentation: https://docs.ondo.finance/
+        start:
+          type: string
+          description: The start time of the pause. ('unscheduled' pauses may not provide a start time.)
+          example: '2025-08-05T10:30:00Z'
+        end:
+          type: string
+          description: The end time of the pause. ('unscheduled' pauses may not provide an end time.)
+          example: '2025-08-05T10:45:00Z'
+        eventId:
+          type: string
+          description: The unique id associated with the pause. (Might be empty if the sharesMultiplier will not be updated for the asset during the pause.)
+          example: 94fe2f8f-e69c-45a5-9e48-dd8226dd8e67
+        updateSharesMultiplier:
+          type: boolean
+          description: A boolean flag that indicates whether the sharesMultiplier value will be updated for the asset during this pause or not.
+          enum:
+          - true
+          - false
+          example: true
+      required:
+      - symbol
+      - status
+      - type
+    GetAssetStatusesResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/AssetPause'
+    AssetStatusReasonCode:
+      type: string
+      enum:
+      - ASSET_PAUSED
+      - ASSET_LIMITED
+      description: The code indicating the reason for the asset status.
+    ReasonBase:
+      type: object
+      properties:
+        message:
+          type: string
+          description: The human-readable message describing the reason
+          example: Weekend/Holiday
+        documentation:
+          type: string
+          description: Additional documentation or reference
+          example: https://docs.ondo.finance/
+      required:
+      - message
+      - documentation
+    MarketStatusReasonCode:
+      type: string
+      enum:
+      - MARKET_CLOSED
+      - MARKET_PAUSED
+      description: The code indicating the reason for the market status.
+    OffhoursStatus:
+      type: object
+      description: 'Status of the off-hours trading window, surfaced as a parallel track alongside the conventional session fields. The off-hours window is reported independently of the conventional sessions: `marketStatus` and `isOpen` reflect only the four conventional sessions (regular, premarket, postmarket, overnight), while this object reports off-hours tradability separately.'
+      properties:
+        isOpen:
+          type: boolean
+          description: Indicates whether off-hours trading is currently open. This is true only while the off-hours window is tradable and the off-hours global switch is on.
+          example: false
+        nextOpen:
+          type: string
+          description: The next off-hours window open time in ISO 8601 format (UTC). Reported regardless of the off-hours global switch.
+          example: '2026-06-19T00:05:00Z'
+        nextClose:
+          type: string
+          description: The next off-hours window close time in ISO 8601 format (UTC). Reported regardless of the off-hours global switch.
+          example: '2026-06-21T23:55:00Z'
+      required:
+      - isOpen
+      - nextOpen
+      - nextClose
+    AssetStatusReason:
+      description: Reason for an asset trading restriction.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/AssetStatusReasonCode'
+        required:
+        - code
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        documentation:
+          type: string
+          description: A URL to the relevant documentation for this error.
+        code:
+          type: string
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
+      required:
+      - code
+      - message
+    MarketStatusReason:
+      description: Reason for market closure or pause.
+      allOf:
+      - $ref: '#/components/schemas/ReasonBase'
+      - type: object
+        properties:
+          code:
+            $ref: '#/components/schemas/MarketStatusReasonCode'
+        required:
+        - code
   securitySchemes:
     apiKey:
       type: apiKey

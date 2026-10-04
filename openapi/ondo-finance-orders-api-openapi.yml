@@ -954,28 +954,6 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 components:
   schemas:
-    StopOrderReq:
-      type: object
-      required:
-      - triggerPrice
-      properties:
-        triggerPrice:
-          type: string
-          description: Trigger price for the stop order
-          example: '18000.00'
-    BatchCancelResult:
-      type: object
-      properties:
-        successfulCancels:
-          type: array
-          description: Orders that were successfully cancelled
-          items:
-            $ref: '#/components/schemas/ApiOrder'
-        failedCancels:
-          type: array
-          description: Cancel attempts that failed
-          items:
-            $ref: '#/components/schemas/CancelError'
     CancelError:
       type: object
       properties:
@@ -991,30 +969,19 @@ components:
           type: string
           description: Semantic error code (empty if not a semantic error)
           example: order_already_canceled
-    BatchAddOrderRes:
+    BatchCancelResult:
       type: object
       properties:
-        addedOrders:
+        successfulCancels:
           type: array
-          description: Orders that were successfully added
+          description: Orders that were successfully cancelled
           items:
             $ref: '#/components/schemas/ApiOrder'
-        failedOrders:
+        failedCancels:
           type: array
-          description: Orders that were not added and the reason why
+          description: Cancel attempts that failed
           items:
-            $ref: '#/components/schemas/ErroredAddOrderReq'
-    PageInfo:
-      type: object
-      properties:
-        prevCursor:
-          type: string
-          description: Cursor value to get the previous page of results
-          example: O4ZTGM3RGM2DG===
-        nextCursor:
-          type: string
-          description: Cursor value to get the next page of results
-          example: NQ5WWO3THN3Q====
+            $ref: '#/components/schemas/CancelError'
     BatchAddOrderReq:
       type: object
       required:
@@ -1029,6 +996,19 @@ components:
           maxItems: 20
           items:
             $ref: '#/components/schemas/AddOrderReq'
+    BatchAddOrderRes:
+      type: object
+      properties:
+        addedOrders:
+          type: array
+          description: Orders that were successfully added
+          items:
+            $ref: '#/components/schemas/ApiOrder'
+        failedOrders:
+          type: array
+          description: Orders that were not added and the reason why
+          items:
+            $ref: '#/components/schemas/ErroredAddOrderReq'
     AddOrderReq:
       type: object
       required:
@@ -1098,6 +1078,17 @@ components:
         stopLoss:
           $ref: '#/components/schemas/StopOrderReq'
           description: Optional stop loss order attached to this order
+    PageInfo:
+      type: object
+      properties:
+        prevCursor:
+          type: string
+          description: Cursor value to get the previous page of results
+          example: O4ZTGM3RGM2DG===
+        nextCursor:
+          type: string
+          description: Cursor value to get the next page of results
+          example: NQ5WWO3THN3Q====
     ApiOrder:
       type: object
       required:
@@ -1273,6 +1264,15 @@ components:
           type: string
           description: Deprecation notice, if applicable
           example: ''
+    StopOrderReq:
+      type: object
+      required:
+      - triggerPrice
+      properties:
+        triggerPrice:
+          type: string
+          description: Trigger price for the stop order
+          example: '18000.00'
     ErroredAddOrderReq:
       type: object
       properties:
@@ -1310,8 +1310,8 @@ components:
             success: false
             error: Description of the error
             error_code: unknown
-    Forbidden:
-      description: Access denied. The authenticated account does not have permission.
+    TooManyRequests:
+      description: Rate limit exceeded. Slow down request frequency.
       content:
         application/json:
           schema:
@@ -1326,15 +1326,11 @@ components:
               error_code:
                 type: string
                 enum:
-                - account_closed
-                - account_not_allowed
-                - forbidden
-                - ip_not_permitted
-                - key_doesnt_have_scope
+                - too_many_requests
           example:
             success: false
             error: Description of the error
-            error_code: account_not_allowed
+            error_code: too_many_requests
     Unauthorized:
       description: Authentication required. Provide a valid JWT or API key.
       content:
@@ -1363,8 +1359,8 @@ components:
             success: false
             error: Description of the error
             error_code: auth_missing
-    TooManyRequests:
-      description: Rate limit exceeded. Slow down request frequency.
+    Forbidden:
+      description: Access denied. The authenticated account does not have permission.
       content:
         application/json:
           schema:
@@ -1379,11 +1375,15 @@ components:
               error_code:
                 type: string
                 enum:
-                - too_many_requests
+                - account_closed
+                - account_not_allowed
+                - forbidden
+                - ip_not_permitted
+                - key_doesnt_have_scope
           example:
             success: false
             error: Description of the error
-            error_code: too_many_requests
+            error_code: account_not_allowed
   securitySchemes:
     BearerAuth:
       type: http

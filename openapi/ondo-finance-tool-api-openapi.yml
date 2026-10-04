@@ -165,33 +165,6 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 components:
-  schemas:
-    GenericResponse:
-      type: object
-      required:
-      - success
-      properties:
-        success:
-          type: boolean
-          description: Whether the request was successful
-          example: true
-        error:
-          type: string
-          description: Error message, present only on failure
-          example: ''
-        error_code:
-          type: string
-          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
-        deprecated:
-          type: string
-          description: Deprecation notice, if applicable
-          example: ''
-    StatusResult:
-      type: object
-      properties:
-        marketStatus:
-          type: string
-          description: Current market status information
   responses:
     TooManyRequests:
       description: Rate limit exceeded. Slow down request frequency.
@@ -237,6 +210,33 @@ components:
             success: false
             error: Description of the error
             error_code: unknown
+  schemas:
+    StatusResult:
+      type: object
+      properties:
+        marketStatus:
+          type: string
+          description: Current market status information
+    GenericResponse:
+      type: object
+      required:
+      - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+          example: true
+        error:
+          type: string
+          description: Error message, present only on failure
+          example: ''
+        error_code:
+          type: string
+          description: Semantic error code. See each endpoint's error responses for the specific codes it can return.
+        deprecated:
+          type: string
+          description: Deprecation notice, if applicable
+          example: ''
   securitySchemes:
     BearerAuth:
       type: http

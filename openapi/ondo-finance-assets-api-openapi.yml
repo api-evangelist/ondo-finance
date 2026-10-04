@@ -1226,82 +1226,6 @@ paths:
       - apiKey: []
 components:
   schemas:
-    AssetAddress:
-      type: object
-      properties:
-        networkChainId:
-          $ref: '#/components/schemas/GMChains'
-        address:
-          type: string
-          description: The contract address on the specified chain.
-          example: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
-        decimals:
-          type: integer
-          format: int64
-          description: The number of decimals places for the asset.
-          example: 18
-      required:
-      - networkChainId
-      - address
-      - decimals
-    ErrorResponse:
-      type: object
-      properties:
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        documentation:
-          type: string
-          description: A URL to the relevant documentation for this error.
-        code:
-          type: string
-          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
-      required:
-      - code
-      - message
-    OHLCDataPoint:
-      type: object
-      properties:
-        timestamp:
-          type: number
-          description: The Unix timestamp in milliseconds when the data point was recorded.
-          example: 1746655938000
-        open:
-          type: string
-          description: The opening price for the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '10.000000000000000000'
-        high:
-          type: string
-          description: The highest price during the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '12.500000000000000000'
-        low:
-          type: string
-          description: The lowest price during the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '8.500000000000000000'
-        close:
-          type: string
-          description: The closing price for the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '9.000000000000000000'
-      required:
-      - timestamp
-      - open
-      - high
-      - low
-      - close
-    SharesMultiplierDataPoint:
-      type: object
-      properties:
-        sharesMultiplier:
-          type: string
-          description: The number of shares each token is equivalent to, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '1.25'
-        changeTimestamp:
-          type: number
-          description: The Unix timestamp in milliseconds when this `sharesMultiplier` value was first set.
-          example: 1746655938000
-      required:
-      - sharesMultiplier
-      - changeTimestamp
     AssetPrice:
       type: object
       properties:
@@ -1335,6 +1259,168 @@ components:
       - primaryMarket
       - underlyingMarket
       - timestamp
+    SharesMultiplierResponse:
+      type: object
+      properties:
+        history:
+          type: array
+          items:
+            $ref: '#/components/schemas/SharesMultiplierDataPoint'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data point was recorded.
+          example: 1746655938000
+      required:
+      - history
+      - timestamp
+    RangeEnum:
+      type: string
+      description: The look back range for historical data. (Note that '1day' will return a rolling 24-hour period of data and 'all' will return all historical data.)
+      enum:
+      - 1day
+      - 1month
+      - 3month
+      - 6month
+      - 1year
+      - all
+    MetadataEntry:
+      properties:
+        symbol:
+          type: string
+          example: AAPLon
+        ticker:
+          type: string
+          example: AAPL
+        coingeckoId:
+          type:
+          - string
+          - 'null'
+          example: apple-ondo-tokenized-stock
+        addresses:
+          type: array
+          description: Contract addresses for various chains.
+          items:
+            $ref: '#/components/schemas/AssetAddress'
+          example:
+          - networkChainId: bsc-56
+            address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
+            decimals: 18
+          - networkChainId: ethereum-1
+            address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+            decimals: 18
+        tags:
+          type: object
+          properties:
+            assetClass:
+              type: string
+              description: High-level category of the asset
+              example: equities
+            instrumentType:
+              type: string
+              description: Instrument type within the asset class
+              example: stock
+            sectorIndustry:
+              type: array
+              items:
+                type: string
+              description: Sector and industry classifications for the asset.
+              example:
+              - Technology
+              - Consumer Electronics
+            typeFactorRiskProfile:
+              type: array
+              items:
+                type: string
+              description: Type, factor, and risk profile classifications.
+              example:
+              - Growth
+              - Large Cap
+            regionMarketExposure:
+              type: array
+              items:
+                type: string
+              description: Region and market exposure classifications.
+              example:
+              - US
+              - Global
+          required:
+          - assetClass
+          - instrumentType
+        coinmarketcapId:
+          type:
+          - string
+          - 'null'
+          example: '38037'
+      required:
+      - symbol
+      - ticker
+      - tags
+    SymbolAssetAddresses:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM symbol associated with the asset.
+          example: AAPLon
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/AssetAddress'
+      required:
+      - symbol
+      - addresses
+    AssetAddress:
+      type: object
+      properties:
+        networkChainId:
+          $ref: '#/components/schemas/GMChains'
+        address:
+          type: string
+          description: The contract address on the specified chain.
+          example: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
+        decimals:
+          type: integer
+          format: int64
+          description: The number of decimals places for the asset.
+          example: 18
+      required:
+      - networkChainId
+      - address
+      - decimals
+    OHLCResponse:
+      type: object
+      properties:
+        interval:
+          $ref: '#/components/schemas/IntervalEnum'
+        range:
+          $ref: '#/components/schemas/RangeEnum'
+        primaryMarket:
+          type: object
+          properties:
+            symbol:
+              type: string
+              description: The GM symbol associated with the asset.
+              example: AAPLon
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OHLCDataPoint'
+        underlyingMarket:
+          type: object
+          properties:
+            ticker:
+              type: string
+              description: The stock ticker associated with the asset.
+              example: AAPL
+            data:
+              type: array
+              items:
+                $ref: '#/components/schemas/OHLCDataPoint'
+      required:
+      - interval
+      - primaryMarket
+      - underlyingMarket
+      - range
     Market:
       type: object
       properties:
@@ -1456,139 +1542,74 @@ components:
       - underlyingMarket
       - constituentTokens
       - timestamp
-    SymbolAssetAddresses:
+    IntervalEnum:
+      type: string
+      description: The time interval between data points.
+      enum:
+      - 1min
+      - 5min
+      - 15min
+      - 1hour
+      - 4hour
+      - 12hour
+      - 1day
+    OHLCDataPoint:
       type: object
       properties:
-        symbol:
-          type: string
-          description: The GM symbol associated with the asset.
-          example: AAPLon
-        addresses:
-          type: array
-          items:
-            $ref: '#/components/schemas/AssetAddress'
-      required:
-      - symbol
-      - addresses
-    OHLCResponse:
-      type: object
-      properties:
-        interval:
-          $ref: '#/components/schemas/IntervalEnum'
-        range:
-          $ref: '#/components/schemas/RangeEnum'
-        primaryMarket:
-          type: object
-          properties:
-            symbol:
-              type: string
-              description: The GM symbol associated with the asset.
-              example: AAPLon
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/OHLCDataPoint'
-        underlyingMarket:
-          type: object
-          properties:
-            ticker:
-              type: string
-              description: The stock ticker associated with the asset.
-              example: AAPL
-            data:
-              type: array
-              items:
-                $ref: '#/components/schemas/OHLCDataPoint'
-      required:
-      - interval
-      - primaryMarket
-      - underlyingMarket
-      - range
-    MetadataEntry:
-      properties:
-        symbol:
-          type: string
-          example: AAPLon
-        ticker:
-          type: string
-          example: AAPL
-        coingeckoId:
-          type:
-          - string
-          - 'null'
-          example: apple-ondo-tokenized-stock
-        addresses:
-          type: array
-          description: Contract addresses for various chains.
-          items:
-            $ref: '#/components/schemas/AssetAddress'
-          example:
-          - networkChainId: bsc-56
-            address: '0x390a684ef9cade28a7ad0dfa61ab1eb3842618c4'
-            decimals: 18
-          - networkChainId: ethereum-1
-            address: '0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'
-            decimals: 18
-        tags:
-          type: object
-          properties:
-            assetClass:
-              type: string
-              description: High-level category of the asset
-              example: equities
-            instrumentType:
-              type: string
-              description: Instrument type within the asset class
-              example: stock
-            sectorIndustry:
-              type: array
-              items:
-                type: string
-              description: Sector and industry classifications for the asset.
-              example:
-              - Technology
-              - Consumer Electronics
-            typeFactorRiskProfile:
-              type: array
-              items:
-                type: string
-              description: Type, factor, and risk profile classifications.
-              example:
-              - Growth
-              - Large Cap
-            regionMarketExposure:
-              type: array
-              items:
-                type: string
-              description: Region and market exposure classifications.
-              example:
-              - US
-              - Global
-          required:
-          - assetClass
-          - instrumentType
-        coinmarketcapId:
-          type:
-          - string
-          - 'null'
-          example: '38037'
-      required:
-      - symbol
-      - ticker
-      - tags
-    SharesMultiplierResponse:
-      type: object
-      properties:
-        history:
-          type: array
-          items:
-            $ref: '#/components/schemas/SharesMultiplierDataPoint'
         timestamp:
           type: number
           description: The Unix timestamp in milliseconds when the data point was recorded.
           example: 1746655938000
+        open:
+          type: string
+          description: The opening price for the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '10.000000000000000000'
+        high:
+          type: string
+          description: The highest price during the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '12.500000000000000000'
+        low:
+          type: string
+          description: The lowest price during the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '8.500000000000000000'
+        close:
+          type: string
+          description: The closing price for the interval, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '9.000000000000000000'
       required:
-      - history
+      - timestamp
+      - open
+      - high
+      - low
+      - close
+    AssetEnhancedPrice:
+      type: object
+      properties:
+        symbol:
+          type: string
+          description: The GM symbol of the asset.
+          example: NFLXon
+        price:
+          type: string
+          description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '836.26176'
+        priceChange24h:
+          type: string
+          description: The price change in the last 24 hours of open market.
+          example: '-19.22815'
+        priceChangePct24h:
+          type: string
+          description: The percentage change in price over the last 24 hours of open market.
+          example: '-2.247618560457364132'
+        timestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when the data was last updated.
+          example: 1769125830623
+      required:
+      - symbol
+      - price
+      - priceChange24h
+      - priceChangePct24h
       - timestamp
     DividendInfo:
       type: object
@@ -1632,45 +1653,21 @@ components:
       - lastCashAmount
       - lastPaymentDate
       - timestamp
-    AssetEnhancedPrice:
+    ErrorResponse:
       type: object
       properties:
-        symbol:
+        message:
           type: string
-          description: The GM symbol of the asset.
-          example: NFLXon
-        price:
+          description: A human-readable message providing more details about the error.
+        documentation:
           type: string
-          description: The token price, represented as a string-encoded decimal with up to 18 digits after the decimal point.
-          example: '836.26176'
-        priceChange24h:
+          description: A URL to the relevant documentation for this error.
+        code:
           type: string
-          description: The price change in the last 24 hours of open market.
-          example: '-19.22815'
-        priceChangePct24h:
-          type: string
-          description: The percentage change in price over the last 24 hours of open market.
-          example: '-2.247618560457364132'
-        timestamp:
-          type: number
-          description: The Unix timestamp in milliseconds when the data was last updated.
-          example: 1769125830623
+          description: A reason code identifying the specific type of error. See the Error Codes reference for a full list of possible values.
       required:
-      - symbol
-      - price
-      - priceChange24h
-      - priceChangePct24h
-      - timestamp
-    RangeEnum:
-      type: string
-      description: The look back range for historical data. (Note that '1day' will return a rolling 24-hour period of data and 'all' will return all historical data.)
-      enum:
-      - 1day
-      - 1month
-      - 3month
-      - 6month
-      - 1year
-      - all
+      - code
+      - message
     GMChains:
       type: string
       description: The chain's identifier including the chain name and chain id.
@@ -1678,17 +1675,20 @@ components:
       - ethereum-1
       - bsc-56
       - solana-900
-    IntervalEnum:
-      type: string
-      description: The time interval between data points.
-      enum:
-      - 1min
-      - 5min
-      - 15min
-      - 1hour
-      - 4hour
-      - 12hour
-      - 1day
+    SharesMultiplierDataPoint:
+      type: object
+      properties:
+        sharesMultiplier:
+          type: string
+          description: The number of shares each token is equivalent to, represented as a string-encoded decimal with up to 18 digits after the decimal point.
+          example: '1.25'
+        changeTimestamp:
+          type: number
+          description: The Unix timestamp in milliseconds when this `sharesMultiplier` value was first set.
+          example: 1746655938000
+      required:
+      - sharesMultiplier
+      - changeTimestamp
   securitySchemes:
     apiKey:
       type: apiKey
